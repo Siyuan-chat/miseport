@@ -13,7 +13,8 @@ Reference: user-supplied 2026-10-27 checklist; reconciled 2026-10-29. Current st
 - [x] Original-logo vector/transparent/reverse/favicon reconstruction candidate produced and structurally/render reviewed.
 - [ ] Original-logo reconstruction approved by user as final master.
 - [ ] Desktop/mobile website and language interaction visually verified.
-- [ ] CI matrix and container built/run in target environments.
+- [x] CI matrix and container built/run in GitHub target environments; all seven jobs passed at `cf8e700` (see `GITHUB_TESTING.md`).
+- [x] Public `Siyuan-chat/miseport` repository created and reviewed source uploaded under explicit user authorization.
 
 ## Before public hosting or package release
 

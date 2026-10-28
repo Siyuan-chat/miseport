@@ -1,5 +1,15 @@
 # Local validation — 2026-10-28
 
+## GitHub validation — 2026-10-29 (latest)
+
+Public repository: [Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport). Tested code commit: `cf8e70005ece393e87507e40571c5f72a9f15e38`. [Run 40779008149](https://github.com/Siyuan-chat/miseport/actions/runs/40779008149) completed **7/7 jobs successfully**: Ubuntu and Windows with Python 3.10/3.12/3.14, each running source tests, static checks, build and installed-wheel tests; plus the Docker build/nonroot catalog validation job. Online checks are actual results, not the local-only historical counts below.
+
+First online run `40778720332` failed because installed-wheel verification assumed an existing artifacts parent directory. The product/source tests and container were not the cause of that failure. Fixed explicit parent creation and disabled matrix fail-fast for complete diagnostics. Reproduced a clean source-only extraction locally with no artifacts directory: 106 passed in 5.79 s (`artifacts/clean-checkout-ci-fix-log/`). Corrected online run then passed. Raw first-failure log saved locally at `artifacts/remote-ci/run-40778720332-failure.log`. Windows MCP entry-point lookup uses the interpreter's scripts directory; targeted local protocol regression passed.
+
+Remote initial upload had 76 file blobs, all matched against local Git hashes. No credential files, virtual environments, local logs or historical ZIP/wheel binaries were uploaded. Public source/CI are complete for this phase; domain, remote service, Muse client scenarios and final visual signoff remain outside these passing checks.
+
+## Earlier local records
+
 Expanded development 2026-10-29: **106 passed in 6.17 s** on Python 3.14 current source (`artifacts/commerce-final314.xml`), after legacy/canonical adapters, quantity quotes, inventory, audit, JSON-LD and seven stdio tools. Final wheel independently installed in Python 3.10.11: **106 passed in 6.63 s**, dependency check passed, import confirmed from site-packages; full logs in `artifacts/commerce-wheel310-20261029/` and JUnit in `artifacts/wheel-verification.xml`. Build logs: `artifacts/commerce-build-20261029/`. Tests include actual CLI subprocesses, provenance tamper rejection, import atomicity, full protocol tools and fixture-bound price/evidence assertions. These are not Muse language-model evaluations. Current schemas exported from models; site static checks still pass. GitHub owner/target lookup conditions are in `GITHUB_TESTING.md`; Actions have not run.
 
 Legacy reconciliation verification 2026-10-29: supplied standalone brand/checklist match their ZIP members; historical wheel's five modules match ZIP source. Input SHA-256: `references/legacy-20261027/provenance.json`. No legacy code executed. Current Python 3.14 suite after canonical about-tool metadata restoration: **36 passed in 3.78 s**, `artifacts/tests-legacy-reconcile.xml`. Static site: 24 complete translation pairs and 5 valid local links/assets. See `LEGACY_BASELINE.md` for incompatible contracts and deferred features.
