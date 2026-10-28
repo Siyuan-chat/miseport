@@ -8,7 +8,7 @@
 
 MisePort is a local product-catalog bridge for Japanese shops and AI assistants. Import a catalog, validate its product facts, and expose read-only search and detail tools through MCP over stdio.
 
-**Prototype status:** local stdio only. Muse eligibility, the final repository URL, and the production domain have not been verified. November 10 is a planning target, not a promised review or launch date. Demo products are fictional; `is_demo` marks them explicitly.
+**Prototype status:** local stdio only. Source repository: [Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport). Muse eligibility and the production domain remain unverified. November 10 is a planning target, not a promised review or launch date. Demo products are fictional; `is_demo` marks them explicitly.
 
 ## Quick start
 

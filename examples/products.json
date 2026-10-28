@@ -1,0 +1,6 @@
+[
+  {"sku":"coffee-001","name":"京都 コーヒー豆 200g","description":"中煎り。香ばしいブレンド。","category":"食品","price_jpy":1480,"stock":"in_stock","source_url":"https://example.com/products/coffee-001","updated_at":"2026-10-28T12:00:00+09:00","is_demo":true,"tax_included":true,"shipping_jpy":null},
+  {"sku":"tea-002","name":"宇治 抹茶 30g","description":"お菓子づくりにも。","category":"食品","price_jpy":2200,"stock":"unknown","source_url":"https://example.com/products/tea-002","updated_at":"2026-10-28T12:00:00+09:00","is_demo":true,"tax_included":null,"shipping_jpy":null},
+  {"sku":"cup-003","name":"美濃焼 マグカップ","description":"コーヒーに合う、青い陶器。","category":"食器","price_jpy":1800,"stock":"out_of_stock","source_url":"https://example.com/products/cup-003","updated_at":"2026-10-28T12:00:00+09:00","is_demo":true,"tax_included":true,"shipping_jpy":600},
+  {"sku":"bag-004","name":"リネン トートバッグ","description":"生成りの軽いバッグ。","category":"雑貨","price_jpy":3200,"stock":"in_stock","source_url":"https://example.com/products/bag-004","updated_at":"2026-10-28T12:00:00+09:00","is_demo":true,"tax_included":false,"shipping_jpy":0}
+]

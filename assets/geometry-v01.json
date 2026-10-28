@@ -1,0 +1,16 @@
+{
+  "candidate": "v01",
+  "approved": false,
+  "viewBox": [
+    0,
+    0,
+    100,
+    100
+  ],
+  "symbol_path": "M12 84V16H28L50 47L72 16H88V84H72V44L50 75L28 44V84Z",
+  "vertical_stem": 16,
+  "topology": "single closed M contour; open counters; no facets",
+  "wordmark": "Arial regular converted to SVG paths; PNG uses same local font",
+  "clear_space": 12,
+  "min_symbol_px": 24
+}

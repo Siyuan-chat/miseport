@@ -1,0 +1,5 @@
+sku,name,description,category,price_jpy,stock,source_url,updated_at,is_demo,tax_included,shipping_jpy
+coffee-001,京都 コーヒー豆 200g,中煎り。香ばしいブレンド。,食品,1480,in_stock,https://example.com/products/coffee-001,2026-10-28T12:00:00+09:00,true,true,
+tea-002,宇治 抹茶 30g,お菓子づくりにも。,食品,2200,unknown,https://example.com/products/tea-002,2026-10-28T12:00:00+09:00,true,,
+cup-003,美濃焼 マグカップ,コーヒーに合う、青い陶器。,食器,1800,out_of_stock,https://example.com/products/cup-003,2026-10-28T12:00:00+09:00,true,true,600
+bag-004,リネン トートバッグ,生成りの軽いバッグ。,雑貨,3200,in_stock,https://example.com/products/bag-004,2026-10-28T12:00:00+09:00,true,false,0

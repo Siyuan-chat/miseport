@@ -1,0 +1,20 @@
+{
+  "received_date": "2026-10-29",
+  "timezone": "Asia/Tokyo",
+  "current_identity": "User-supplied storefront / port logo and reference visual board",
+  "source_images_edited": false,
+  "files": [
+    {
+      "path": "miseport-logo.png",
+      "source_attachment": "codex-clipboard-268514db-27e4-4c82-be8e-59fb6026d17c.png",
+      "sha256": "a30851f0a2a13a7431f9b9409eb088c1debe4d059ff8f553c41b295b1a1b2bd0"
+    },
+    {
+      "path": "miseport-brand-board.png",
+      "source_attachment": "codex-clipboard-024331ea-9df0-430a-be47-a8caa66470cd.png",
+      "sha256": "ee74e438ab9944e9c8ec696ff6b5c143b6869961330412759659753818f9cce3"
+    }
+  ],
+  "original_vector_available": false,
+  "superseded_candidate": "v01 single M / green palette"
+}

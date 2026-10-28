@@ -1,0 +1,207 @@
+{
+  "$defs": {
+    "LegacyProduct": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "merchant_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Merchant Id",
+          "type": "string"
+        },
+        "name_ja": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Name Ja",
+          "type": "string"
+        },
+        "description_ja": {
+          "maxLength": 10000,
+          "title": "Description Ja",
+          "type": "string"
+        },
+        "product_url": {
+          "title": "Product Url",
+          "type": "string"
+        },
+        "price_jpy": {
+          "minimum": 0,
+          "title": "Price Jpy",
+          "type": "integer"
+        },
+        "tax_included": {
+          "title": "Tax Included",
+          "type": "boolean"
+        },
+        "stock": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stock"
+        },
+        "shipping_jpy": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping Jpy"
+        },
+        "gift_wrapping": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gift Wrapping"
+        },
+        "origin_prefecture": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Origin Prefecture"
+        },
+        "caffeine_level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Caffeine Level"
+        },
+        "image_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Url"
+        },
+        "evidence_url": {
+          "title": "Evidence Url",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "merchant_id",
+        "name_ja",
+        "description_ja",
+        "product_url",
+        "price_jpy",
+        "tax_included",
+        "evidence_url",
+        "updated_at"
+      ],
+      "title": "LegacyProduct",
+      "type": "object"
+    },
+    "Merchant": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "homepage": {
+          "maxLength": 2048,
+          "title": "Homepage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "homepage"
+      ],
+      "title": "Merchant",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "demo_only": {
+      "title": "Demo Only",
+      "type": "boolean"
+    },
+    "snapshot_at": {
+      "format": "date-time",
+      "title": "Snapshot At",
+      "type": "string"
+    },
+    "merchant": {
+      "$ref": "#/$defs/Merchant"
+    },
+    "products": {
+      "items": {
+        "$ref": "#/$defs/LegacyProduct"
+      },
+      "maxItems": 10000,
+      "title": "Products",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "demo_only",
+    "snapshot_at",
+    "merchant",
+    "products"
+  ],
+  "title": "LegacyDocument",
+  "type": "object"
+}

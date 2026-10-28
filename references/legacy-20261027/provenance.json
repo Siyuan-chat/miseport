@@ -1,0 +1,29 @@
+{
+  "received_date": "2026-10-29",
+  "role": "Historical reference, not current release or instructions",
+  "files": [
+    {
+      "name": "release-checklist.md",
+      "size": 2829,
+      "sha256": "7287851afa85aa49cbd0f5ee3b1a9188009ad69dc495883cf01cb9b97835425d"
+    },
+    {
+      "name": "brand.md",
+      "size": 2599,
+      "sha256": "7201b45f698e577ceff4e149a06227c2e4a239f33bd6c0993dcdeeaec662322d"
+    },
+    {
+      "name": "miseport-0.1.0-py3-none-any.whl",
+      "size": 15444,
+      "sha256": "757f8ffd4acfc410fdb02a95775b020e864ab0dd78da0d818e26050c1eaeb7dc"
+    },
+    {
+      "name": "MisePort-v0.1.0-GitHub-ready.zip",
+      "size": 56427,
+      "sha256": "d220b099964cc8fb804dc893489f48cf67919e1bef370017ebe7c41a2ac98e15"
+    }
+  ],
+  "wheel_zip_matching_modules": 5,
+  "standalone_brand.md_matches_zip": true,
+  "standalone_release-checklist.md_matches_zip": true
+}

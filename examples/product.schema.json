@@ -1,0 +1,236 @@
+{
+  "$defs": {
+    "Stock": {
+      "enum": [
+        "in_stock",
+        "out_of_stock",
+        "unknown"
+      ],
+      "title": "Stock",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "sku": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Sku",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "maxLength": 10000,
+      "title": "Description",
+      "type": "string"
+    },
+    "category": {
+      "default": "",
+      "maxLength": 200,
+      "title": "Category",
+      "type": "string"
+    },
+    "price_jpy": {
+      "minimum": 0,
+      "title": "Price Jpy",
+      "type": "integer"
+    },
+    "currency": {
+      "default": "JPY",
+      "title": "Currency",
+      "type": "string"
+    },
+    "stock": {
+      "$ref": "#/$defs/Stock",
+      "default": "unknown"
+    },
+    "source_url": {
+      "maxLength": 2048,
+      "title": "Source Url",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "is_demo": {
+      "title": "Is Demo",
+      "type": "boolean"
+    },
+    "tax_included": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tax Included"
+    },
+    "shipping_jpy": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Shipping Jpy"
+    },
+    "stock_quantity": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stock Quantity"
+    },
+    "merchant_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Merchant Id"
+    },
+    "merchant_name": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Merchant Name"
+    },
+    "merchant_homepage": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Merchant Homepage"
+    },
+    "evidence_url": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Url"
+    },
+    "image_url": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Url"
+    },
+    "gift_wrapping": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gift Wrapping"
+    },
+    "origin_prefecture": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Origin Prefecture"
+    },
+    "caffeine_level": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Caffeine Level"
+    },
+    "snapshot_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snapshot At"
+    }
+  },
+  "required": [
+    "sku",
+    "name",
+    "price_jpy",
+    "source_url",
+    "updated_at",
+    "is_demo"
+  ],
+  "title": "Product",
+  "type": "object"
+}

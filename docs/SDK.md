@@ -1,0 +1,7 @@
+# SDK choice and verification
+
+Checked 2026-10-28. The official [main README](https://github.com/modelcontextprotocol/python-sdk/blob/main/README.md) identifies v2 as current. The [v1 maintenance README](https://github.com/modelcontextprotocol/python-sdk/blob/v1.x/README.md) documents a supported 1.x line with a `<2` bound. The [versioned 1.28.0 client docs](https://github.com/modelcontextprotocol/python-sdk/blob/v1.28.0/docs/client.md) define `ClientSession`, `StdioServerParameters`, `stdio_client`, `initialize`, `list_tools`, and `call_tool`.
+
+This local prototype deliberately pins `mcp==1.28.0` for a bounded Python 3.10+ baseline. It uses `mcp.server.fastmcp.FastMCP` and stdio only. It does not assert compatibility with v2 or any hosted Muse client. Runtime tests initialize an actual SDK client/server subprocess, enumerate the exact seven tools and call them, including empty/error responses. Client read timeout is 10 seconds and the integration test has a bounded overall timeout. The server does no outbound network I/O; catalog loading is bounded to 10 MiB / 10000 rows and happens once at startup. Restart to refresh the snapshot. Current signatures: `API.md`.
+
+Before upgrading to v2: select Python requirements, migrate server/client APIs using official migration docs, rerun core/CLI/protocol tests against the installed release and test the chosen external client separately. A passing SDK protocol test does not prove a language-model client obeys catalog data boundaries.
