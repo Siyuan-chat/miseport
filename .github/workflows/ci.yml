@@ -34,3 +34,62 @@ jobs:
           persist-credentials: false
       - run: docker build -t miseport:ci .
       - run: docker run --rm --entrypoint miseport miseport:ci validate /app/examples/products.json
+      - run: docker build -f Dockerfile.http -t miseport-http:ci .
+      - run: docker run --rm --entrypoint miseport-http miseport-http:ci --help
+  cloudflare-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      MISEPORT_PUBLIC_ORIGIN: https://miseport.pages.dev
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Install fixed pnpm
+        run: npm install --global pnpm@11.25.0 --no-audit --no-fund --loglevel=error
+      - name: Generate Python-validated catalog and contracts
+        run: |
+          python -m pip install --quiet -e ".[dev]"
+          python scripts/build_cloudflare_demo.py
+      - name: Worker unit and Python parity tests
+        run: node --test cloudflare/test_worker.mjs
+      - name: Install locked build dependencies with bounded failure output
+        shell: bash
+        run: |
+          test "$(pnpm --version)" = "11.25.0"
+          if ! pnpm --dir cloudflare install --frozen-lockfile --reporter=append-only > "$RUNNER_TEMP/miseport-pnpm-install.log" 2>&1; then
+            tail -n 80 "$RUNNER_TEMP/miseport-pnpm-install.log"
+            exit 1
+          fi
+          test "$(pnpm --dir cloudflare exec esbuild --version)" = "0.28.2"
+      - name: Build and package Pages Advanced Mode
+        run: |
+          pnpm --dir cloudflare run build:pages
+          python scripts/package_cloudflare_pages.py
+      - name: Check bundled Worker and upload ZIP without deployment
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          const {default: worker} = await import('./cloudflare/public/_worker.js');
+          const response = await worker.fetch(new Request('https://miseport.pages.dev/healthz'), {});
+          assert.equal(response.status, 200);
+          assert.equal((await response.json()).demo, true);
+          console.log('Bundled Pages Worker readiness passed; no network request made.');
+          JS
+          python - <<'PY'
+          from zipfile import ZipFile
+          with ZipFile('artifacts/cloudflare-pages/miseport-pages.zip') as archive:
+              names = set(archive.namelist())
+              assert {'index.html', '_worker.js', 'privacy.html', 'terms.html', 'docs/index.html'} <= names
+              assert not any(set(name.split('/')) & {'node_modules', '.wrangler', '.git'} for name in names)
+          print('Pages upload ZIP has static files and Advanced Mode Worker, without local dependencies.')
+          PY

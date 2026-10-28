@@ -17,3 +17,7 @@ pytest-cache-files-*/
 .agents/
 references/**/*.whl
 references/**/*.zip
+node_modules/
+.wrangler/
+cloudflare/public/
+cloudflare/bundle/

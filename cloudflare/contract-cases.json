@@ -1,0 +1,993 @@
+{
+  "source": "Python reference catalog operations, not Muse evaluation",
+  "cases": [
+    {
+      "method": "detail",
+      "args": [
+        "tea-001"
+      ],
+      "expected": {
+        "product": {
+          "sku": "tea-001",
+          "name": "京都産ほうじ茶 ギフト 80g",
+          "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+          "category": "",
+          "price_jpy": 1850,
+          "currency": "JPY",
+          "stock": "in_stock",
+          "source_url": "https://example.org/products/tea-001",
+          "updated_at": "2026-10-27T00:00:00+09:00",
+          "is_demo": true,
+          "tax_included": true,
+          "shipping_jpy": 450,
+          "stock_quantity": 12,
+          "merchant_id": "demo-kyoto-tea",
+          "merchant_name": "架空の京都茶店（デモ専用）",
+          "merchant_homepage": "https://example.org/",
+          "evidence_url": "https://example.org/products/tea-001",
+          "image_url": null,
+          "gift_wrapping": true,
+          "origin_prefecture": "京都府",
+          "caffeine_level": null,
+          "snapshot_at": "2026-10-27T00:00:00+09:00"
+        },
+        "found": true
+      }
+    },
+    {
+      "method": "inventory",
+      "args": [
+        "tea-001"
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "stock": "in_stock",
+        "stock_quantity": 12,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-001",
+        "evidence_url": "https://example.org/products/tea-001",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00"
+      }
+    },
+    {
+      "method": "jsonld",
+      "args": [
+        "tea-001"
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "jsonld": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "sku": "tea-001",
+          "name": "京都産ほうじ茶 ギフト 80g",
+          "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+          "url": "https://example.org/products/tea-001",
+          "offers": {
+            "@type": "Offer",
+            "price": "1850",
+            "priceCurrency": "JPY",
+            "url": "https://example.org/products/tea-001",
+            "availability": "https://schema.org/InStock"
+          },
+          "additionalProperty": [
+            {
+              "@type": "PropertyValue",
+              "name": "is_demo",
+              "value": true
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "stock_is_live",
+              "value": false
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "updated_at",
+              "value": "2026-10-27T00:00:00+09:00"
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "evidence_url",
+              "value": "https://example.org/products/tea-001"
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "snapshot_at",
+              "value": "2026-10-27T00:00:00+09:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-001",
+        1
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "stock": "in_stock",
+        "stock_quantity": 12,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-001",
+        "evidence_url": "https://example.org/products/tea-001",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 1,
+        "currency": "JPY",
+        "unit_price_jpy": 1850,
+        "subtotal_jpy": 1850,
+        "tax_included": true,
+        "shipping_jpy": 450,
+        "total_jpy": 2300,
+        "complete_total": true,
+        "can_fulfill_snapshot": true,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-001",
+        2
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "stock": "in_stock",
+        "stock_quantity": 12,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-001",
+        "evidence_url": "https://example.org/products/tea-001",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 2,
+        "currency": "JPY",
+        "unit_price_jpy": 1850,
+        "subtotal_jpy": 3700,
+        "tax_included": true,
+        "shipping_jpy": 450,
+        "total_jpy": 4150,
+        "complete_total": true,
+        "can_fulfill_snapshot": true,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-001",
+        13
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "stock": "in_stock",
+        "stock_quantity": 12,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-001",
+        "evidence_url": "https://example.org/products/tea-001",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 13,
+        "currency": "JPY",
+        "unit_price_jpy": 1850,
+        "subtotal_jpy": 24050,
+        "tax_included": true,
+        "shipping_jpy": 450,
+        "total_jpy": 24500,
+        "complete_total": true,
+        "can_fulfill_snapshot": false,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-001",
+        1000
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-001",
+        "stock": "in_stock",
+        "stock_quantity": 12,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-001",
+        "evidence_url": "https://example.org/products/tea-001",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 1000,
+        "currency": "JPY",
+        "unit_price_jpy": 1850,
+        "subtotal_jpy": 1850000,
+        "tax_included": true,
+        "shipping_jpy": 450,
+        "total_jpy": 1850450,
+        "complete_total": true,
+        "can_fulfill_snapshot": false,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "detail",
+      "args": [
+        "tea-002"
+      ],
+      "expected": {
+        "product": {
+          "sku": "tea-002",
+          "name": "抹茶 スターターセット",
+          "description": "抹茶を始めたい方向けの道具と粉末茶のセット。内容は架空のデモデータです。",
+          "category": "",
+          "price_jpy": 3100,
+          "currency": "JPY",
+          "stock": "unknown",
+          "source_url": "https://example.org/products/tea-002",
+          "updated_at": "2026-10-27T00:00:00+09:00",
+          "is_demo": true,
+          "tax_included": true,
+          "shipping_jpy": null,
+          "stock_quantity": null,
+          "merchant_id": "demo-kyoto-tea",
+          "merchant_name": "架空の京都茶店（デモ専用）",
+          "merchant_homepage": "https://example.org/",
+          "evidence_url": "https://example.org/products/tea-002",
+          "image_url": null,
+          "gift_wrapping": null,
+          "origin_prefecture": null,
+          "caffeine_level": null,
+          "snapshot_at": "2026-10-27T00:00:00+09:00"
+        },
+        "found": true
+      }
+    },
+    {
+      "method": "inventory",
+      "args": [
+        "tea-002"
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "stock": "unknown",
+        "stock_quantity": null,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-002",
+        "evidence_url": "https://example.org/products/tea-002",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00"
+      }
+    },
+    {
+      "method": "jsonld",
+      "args": [
+        "tea-002"
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "jsonld": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "sku": "tea-002",
+          "name": "抹茶 スターターセット",
+          "description": "抹茶を始めたい方向けの道具と粉末茶のセット。内容は架空のデモデータです。",
+          "url": "https://example.org/products/tea-002",
+          "offers": {
+            "@type": "Offer",
+            "price": "3100",
+            "priceCurrency": "JPY",
+            "url": "https://example.org/products/tea-002"
+          },
+          "additionalProperty": [
+            {
+              "@type": "PropertyValue",
+              "name": "is_demo",
+              "value": true
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "stock_is_live",
+              "value": false
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "updated_at",
+              "value": "2026-10-27T00:00:00+09:00"
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "evidence_url",
+              "value": "https://example.org/products/tea-002"
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "snapshot_at",
+              "value": "2026-10-27T00:00:00+09:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-002",
+        1
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "stock": "unknown",
+        "stock_quantity": null,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-002",
+        "evidence_url": "https://example.org/products/tea-002",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 1,
+        "currency": "JPY",
+        "unit_price_jpy": 3100,
+        "subtotal_jpy": 3100,
+        "tax_included": true,
+        "shipping_jpy": null,
+        "total_jpy": null,
+        "complete_total": false,
+        "can_fulfill_snapshot": null,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-002",
+        2
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "stock": "unknown",
+        "stock_quantity": null,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-002",
+        "evidence_url": "https://example.org/products/tea-002",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 2,
+        "currency": "JPY",
+        "unit_price_jpy": 3100,
+        "subtotal_jpy": 6200,
+        "tax_included": true,
+        "shipping_jpy": null,
+        "total_jpy": null,
+        "complete_total": false,
+        "can_fulfill_snapshot": null,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-002",
+        13
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "stock": "unknown",
+        "stock_quantity": null,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-002",
+        "evidence_url": "https://example.org/products/tea-002",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 13,
+        "currency": "JPY",
+        "unit_price_jpy": 3100,
+        "subtotal_jpy": 40300,
+        "tax_included": true,
+        "shipping_jpy": null,
+        "total_jpy": null,
+        "complete_total": false,
+        "can_fulfill_snapshot": null,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "tea-002",
+        1000
+      ],
+      "expected": {
+        "found": true,
+        "product_id": "tea-002",
+        "stock": "unknown",
+        "stock_quantity": null,
+        "stock_is_live": false,
+        "is_demo": true,
+        "source_url": "https://example.org/products/tea-002",
+        "evidence_url": "https://example.org/products/tea-002",
+        "updated_at": "2026-10-27T00:00:00+09:00",
+        "snapshot_at": "2026-10-27T00:00:00+09:00",
+        "quantity": 1000,
+        "currency": "JPY",
+        "unit_price_jpy": 3100,
+        "subtotal_jpy": 3100000,
+        "tax_included": true,
+        "shipping_jpy": null,
+        "total_jpy": null,
+        "complete_total": false,
+        "can_fulfill_snapshot": null,
+        "is_binding": false,
+        "can_purchase": false,
+        "shipping_basis": "catalog per-order snapshot; destination not evaluated",
+        "message": "Dated reference amount, not a live checkout quote or reservation."
+      }
+    },
+    {
+      "method": "detail",
+      "args": [
+        "missing"
+      ],
+      "expected": {
+        "product": null,
+        "found": false
+      }
+    },
+    {
+      "method": "inventory",
+      "args": [
+        "missing"
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing"
+      }
+    },
+    {
+      "method": "jsonld",
+      "args": [
+        "missing"
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing",
+        "jsonld": null
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "missing",
+        1
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing"
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "missing",
+        2
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing"
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "missing",
+        13
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing"
+      }
+    },
+    {
+      "method": "quote",
+      "args": [
+        "missing",
+        1000
+      ],
+      "expected": {
+        "found": false,
+        "product_id": "missing"
+      }
+    },
+    {
+      "method": "audit",
+      "args": [],
+      "expected": {
+        "product_count": 2,
+        "demo_product_count": 2,
+        "stock_is_live": false,
+        "missing_fields": {
+          "tax_included": [],
+          "shipping_jpy": [
+            "tea-002"
+          ],
+          "stock": [
+            "tea-002"
+          ],
+          "evidence_url": [],
+          "merchant_id": [],
+          "gift_wrapping": [
+            "tea-002"
+          ],
+          "origin_prefecture": [
+            "tea-002"
+          ],
+          "caffeine_level": [
+            "tea-001",
+            "tea-002"
+          ],
+          "image_url": [
+            "tea-001",
+            "tea-002"
+          ]
+        },
+        "issues": [],
+        "checks": {
+          "schema": "validated",
+          "crawlability": "not_tested",
+          "indexing": "not_tested",
+          "muse_discoverability": "not_tested",
+          "transactions": "not_implemented"
+        },
+        "note": "Missingness is not an AI ranking or merchant verification score."
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        ""
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          },
+          {
+            "sku": "tea-002",
+            "name": "抹茶 スターターセット",
+            "description": "抹茶を始めたい方向けの道具と粉末茶のセット。内容は架空のデモデータです。",
+            "category": "",
+            "price_jpy": 3100,
+            "currency": "JPY",
+            "stock": "unknown",
+            "source_url": "https://example.org/products/tea-002",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": null,
+            "stock_quantity": null,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-002",
+            "image_url": null,
+            "gift_wrapping": null,
+            "origin_prefecture": null,
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 2,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "ほうじ茶"
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "京都"
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "抹茶"
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-002",
+            "name": "抹茶 スターターセット",
+            "description": "抹茶を始めたい方向けの道具と粉末茶のセット。内容は架空のデモデータです。",
+            "category": "",
+            "price_jpy": 3100,
+            "currency": "JPY",
+            "stock": "unknown",
+            "source_url": "https://example.org/products/tea-002",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": null,
+            "stock_quantity": null,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-002",
+            "image_url": null,
+            "gift_wrapping": null,
+            "origin_prefecture": null,
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "見つからない"
+      ],
+      "expected": {
+        "products": [],
+        "total": 0,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "ｷﾞﾌﾄ"
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "",
+        null,
+        null,
+        2000
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "",
+        null,
+        null,
+        null,
+        true
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "",
+        null,
+        null,
+        null,
+        false,
+        1,
+        1
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-002",
+            "name": "抹茶 スターターセット",
+            "description": "抹茶を始めたい方向けの道具と粉末茶のセット。内容は架空のデモデータです。",
+            "category": "",
+            "price_jpy": 3100,
+            "currency": "JPY",
+            "stock": "unknown",
+            "source_url": "https://example.org/products/tea-002",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": null,
+            "stock_quantity": null,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-002",
+            "image_url": null,
+            "gift_wrapping": null,
+            "origin_prefecture": null,
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 2,
+        "offset": 1,
+        "limit": 1
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "",
+        null,
+        null,
+        null,
+        false,
+        20,
+        0,
+        true,
+        "京都府"
+      ],
+      "expected": {
+        "products": [
+          {
+            "sku": "tea-001",
+            "name": "京都産ほうじ茶 ギフト 80g",
+            "description": "京都府産のほうじ茶。焙煎茶、贈答向け。カフェインが少なめという主張は実測済みではありません。",
+            "category": "",
+            "price_jpy": 1850,
+            "currency": "JPY",
+            "stock": "in_stock",
+            "source_url": "https://example.org/products/tea-001",
+            "updated_at": "2026-10-27T00:00:00+09:00",
+            "is_demo": true,
+            "tax_included": true,
+            "shipping_jpy": 450,
+            "stock_quantity": 12,
+            "merchant_id": "demo-kyoto-tea",
+            "merchant_name": "架空の京都茶店（デモ専用）",
+            "merchant_homepage": "https://example.org/",
+            "evidence_url": "https://example.org/products/tea-001",
+            "image_url": null,
+            "gift_wrapping": true,
+            "origin_prefecture": "京都府",
+            "caffeine_level": null,
+            "snapshot_at": "2026-10-27T00:00:00+09:00"
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "method": "search",
+      "args": [
+        "",
+        null,
+        null,
+        null,
+        false,
+        20,
+        0,
+        false
+      ],
+      "expected": {
+        "products": [],
+        "total": 0,
+        "offset": 0,
+        "limit": 20
+      }
+    }
+  ]
+}

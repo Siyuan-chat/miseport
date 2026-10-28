@@ -13,10 +13,10 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 output = root / "artifacts/github-ready"
 output.mkdir(parents=True, exist_ok=True)
-top = {"pyproject.toml", "MANIFEST.in", "Dockerfile", ".dockerignore", ".gitignore", ".env.example",
+top = {"pyproject.toml", "MANIFEST.in", "Dockerfile", "Dockerfile.http", ".dockerignore", ".gitignore", ".env.example",
        "README.md", "README.ja.md", "LICENSE", "SECURITY.md", "PROJECT_STATUS.md", "CHANGELOG.md", "CONTRIBUTING.md"}
-folders = {"src", "tests", "examples", "docs", "site", "assets", "scripts", ".github", "references"}
-excluded = {"__pycache__", ".pytest_cache", ".git", ".venv", "artifacts", "build", "dist"}
+folders = {"src", "tests", "examples", "docs", "site", "assets", "scripts", ".github", "references", "cloudflare"}
+excluded = {"__pycache__", ".pytest_cache", ".git", ".venv", "artifacts", "build", "dist", "node_modules", ".wrangler", "public", "bundle"}
 paths = []
 candidates = [root / name for name in top if (root / name).is_file()]
 for name in sorted(folders):
