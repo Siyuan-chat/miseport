@@ -8,7 +8,7 @@
 
 日本のお店の商品情報を、AIから確認しやすいカタログへ。MisePortは商品データのインポート・検証と、stdio MCPによる読み取り専用の検索・詳細取得を行うローカル試作です。
 
-**公開デモ：** [公式サイト](https://miseport.pages.dev/) · [接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [OpenAPI](https://miseport.pages.dev/openapi.json)。MCP接続先は `https://miseport.pages.dev/mcp`。2026-10-29に公開HTTP経由で7つの読み取り専用ツールを検証済みです。Museアカウントでの実接続は未完了で、掲載承認や実店舗向け本番運用を意味しません。商品・価格・在庫は架空の過去時点の記録です。ソースは[Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport)。[Cloudflare](docs/CLOUDFLARE.md) / [Python HTTP](docs/HTTP_SERVICE.md) の手順も参照してください。
+**公開デモ：** [公式サイト](https://miseport.pages.dev/) · [接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [OpenAPI](https://miseport.pages.dev/openapi.json)。MCP接続先は `https://miseport.pages.dev/mcp`。2026-10-29に公開HTTP経由で7つの読み取り専用ツールを検証済みです。Museのアカウント内カスタム接続は2回のMCP検証を通過しました（[検証記録](docs/MUSE_INTEGRATION.md)）。公開ディレクトリへの掲載承認や実店舗向け本番運用を意味しません。商品・価格・在庫は架空の過去時点の記録です。ソースは[Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport)。[Cloudflare](docs/CLOUDFLARE.md) / [Python HTTP](docs/HTTP_SERVICE.md) の手順も参照してください。
 
 ## はじめに
 
