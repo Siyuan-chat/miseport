@@ -10,6 +10,8 @@ import tarfile
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
+artifact_directory = root / "artifacts"
+artifact_directory.mkdir(parents=True, exist_ok=True)
 wheels = sorted((root / "dist").glob("miseport-*.whl"))
 if len(wheels) != 1:
     raise SystemExit("Expected one wheel; use a clean dist directory")
@@ -33,5 +35,5 @@ subprocess.run([sys.executable, "-c",
     "assert 'site-packages' in p.parts, p; print('Installed wheel:', p)"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
 subprocess.run([sys.executable, "-m", "pytest", "-q", "--tb=short",
-                "--basetemp=artifacts/wheel-verification-temp", "-p", "no:cacheprovider",
-                "--junitxml=artifacts/wheel-verification.xml"], cwd=root, check=True)
+                f"--basetemp={artifact_directory / 'wheel-verification-temp'}", "-p", "no:cacheprovider",
+                f"--junitxml={artifact_directory / 'wheel-verification.xml'}"], cwd=root, check=True)
