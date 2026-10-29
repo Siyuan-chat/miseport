@@ -20,7 +20,7 @@ MisePort is being developed as a **self-service tool for independent Japanese me
 
 ## Merchant Alpha code (not production-ready)
 
-The source checkout now includes a **read-only BASE API v2 beta importer**, a Japanese local GUI (`miseport-gui`), a merchant-owned read-only Cloudflare MCP/REST ZIP builder (`miseport-publish`), and source-adapter/safe-refresh components. The GUI can propose public product URL candidates from **one merchant-confirmed example** using BASE's documented `/items/{id}` route. Those candidates have **not** been independently checked over HTTP and require merchant review.
+The source checkout now includes a **read-only BASE API v2 beta importer**, a Japanese local GUI (`miseport-gui`), a merchant-owned read-only Cloudflare MCP/REST ZIP builder (`miseport-publish`), and source-adapter/safe-refresh components. The GUI can propose public product URL candidates from **one merchant-confirmed example** using BASE's documented `/items/{id}` route. Those candidates have **not** been independently checked over HTTP and require merchant review. The GUI also includes an **Alpha read-only importer for BASE's exported product CSV and Shopify's current/legacy product CSV**. It does not write back to the store; JPY pricing, online publication, example product URLs and single-location inventory require explicit merchant confirmation. Production platform CSV compatibility is not yet accepted.
 
 **Not yet validated:** live BASE merchant credentials, Windows GUI real-user operation, production merchant deployment, Muse organic discovery, or the November 10 merchant release. Existing `miseport.pages.dev` remains the fictional demonstration. [Japanese Alpha guide](docs/merchant/GUI_ALPHA_GUIDE.ja.md).
 

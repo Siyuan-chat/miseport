@@ -12,7 +12,10 @@ import threading
 from urllib.parse import urlsplit
 
 from .base_v2 import BaseAPIError, map_base_items
-from .source_adapters import get_source_adapter
+from .source_adapters import get_source_adapter, MerchantProfile
+from .platform_csv import (
+    PlatformCSVError, import_base_product_csv, import_shopify_product_csv
+)
 from .importers import load_catalog
 from .refresh import commit_refresh, plan_refresh, RefreshError
 from .publisher import PublicationError, build_merchant_zip
@@ -76,6 +79,9 @@ def main():
     items = []
     current = None
     current_inputs = None
+    csv_loaded = None
+    source_mode = "api"
+    csv_loaded_profile = None
 
     def label(row, name, value="", width=30, secret=False):
         ttk.Label(row, text=name).pack(side="left", padx=(0, 8))
@@ -110,6 +116,18 @@ def main():
     btn = ttk.Button(controls, text="① BASEから商品を読み込む")
     btn.pack(side="left")
     ttk.Label(controls, textvariable=status, wraplength=680).pack(side="left", padx=12)
+    csv_controls = ttk.Frame(frame)
+    csv_controls.pack(fill="x", pady=4)
+    ttk.Label(csv_controls, text="APIを使わない場合:").pack(side="left", padx=(0, 7))
+    csv_kind = tk.StringVar(value="BASEの商品CSV")
+    csv_picker = ttk.Combobox(csv_controls, width=24, state="readonly",
+                              textvariable=csv_kind,
+                              values=("BASEの商品CSV", "Shopifyの商品CSV"))
+    csv_picker.pack(side="left")
+    csv_btn = ttk.Button(csv_controls, text="商品CSVを選ぶ（読み取り専用）")
+    csv_btn.pack(side="left", padx=10)
+    ttk.Label(csv_controls, text="販売中・公開済み商品だけを出力対象にします。",
+              wraplength=500).pack(side="left")
 
     tabs = ttk.Notebook(frame)
     tabs.pack(fill="both", expand=True)
@@ -121,7 +139,7 @@ def main():
     tree = ttk.Treeview(products_page, columns=("id", "name", "price", "stock", "status"),
                         show="headings", height=12)
     for name, title, width in (
-        ("id", "BASE ID", 85), ("name", "商品名", 360),
+        ("id", "商品ID / SKU", 125), ("name", "商品名", 360),
         ("price", "税込価格", 120), ("stock", "在庫", 70),
         ("status", "状態", 150),
     ):
@@ -168,8 +186,10 @@ def main():
               wraplength=840).pack(anchor="w")
 
     def apply_items(received):
-        nonlocal items, current, current_inputs
+        nonlocal items, current, current_inputs, csv_loaded, source_mode
         items = received
+        source_mode = "api"
+        csv_loaded = None
         current = None
         current_inputs = None
         export_btn.configure(state="disabled")
@@ -223,11 +243,72 @@ def main():
 
     def review_inputs():
         return (merchant_id.get(), merchant_name.get(), homepage.get(),
-                urls.get("1.0", "end").strip())
+                urls.get("1.0", "end").strip(), sample_url.get(),
+                csv_kind.get(), source_mode)
+
+    def load_csv():
+        nonlocal current, current_inputs, csv_loaded, csv_loaded_profile, source_mode, items
+        filename = filedialog.askopenfilename(title="公式商品CSVを選ぶ",
+                   filetypes=[("CSVファイル", "*.csv")])
+        if not filename:
+            return
+        if not messagebox.askyesno("CSV商品の確認",
+                "店舗オーナーとして、公式の公開商品CSVと実際の公開商品URL例を確認しましたか？"
+                " 商品が未公開・内部資料の場合は読み込みを取り消してください。"):
+            return
+        try:
+            profile = MerchantProfile(
+                merchant_id=merchant_id.get().strip(),
+                merchant_name=merchant_name.get().strip(),
+                merchant_homepage=homepage.get().strip(),
+                verified_product_urls={}, is_demo=False)
+            if csv_kind.get() == "BASEの商品CSV":
+                result = import_base_product_csv(
+                    filename, profile,
+                    confirmed_example_url=sample_url.get().strip(),
+                    merchant_confirmed=True)
+            else:
+                if not messagebox.askyesno("通貨の確認",
+                        "このShopifyショップの商品CSVの価格は日本円（JPY）ですか？"):
+                    return
+                one_location = messagebox.askyesno("在庫場所の確認",
+                        "在庫を正確に扱える単一の在庫拠点のみを使用していますか？"
+                        " 複数拠点または不明の場合は「いいえ」を選んでください。")
+                result = import_shopify_product_csv(
+                    filename, profile, confirmed_example_url=sample_url.get().strip(),
+                    merchant_confirmed=True, currency_jpy=True,
+                    single_location=one_location)
+        except (ValueError, PlatformCSVError, OSError):
+            messagebox.showerror("商品CSVを確認してください",
+                "商品CSVの列・文字コード・店の公開商品URL例を確認してください。"
+                " 注文/顧客CSVは利用できません。")
+            return
+        csv_loaded = result
+        csv_loaded_profile = csv_kind.get()
+        source_mode = "csv"
+        items = []
+        current = None
+        current_inputs = None
+        consent.set(False)
+        export_btn.configure(state="disabled")
+        bundle_btn.configure(state="disabled")
+        urls.delete("1.0", tk.END)
+        tree.delete(*tree.get_children())
+        for p in result.catalog.products:
+            tree.insert("", "end", values=(
+                p.sku, p.name, str(p.price_jpy) + "円",
+                p.stock_quantity if p.stock_quantity is not None else "不明",
+                "CSV公開候補",
+            ))
+        status.set("商品CSVを" + str(result.source_rows) +
+                   "行読み込みました。③でデータを確認してください。"
+                   " CSVの確認日時は元の更新日時と異なります。")
+        review_status.set("CSVの出典、価格、公開状態、商品URLを確認してください。")
+        tabs.select(mapping_page)
 
     def auto_urls():
         nonlocal current, current_inputs
-        if not items:
+        if source_mode != "api" or not items:
             messagebox.showwarning("商品URL", "BASEから商品を読み込んでください。")
             return
         if not messagebox.askyesno("商品URLの一括生成",
@@ -256,12 +337,17 @@ def main():
     def review():
         nonlocal current, current_inputs
         try:
-            if not items:
-                raise ValueError("まずBASEから商品を取得してください。")
-            result = preview_mapping(
-                items, merchant_id.get(), merchant_name.get(), homepage.get(),
-                urls.get("1.0", "end").strip(),
-            )
+            if source_mode == "csv":
+                if csv_loaded is None or csv_loaded_profile != csv_kind.get():
+                    raise ValueError("CSVの種類を確認し、もう一度読み込んでください。")
+                result = csv_loaded
+            else:
+                if not items:
+                    raise ValueError("まずBASEから商品を取得してください。")
+                result = preview_mapping(
+                    items, merchant_id.get(), merchant_name.get(), homepage.get(),
+                    urls.get("1.0", "end").strip(),
+                )
         except (ValueError, TypeError) as error:
             review_status.set(str(error))
             export_btn.configure(state="disabled")
@@ -344,6 +430,7 @@ def main():
                 " 商店のCloudflare Pagesで手動配置とURL確認が必要です。")
 
     btn.configure(command=fetch)
+    csv_btn.configure(command=load_csv)
     candidate_btn.configure(command=auto_urls)
     bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
