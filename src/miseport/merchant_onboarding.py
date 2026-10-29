@@ -4,6 +4,7 @@ No Cloudflare account access, write APIs, automatic deployment or server state.
 """
 from dataclasses import dataclass
 from urllib.parse import urlsplit
+from .base_urls import BaseURLValidationError, _store_origin
 
 CLOUDFLARE_DASHBOARD = "https://dash.cloudflare.com/"
 CLOUDFLARE_DIRECT_UPLOAD_DOCS = "https://developers.cloudflare.com/pages/get-started/direct-upload/"
@@ -42,10 +43,14 @@ def merchant_deploy_guide(origin: str) -> MerchantDeployGuide:
         port = parsed.port
     except ValueError:
         raise DeploymentGuideError("公開先のURLを確認してください。") from None
+    try:
+        valid_origin = _store_origin(origin)
+    except BaseURLValidationError:
+        raise DeploymentGuideError("公開インターネットのHTTPSドメインを指定してください。") from None
     if (parsed.scheme != "https" or not parsed.hostname or port not in (None, 443)
-            or origin != "https://" + parsed.hostname
+            or origin != valid_origin
             or parsed.username or parsed.password or parsed.query or parsed.fragment
-            or parsed.path or "\\" in origin or any(x.isspace() for x in origin)):
+            or parsed.path):
         raise DeploymentGuideError("https://店舗の公開ドメイン の形式で入力してください。")
     steps = (
         "1. 商品一覧と出典・価格・公開範囲を店主自身が確認し、MisePortから商店専用ZIPを保存します。",
