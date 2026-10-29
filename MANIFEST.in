@@ -16,3 +16,6 @@ prune cloudflare/public
 prune cloudflare/.wrangler
 prune cloudflare/bundle
 global-exclude *.pyc *.pyo
+
+# Merchant publication template must be available in source and wheel packages.
+include src/miseport/merchant_worker.js
