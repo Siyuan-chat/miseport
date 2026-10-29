@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 from .base_v2 import BaseV2Client, BaseAPIError, map_base_items
 from .importers import save_catalog
+from .publisher import PublicationError, build_merchant_zip
 
 
 def parse_product_urls(text: str) -> dict[int, str]:
@@ -50,6 +51,12 @@ def preview_mapping(items: list[dict], merchant_id: str, merchant_name: str,
 
 def main():
     """Open a local window only. Never starts an HTTP listener or stores a token."""
+    import sys
+    if len(sys.argv) > 1:
+        if sys.argv[1:] == ["--version"]:
+            print("MisePort merchant GUI 0.1 prototype")
+            return
+        raise SystemExit("Only --version is supported")
     import tkinter as tk
     from tkinter import filedialog, messagebox, ttk
 
@@ -128,11 +135,20 @@ def main():
     review_btn.pack(side="left")
     export_btn = ttk.Button(output, text="⑤ カタログJSONを保存", state="disabled")
     export_btn.pack(side="left", padx=10)
+    bundle_btn = ttk.Button(output, text="⑥ 商店用MCP/REST ZIPを生成", state="disabled")
+    bundle_btn.pack(side="left", padx=10)
+    site_row = ttk.Frame(mapping_page)
+    site_row.pack(fill="x", pady=5)
+    ttk.Label(site_row, text="Cloudflare Pagesの公開URL:").pack(side="left", padx=(0, 7))
+    target_origin = ttk.Entry(site_row, width=48)
+    target_origin.pack(side="left", fill="x", expand=True)
+    target_origin.insert(0, "https://your-store.pages.dev")
     consent = tk.BooleanVar(value=False)
     ttk.Checkbutton(mapping_page, variable=consent, text="公開商品とリンクを店主が確認し、"
                     "第三者へ配信する前に内容を再確認します。").pack(anchor="w", pady=7)
-    ttk.Label(mapping_page, text="このバージョンは「JSONのローカル保存」までです。"
-              " MCP公開・商品ページSEO改善・商店別クラウド配信は別途検証が必要です。",
+    ttk.Label(mapping_page, text="ZIPには公開商品だけを入れます。クラウドへの自動公開はしません。"
+              " ZIPを商店ご自身のCloudflare Pagesにアップロードしてください。"
+              " 商品の鮮度やMuseによる自動発見は保証しません。",
               wraplength=840).pack(anchor="w")
 
     def apply_items(received):
@@ -140,6 +156,8 @@ def main():
         items = received
         current = None
         export_btn.configure(state="disabled")
+        bundle_btn.configure(state="disabled")
+        consent.set(False)
         tree.delete(*tree.get_children())
         for item in items:
             tree.insert("", "end", values=(
@@ -198,9 +216,11 @@ def main():
         except (ValueError, TypeError) as error:
             review_status.set(str(error))
             export_btn.configure(state="disabled")
+            bundle_btn.configure(state="disabled")
             current = None
             return
         current = result
+        consent.set(False)
         summary = result.summary()
         message = (str(summary["mapped_products"]) + "件の公開候補。"
                    + str(len(summary["issues"])) + "件の確認事項。")
@@ -209,6 +229,7 @@ def main():
                                       for x in summary["issues"][:5])
         review_status.set(message)
         export_btn.configure(state="normal" if result.publishable else "disabled")
+        bundle_btn.configure(state="normal" if result.publishable else "disabled")
 
     def save():
         if current is None or not current.publishable:
@@ -229,7 +250,30 @@ def main():
                 messagebox.showinfo("保存しました", "ローカルのJSONに保存しました。\n"
                     "これはクラウド公開やリアルタイム同期を意味しません。")
 
+    def save_bundle():
+        if current is None or not current.publishable or not consent.get():
+            messagebox.showwarning("確認", "公開対象と商品URLを店主が確認してください。")
+            return
+        name = filedialog.asksaveasfilename(
+            title="商店用ZIPを保存", defaultextension=".zip",
+            filetypes=[("ZIP", "*.zip")], initialfile="miseport-merchant-pages.zip")
+        if not name:
+            return
+        try:
+            meta = build_merchant_zip(current.catalog, name,
+                origin=target_origin.get().strip(),
+                merchant_approved=True, demo_mode=False)
+        except (PublicationError, OSError, ValueError):
+            messagebox.showerror("生成失敗",
+                "配信URLや商品情報を確認してください。古いファイルは変更していません。")
+        else:
+            messagebox.showinfo("ZIPを生成しました",
+                str(meta["product_count"]) + "件の公開商品を保存しました。\n"
+                "このZIPはまだWebへ公開されていません。"
+                " 商店のCloudflare Pagesで手動配置とURL確認が必要です。")
+
     btn.configure(command=fetch)
+    bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
     export_btn.configure(command=save)
     root.after(120, poll)
