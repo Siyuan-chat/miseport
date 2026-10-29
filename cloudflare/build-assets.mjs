@@ -18,7 +18,7 @@ html = html.replace(/<style>[\s\S]*?<\/style>/, '<link rel="stylesheet" href="/s
 html = html.replace(/<script>[\s\S]*?<\/script>/, '<script src="/site.js" defer></script><script src="/demo.js" defer></script>');
 html = html.replaceAll('../assets/', '/assets/');
 html = html.replaceAll('href="../README.ja.md"', 'href="/docs/?lang=ja" data-doc-link');
-html = html.replaceAll('href="../docs/DEPLOYMENT.md"', 'href="/docs/#deployment"');
+html = html.replaceAll('href="../docs/CLOUDFLARE.md"', 'href="/docs/#deployment"');
 html = html.replaceAll('href="../docs/SCENARIOS.ja.md"', 'href="/docs/#testing"');
 for (const [before, after] of [
   ['ローカルstdio MCPカタログの試作。', '出典付き商品カタログの読み取り専用デモ。'],
