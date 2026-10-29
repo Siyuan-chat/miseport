@@ -27,6 +27,8 @@
 
 **注意:** [Muse接続を試験済み](MUSE_CONNECT.ja.md)と記載されるのは、1アカウント内の**架空商品デモのCustom Connector**についてです。ほかの商店がMeta公式ディレクトリに掲載されたことや、消費者への推薦を意味しません。
 
+**日本語図解:** 実際のTkinter GUI画面を架空商品で撮影した[3枚の画像入りHTML操作ガイド](merchant/GUI_VISUAL_ALPHA.html)を公開しています。実店舗での受入はまだありません。
+
 ## 参照
 
 - [日本語README](../README.md) ・ [商店の操作説明](merchant/GUI_ALPHA_GUIDE.ja.md) ・ [画面付き手順](merchant/VISUAL_GUIDE.ja.md)
