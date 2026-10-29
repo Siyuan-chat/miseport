@@ -38,6 +38,16 @@
 
 **仍必须留到实际商家验收：** BASE 真正读取权、公开商品 URL 的实际可访问性、真实 Windows 点击操作、商家自控 Cloudflare 公网 MCP、Meta Muse 实际商品调用、公开授权案例和视频。
 
+## 当前执行策略：先实现架构，真实商家后续接入（2026-10-29）
+
+用户已明确要求**优先将无需真实店铺账号的工程工作继续推进**，实际商家由用户随后寻找。当前不进行未经批准的商家外联，不请求商家在对话或公开 Issue 中提供 PAT，也不为了模拟通过而宣称已有真实商家试点。
+
+**目前已合并：** [PR #14](https://github.com/Siyuan-chat/miseport/pull/14)、[PR #15](https://github.com/Siyuan-chat/miseport/pull/15)、[PR #16](https://github.com/Siyuan-chat/miseport/pull/16)。BASE 官方只读 API（模拟测试）、日语 GUI Alpha、商家 ZIP、URL 候选生成、快照安全刷新、BASE/Shopify 官方 CSV Alpha 均在 `main`。
+
+**无需商家即可推进的下一批：** [PR #17 发布 ZIP 离线完整性核查](https://github.com/Siyuan-chat/miseport/pull/17)（独立验证文件哈希、商品、公开域名、运行 Worker；核查失败不覆盖旧包），以及真正可运行的 Windows GUI 验收准备、官方 CSV 版本兼容 Fixture、发布文件预检查、Muse 已连接工具 E1 自动验收。以上都不能替代真正的商家运行数据与发布许可。
+
+**仍不变的硬条件：** 11 月 10 日的“商家可用版+至少一间真实日本商家 Demo”目标不自动降低。如果届时未能获得店铺授权、公开视频和真实店主端到端验收，必须将对应项记录为**未完成**，不以模拟数据宣称合格。
+
 ## 一、目标与不可妥协的验收标准
 
 **MisePort 是免费优先、开源、商家自主管理商品数据的 Agent Commerce 工具，不是集中式比价平台。** 用户无需编写代码，通过自己的店铺账号授权读取商品，经审核后生成供 Muse 等 AI Agent 使用的公开商品数据与接口。
