@@ -101,4 +101,4 @@ ExportAdapter:
 - サポート: **画面ごとの日本語手順書、よくある質問、エラー復旧、認証失効・解除、動画デモ**が対応機能と同時に公開される。
 - **現行**: 2026-10-29時点でAPI自動取込・一般商店向けノーコード接続・プラットフォームネイティブCSV出力は**未実装**。公開デモは架空商品の読取に限定。
 
-参照: [プラットフォーム互換性](PLATFORM_COMPATIBILITY.ja.md) / [商店主の操作手順](merchant/SETUP_GUIDE.ja.md) / [動画収録台本](merchant/VIDEO_DEMO_PLAN.ja.md) / [商品契約](CATALOG.md) / [Muse統合の実測](MUSE_INTEGRATION.md)。
+参照: [プラットフォーム互換性](PLATFORM_COMPATIBILITY.ja.md) / [商店主の操作手順](merchant/SETUP_GUIDE.ja.md) / [画面操作手順](merchant/VISUAL_GUIDE.ja.md) / [商品契約](CATALOG.md) / [Muse統合の実測](MUSE_INTEGRATION.md)。
