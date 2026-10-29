@@ -1,4 +1,4 @@
-# MisePort 开发计划（中文版）v1.4
+# MisePort 开发计划（中文版）v1.5
 
 **制定日期：2026 年 10 月 29 日（日本时间）**
 **目标发布日期：2026 年 11 月 10 日**
@@ -10,19 +10,33 @@
 
 ## 第一轮开发实际结果（2026 年 10 月 29 日）
 
-> **代码已提交至独立分支，尚未合并正式 main；本节是进度记录，不等于商家版正式验收。**
+> **第一轮代码已经合并进 main，仍是 Alpha；这不等于商家正式版或真实店铺验收。**
 
 - **GitHub 分支：** [feat/merchant-sprint-01](https://github.com/Siyuan-chat/miseport/tree/feat/merchant-sprint-01)
-- **代码审查：** [Draft PR #14](https://github.com/Siyuan-chat/miseport/pull/14)（14 个文件，包括 Python BASE API、商品 Mapper、日语 GUI、Cloudflare 商家 MCP/REST、打包和测试）
+- **已合并代码：** [PR #14](https://github.com/Siyuan-chat/miseport/pull/14)（14 个文件，包括 Python BASE API、商品 Mapper、日语 GUI、Cloudflare 商家 MCP/REST、打包和测试）
 - **S1-01 / S1-02：** BASE v2 β 商品的只读分页、异常与安全处理及普通商品/变体映射，**模拟 API 测试通过**。未在有授权的实际 BASE 店铺调用。
 - **S1-03：** 已实现本地日语 GUI 的连接/查看/审计/JSON/商家 ZIP 导出原型。**Windows Alpha EXE 构建已成功**，但实际 Windows 桌面操作、普通店主验收及签名未完成。
 - **S1-04：** 架空商品生成商家专属 Cloudflare Pages ZIP，Node 测试已调用生成的 HTTP MCP initialize、tools/list、tools/call、报价与 JSON-LD。**尚未在实际商家自有域名部署**。
-- **S1-05：** 发布归档敏感信息/内部文件审核工具已实现并测试，但现有 MANIFEST 内部文档递归收录仍待在正式标签前清理（Issue #10）。
+- **S1-05：** 发布归档敏感信息/内部文件审核工具已实现；第二轮已将 Python sdist 改为公开文件白名单并移出历史 Fixtures。**但 GitHub Tag 自动源码归档中仍存在内部工作文档与旧资产，须在 Tag 前清理（Issue #10）。**
 - **S1-06：** [日语 GUI Alpha 操作说明](https://github.com/Siyuan-chat/miseport/blob/feat/merchant-sprint-01/docs/merchant/GUI_ALPHA_GUIDE.ja.md)已编写，真实演示视频尚未录制。
 
 **CI 证据：** [完整矩阵 8/8 通过，Python 167 项测试通过](https://github.com/Siyuan-chat/miseport/actions/runs/40806005768)；[Windows Alpha 编译通过](https://github.com/Siyuan-chat/miseport/actions/runs/40806005935)。以上为代码和模拟数据验证。
 
 **11/10 仍有硬性阻断项：** 真实商店参与和读取/展示授权 [#9](https://github.com/Siyuan-chat/miseport/issues/9)；BASE 商品公开 URL 的批量自动核验 [#13](https://github.com/Siyuan-chat/miseport/issues/13)；真正可供商家独立使用的 Windows GUI / 云端部署验收；正式发布前内部资料清理 [#10](https://github.com/Siyuan-chat/miseport/issues/10)。严禁将当前 Alpha 等同于商家正式版。
+
+## 已合并的进一步架构进度（2026 年 10 月 29 日）
+
+| PR | 代码状态 | 本次真正新增的能力 | 尚未证明 |
+|---|---|---|---|
+| [#14](https://github.com/Siyuan-chat/miseport/pull/14) | **已合并 main** · `64a07f3b` | BASE API v2β 只读客户端与商品映射、日语本地 GUI、商家 MCP/REST ZIP 原型、Windows Alpha 构建与测试 | 真实 BASE 授权、店主使用、部署和视频 |
+| [#15](https://github.com/Siyuan-chat/miseport/pull/15) | **已合并 main** · `5772320b` | 根据店主确认的一个 BASE 商品页批量生成其余**候选 URL**；商品新增/变化/删除差分、旧快照安全保留；只读 Adapter 接口；Python sdist 公开白名单 | 候选 URL 逐条公网验证、GitHub Tag 的历史/内部文件清理 |
+| [#16](https://github.com/Siyuan-chat/miseport/pull/16) | **已合并 main** · `60d626d7` | BASE 商品 CSV（UTF-8/CP932）与 Shopify 新旧商品 CSV 的本地**只读 Alpha 导入**；接入同一个日语 GUI；多地点库存保留未知、JPY 由店主确认 | 真实商家 CSV 兼容、复杂字段和多平台写回（不在初期范围） |
+
+**自动测试证据：** [PR #15 的 8/8 CI、Python 208 项测试通过](https://github.com/Siyuan-chat/miseport/actions/runs/40810437650)；[PR #16 代码 CI 8/8 通过（Python 229 项测试通过）](https://github.com/Siyuan-chat/miseport/actions/runs/40811628035)，[Windows Alpha EXE 构建成功](https://github.com/Siyuan-chat/miseport/actions/runs/40811628053)。这些是 **Mock/代码层面**的验证，不是商业生产环境安全审查、Windows 实际操作或已取得真实商家同意。
+
+**后续无真实账号即可开发：** 在独立分支 [feat/merchant-bundle-preflight](https://github.com/Siyuan-chat/miseport/tree/feat/merchant-bundle-preflight) 开展 ZIP 离线完整性、Worker 与商品一致性、域名/Manifest/hash 检查，生成失败时不覆盖上一个完整发布包。**这一批的最终测试与合并状态以对应 PR/CI 为准，不要提前标记 RELEASED。**
+
+**仍必须留到实际商家验收：** BASE 真正读取权、公开商品 URL 的实际可访问性、真实 Windows 点击操作、商家自控 Cloudflare 公网 MCP、Meta Muse 实际商品调用、公开授权案例和视频。
 
 ## 一、目标与不可妥协的验收标准
 
