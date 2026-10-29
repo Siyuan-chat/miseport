@@ -79,6 +79,8 @@ G0で**本番商店接続／自動同期／決済／公式Muse掲載を約束し
 
 ## 4. 機能別バックログと担当境界
 
+G0のReleaseチェックは [Issue #6](https://github.com/Siyuan-chat/miseport/issues/6) で管理する。
+
 | Epic（既存Issue） | 優先 | 実装単位 | 合格・証拠 |
 | --- | --- | --- | --- |
 | [#1 BASE API](https://github.com/Siyuan-chat/miseport/issues/1) | P0 / G1–G2 | Official PAT read-only adapter、商品/種類のページ処理、再同期 | API mock＋許可済みショップの比較結果 |
@@ -86,8 +88,8 @@ G0で**本番商店接続／自動同期／決済／公式Muse掲載を約束し
 | [#3 EC CSV互換](https://github.com/Siyuan-chat/miseport/issues/3) | P1 / G2–G4 | 公式CSVのバージョン別importer／exporter | 公式データで列/ID/種類/文字コードの往復検証 |
 | [#4 日本語説明/動画](https://github.com/Siyuan-chat/miseport/issues/4) | 全ゲート | 操作画面の手順書、FAQ、復旧・解除、字幕付き実録動画 | 画面・API版・日本語テキストが一致 |
 | [#5 BYO Agent](https://github.com/Siyuan-chat/miseport/issues/5) | P2 / G4 | Agentが許可済み公式ツールで取得し標準Catalogを出力する契約 | Agentに秘密を渡さずSchema検証を通す |
-| Local runner / credential security | P0 / G1 | OS credential store、ループバックガード、ローカル配布 | 秘密漏えい・不正Origin・失効テスト |
-| Static exporter / merchant-owned publishing | P1 / G3 | ZIP生成、手動Cloudflare Pages公開、更新・停止、HTTPS/MCP QA | 別アカウントで公開・更新・撤回を再現 |
+| [#7 Local runner / credential security](https://github.com/Siyuan-chat/miseport/issues/7) | P0 / G1 | OS credential store、ループバックガード、ローカル配布 | 秘密漏えい・不正Origin・失効テスト |
+| [#8 Static exporter / merchant-owned publishing](https://github.com/Siyuan-chat/miseport/issues/8) | P1 / G3 | ZIP生成、手動Cloudflare Pages公開、更新・停止、HTTPS/MCP QA | 別アカウントで公開・更新・撤回を再現 |
 
 開発者側の変更では、**Schemaの契約テスト、Windows/macOSの配布テスト、CI、実行ログの秘匿、異常時に前の正常な公開データを維持する処理**をリリース要件として扱う。
 
