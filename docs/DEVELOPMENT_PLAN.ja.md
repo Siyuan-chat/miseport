@@ -12,6 +12,8 @@
 
 **変更理由:** 従来の「機能を作った後に商店が使えるか確認する」順序を改め、11/10に**BASE商店1件での本物のE2E実証**を成立させるクリティカルパスに沿って作る。初日から商店招募・同意と技術開発を**並行**する。架空デモだけでP0を満たしたと表現しない。
 
+**Sprint-1実行入口:** [Issue #12 — API→GUI→商品出力](https://github.com/Siyuan-chat/miseport/issues/12) · [開発専用ブランチ feat/merchant-sprint-01](https://github.com/Siyuan-chat/miseport/tree/feat/merchant-sprint-01)。このIssueはタスク分解であり、作成時点で実装済みではない。
+
 **Sprint-1の出口:** BASEの読み取り専用API→既存MisePort Canonical Catalogへの変換と安全フィルターをモックで実証し、日本語GUIの実行形と商店所有の公開ZIPの契約を固める。**ここまでではまだ実商店Release合格ではない**。
 
 | ID | アシスタントが開発できる項目（第一輪） | Done・テストの条件 | 対応Issue |
