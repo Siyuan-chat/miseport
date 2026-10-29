@@ -18,9 +18,14 @@ dev = ["pytest>=8,<10", "build>=1.2,<2"]
 miseport = "miseport.cli:main"
 miseport-mcp = "miseport.server:main"
 miseport-http = "miseport.http:main"
+miseport-gui = "miseport.gui:main"
+miseport-publish = "miseport.publisher:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+miseport = ["merchant_worker.js"]
