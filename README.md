@@ -1,85 +1,103 @@
 # MisePort — 日本のEC商品カタログをAIエージェントにつなぐオープンソースMCP
 
-<img src="assets/original/miseport-logo.png" width="260" alt="MisePort（ミセポート）：小さなお店と港の入り口を表すブランドロゴ">
+<img src="assets/original/miseport-logo.png" width="260" alt="MisePort（ミセポート）のロゴ">
 
 **日本の小さなお店を、AIエージェントへ。**
 
-**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [Muse接続方法と検索の仕組み](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
+**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [商店向けAlphaガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
 
 [![CI](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml/badge.svg)](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE) ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-0B2F54)
 
-**MisePort（ミセポート）** は、日本のネットショップ・EC事業者の商品情報を、AIアシスタントやAIエージェントが**出典付きで検索・確認できる形**に整えるオープンソースの開発ツールです。CSV / JSON の商品データを検証し、在庫・価格・送料・更新日時を保持した商品カタログとして、[Model Context Protocol（MCP）](https://modelcontextprotocol.io/) と読み取り専用 API から利用できます。
+**MisePort（ミセポート）** は、日本の独立系ネットショップやEC事業者の商品情報を、AIエージェントが**出典URLと記録日時を確認しながら参照できる形**に整えるオープンソースツールです。
 
-生成AI検索最適化（**GEO**）やAI時代のEC（**Agentic Commerce／エージェンティックコマース**）に向けた**商品データ基盤**を目指しています。ただし、現行版は商品データの整理と公開実験が中心であり、AIからの推薦順位・検索流入の改善を保証するものではありません。
+商品CSV / JSONを検証・正規化し、[Model Context Protocol（MCP）](https://modelcontextprotocol.io/)・CLI・読み取り専用REST API・Schema.org JSON-LDで活用できます。ショップが自分のデータを管理し、AIによる商品発見（Agentic Discovery）やGEO（生成AI検索最適化）の土台となる情報を、推測に頼らず提供することを目指しています。
 
-## まず試す：日本語の商品検索とMCP
+## まず試す
 
-| 入口 | できること | 利用条件 |
+| 入口 | できること | 必要なもの |
 | --- | --- | --- |
-| [ブラウザの公開デモ](https://miseport.pages.dev/) | 架空の商品を日本語で検索し、出典・価格・在庫の記録を確認 | ログイン不要 |
-| [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) | 外部MCPクライアントにテスト用の商品ツールを接続 | クライアント側の対応が必要 |
-| [REST API / OpenAPI](https://miseport.pages.dev/openapi.json) | 開発用に検索・詳細・参考見積もりなどを呼び出す | 読み取り専用 |
-| [ローカルPython版](#ローカルで動かす開発者向け) | 自分で権利を持つCSV/JSONを取り込み、検証・公開用データを準備 | Python 3.10以上 |
+| [ブラウザの公開デモ](https://miseport.pages.dev/) | 架空の商品を日本語で検索し、価格・在庫記録・出典を確認 | ログイン不要 |
+| [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) | 公開デモのMCP（`https://miseport.pages.dev/mcp`）を対応クライアントから利用 | MCP対応クライアント |
+| [REST API / OpenAPI](https://miseport.pages.dev/openapi.json) | 商品検索・詳細・参考見積もりなどをHTTPで呼び出す | HTTPクライアント |
+| [ローカルPython版](#ローカルで動かす開発者向け) | 手元の商品CSV / JSONを検証し、検索・MCP・JSON-LD出力を試す | Python 3.10以上 |
 
-**公開デモのデータはすべて架空です。** デモの価格・在庫は過去時点のスナップショットであり、実際の販売、決済、注文、在庫確保には対応していません。公開MCPは `https://miseport.pages.dev/mcp` です。
+> **公開デモは架空の商品データ専用です。** 価格・在庫は記録されたスナップショットであり、実際の販売・注文・決済・在庫確保には対応しません。デモにAPIキー、顧客情報などの秘密情報を送信しないでください。
 
-### 開発中の商店向けAlpha（2026-10-29）
+## MisePortが大切にしていること
 
-GitHubのソースには **BASE v2 βの読み取り専用商品取込、日語ローカルGUI、商店別MCP/REST配信ZIP生成** のAlphaコードが含まれます。開発環境では `miseport-gui`（GUI）と `miseport-publish`（配信ZIP生成）を試せます。BASEの公式商品ページ規則に基づき、店主が確認した**1件の公開商品URLから同一店舗の候補URLを一括生成**できます。さらに店主の明示操作で、最大30件の公開HTTPSページについてcanonical/OG URLと照合するAlpha機能があります。**全商品のネットワーク確認や価格・在庫の最新性は保証されません。**公開商品の更新は店主のレビューを通し、削除差分を確認してから保存します。さらに**BASEのCSV商品管理 App、Shopifyの商品CSVの読み取り専用インポート（Alpha）**を日語GUIに追加しています。CSVを使う場合、BASEはUTF-8/CP932、ShopifyはUTF-8を想定し、ShopifyのJPY価格・在庫拠点数は店主が確認します。正式な実店互換性やプラットフォームへの書戻しは未検証です。
+ネットショップごとに異なる商品名、価格の税込・税抜表示、在庫状態、送料条件。AIエージェントが商品を扱う際には、情報を検索できるだけでなく、**「どこから来た情報か」「いつの記録か」「何がまだ分からないか」**を区別できることが大切です。
 
-商店別MCP/REST配信ZIPの手動Cloudflareアップロード手順と、アップロード後に公開されたREST/MCPのバージョンと商品を確認する日語GUIテストも追加しました（**実商店の公開先は未検証**）。
+- **出典を残す：** 商品ページの`source_url`と`updated_at`などを保持し、回答の根拠を確認できるようにします。
+- **不明なことは不明のまま：** 税区分・送料・在庫数量が未確認なら、`0円`や「在庫あり」と補わず、`null`や`unknown`で表します。
+- **読み取り専用でつなぐ（Read-Only by Design）：** 商品検索・詳細確認・参考見積もりに機能を限定し、注文、決済、ショップ側データへの書き戻しは行いません。購入は元のショップの商品ページで行います。
+- **ショップの管理権を尊重する：** 中央集約型のマーケットプレイスではなく、商店自身が商品データを管理・確認して公開できる、ローカルファーストの仕組みを目指します。
 
-**実店舗のBASE API接続、Windows GUI実機の店主受入、商店自身のCloudflare公開、Muse自然検索での発見、11/10正式Releaseはいずれも未検証です。** Alpha実装があることと一般商店向け正式対応は区別してください。[Alpha操作ガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md)。
+### 商品データの例
 
-## MisePortが解決したいこと
+以下は[サンプルカタログ](examples/products.json)に基づく、**架空の商品1件を収めた標準カタログJSON**です。`shipping_jpy: null`は「送料無料」ではなく「送料が不明」、`stock: "unknown"`は「在庫ありと確認できない」ことを意味します。
 
-日本の小規模ECでは、商品説明・価格・在庫・送料・税区分などがショップごとに異なる形式で管理されがちです。AIエージェントが商品を比較するには、検索可能な商品名だけでなく、**事実の出典・更新時刻・不明な項目**を区別できることが重要です。
+```json
+[
+  {
+    "sku": "tea-002",
+    "name": "宇治 抹茶 30g",
+    "price_jpy": 2200,
+    "stock": "unknown",
+    "tax_included": null,
+    "shipping_jpy": null,
+    "source_url": "https://example.com/products/tea-002",
+    "updated_at": "2026-10-28T12:00:00+09:00",
+    "is_demo": true
+  }
+]
+```
 
-- **商品データを整える：** CSV / JSONを取り込み、SKU・価格・在庫・送料・根拠URLなどを検証
-- **AIから安全に読む：** MCPの7つの読み取り専用ツールで商品検索、詳細、在庫スナップショット、参考見積もりなどを提供
-- **推測で埋めない：** 送料・税・在庫が未確認なら `null` や `unknown` のまま返す
-- **オープンに検証する：** API仕様、Pythonテスト、Cloudflareデモ、Muse接続の検証記録を公開
+`updated_at`はカタログに記録された日時であり、外部の商品ページをリアルタイムで照合した証明ではありません。取得時点を別途保持する場合は`snapshot_at`を使用できます。データ形式の詳細は[カタログ仕様](docs/CATALOG.md)を参照してください。
 
 ```text
-ECショップの商品CSV / JSON
-          ↓
-データ検証・出典／更新日時の保持
-          ↓
-       MisePort
-          ├─ CLI（検索・監査・JSON-LD）
-          ├─ MCP（7つの読み取り専用ツール）
-          └─ REST / OpenAPI（公開の架空デモ）
-                         ↓
-              対応するAIエージェント
+ショップの商品CSV / JSON ──┐
+BASE API・公式CSV（Alpha） ─┤
+                           ▼
+               検証・正規化・出典の保持
+                           ▼
+                        MisePort
+                 ├─ CLI（検索・監査）
+                 ├─ MCP（7つの読み取り専用ツール）
+                 ├─ REST / OpenAPI
+                 └─ Schema.org JSON-LD
+                           ▼
+                対応するAIエージェント
 ```
 
 ## ローカルで動かす（開発者向け）
 
-リポジトリをクローンし、ルートディレクトリで実行してください。開発用依存パッケージのインストールにはネットワーク接続が必要です。
+リポジトリをクローンし、ルートディレクトリで実行します。初回のパッケージインストールにはネットワーク接続が必要です。
 
 ```bash
 git clone https://github.com/Siyuan-chat/miseport.git
 cd miseport
 python -m venv .venv
-# macOS/Linux: source .venv/bin/activate
+# macOS / Linux: source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
 
+# サンプル商品の検証・検索
 miseport validate examples/products.json
+miseport search 抹茶 --catalog examples/products.json
+miseport detail tea-002 --catalog examples/products.json
+
+# CSV取込・参考見積もり・監査・JSON-LD出力
 miseport import examples/products.csv --output catalog.json
-miseport search コーヒー --catalog examples/products.json
-miseport detail coffee-001 --catalog examples/products.json
-miseport inventory coffee-001 --catalog examples/products.json
-miseport quote coffee-001 --quantity 2 --catalog examples/products.json
+miseport quote tea-002 --quantity 2 --catalog examples/products.json
 miseport audit --catalog examples/products.json
-miseport export-jsonld coffee-001 --catalog examples/products.json
+miseport export-jsonld tea-002 --catalog examples/products.json
 ```
 
-ローカル検索は全角・半角やかなの正規化に対応した**部分一致**です。意味検索やベクトル検索ではありません。最大10 MiB・10,000商品のカタログを扱い、MCPは起動時点のスナップショットを利用します。詳しくは[API仕様](docs/API.md)・[データ形式](docs/CATALOG.md)を参照してください。
+検索は全角・半角、カタカナ・ひらがななどを正規化した**決定論的な部分一致検索**です。ベクトル検索や意味検索ではありません。カタログの上限は10 MiB・10,000商品で、ローカルMCPは起動時点に読み込んだスナップショットを参照します。詳しくは[CLI / MCP API仕様](docs/API.md)をご覧ください。
 
 ## AIエージェント／MCPクライアントに接続する
 
-ローカル版の`miseport-mcp`はstdio通信に対応しています。クライアントの設定に合わせ、`MISEPORT_CATALOG`に**検証済みカタログの絶対パス**を設定します。
+ローカル版の`miseport-mcp`は**stdio**に対応しています。MCPクライアントの設定に、検証済みカタログの**絶対パス**を指定してください。
 
 ```json
 {
@@ -94,73 +112,71 @@ miseport export-jsonld coffee-001 --catalog examples/products.json
 }
 ```
 
-公開デモは **Streamable HTTP MCP**（`https://miseport.pages.dev/mcp`）を利用します。ローカルstdio版とは別の実装です。MCP以外の利用向けに[OpenAPI](https://miseport.pages.dev/openapi.json)も公開しています。
+リモート接続には公開デモの[Streamable HTTP MCP](https://miseport.pages.dev/mcp)を利用できます。こちらはローカルstdio版とは別の配信実装です。MCPを使わないアプリ向けには[OpenAPI](https://miseport.pages.dev/openapi.json)も用意しています。
 
 | MCPツール | 用途 |
 | --- | --- |
-| `about_miseport` | サービスの目的・範囲を説明 |
-| `search_products` | キーワード・条件による商品検索 |
-| `get_product` | SKU指定で商品情報・出典・更新日時を取得 |
-| `check_inventory` | 記録された在庫状態・数量を照会（リアルタイム保証なし） |
-| `get_quote` | 個数を指定した拘束力のない参考見積もり |
-| `audit_catalog` | 商品データの欠落項目などを監査 |
-| `export_product_jsonld` | Schema.org Product / OfferのJSON-LDを出力 |
+| `about_miseport` | カタログの提供範囲・デモ状態・制約を説明 |
+| `search_products` | 商品名・キーワード・条件で検索 |
+| `get_product` | SKUから商品情報、出典URL、記録日時を取得 |
+| `check_inventory` | 記録された在庫状態・数量を確認 |
+| `get_quote` | 数量を指定して拘束力のない参考金額を計算 |
+| `audit_catalog` | 欠落項目やデータの整合性を確認 |
+| `export_product_jsonld` | Schema.org `Product` / `Offer`のJSON-LDを出力 |
 
-### Meta Museから使えますか？
+見積もりは購入可能性や送料込み総額を必ず確定するものではありません。税区分や送料が不明な場合、総額は`null`になります。また、JSON-LDの出力だけでショップの商品ページが自動更新されることはありません。
 
-2026年10月29日、**Museのアカウント内カスタムコネクタ**から、公開デモを利用した7回のMCPツール呼び出しを検証しました（[実測記録](docs/MUSE_INTEGRATION.md)）。これは**個別アカウント内での動作検証**であり、Metaの公式ディレクトリ掲載、全ユーザーへの配布、商用ECでの利用許可を意味しません。
+### Meta Museとの接続について
 
-Museを含むクライアントでは、[接続ガイド](https://miseport.pages.dev/docs/?lang=ja)を確認し、対応する接続方法・ツール名・入力項目を実際に確認してからテストしてください。デモに個人情報・APIキー・実際の顧客データを送信しないでください。
+2026年10月29日、**個別のMeta Museアカウント内で作成したCustom Connector**から、MisePortの架空商品デモに対して**計7回のMCPツール呼び出し**を確認しました。
 
-## 商店が自分で使えるツールへ（新しい製品方針）
+これは接続できることの個別検証です。**Metaの公式Connector Directoryへの掲載、一般ユーザーによる自動発見、自然検索からの推薦とは別**です。接続の仕組みと検証範囲は[Muse接続ガイド](docs/MUSE_CONNECT.ja.md)と[Agent GEOの考え方](docs/AGENT_GEO.ja.md)にまとめています。
 
-MisePortは**商店所有・ローカルファースト・無料優先**のオープンソースとして発展させます。将来の商店向け画面では、**公式APIを商店主自身が認可して商品を自動取得**し、商品情報を確認して、標準データや公開用パッケージを生成することを主導線とします。自分で設定したAgentによる読込にも将来対応し、APIが使えない店舗にはCSVを残します。商店の商品をMisePort運営側で集中収集するマーケットプレイスは作りません。外部サービスとの互換性は、バージョン付き商品スキーマと入出力アダプターで確保します。
+## 商店向けAlphaとロードマップ
 
-**これは次の開発段階の設計です。現行版にネイティブAPI自動読込、ブラウザでの商店CSV取込・商店別ワンクリック公開はありません。** APIキーは公開デモに入力せず、店舗所有の安全な環境で管理します。 [製品方針（ADR-0001）](docs/PRODUCT_STRATEGY.ja.md) · [自動接続とBYO認証設計（ADR-0002）](docs/CONNECTOR_ARCHITECTURE.ja.md) · [対応プラットフォーム](docs/PLATFORM_COMPATIBILITY.ja.md) · [商店主向け日本語手順書](docs/merchant/SETUP_GUIDE.ja.md) · [動画デモ制作計画](docs/merchant/VIDEO_DEMO_PLAN.ja.md)。
+MisePortは開発者向けCLIに加え、**店主が日本語の画面で商品を読み込み、内容を確認し、自分で公開用データを作成できるツール**へと開発を進めています。
 
-**11/10商店実用版の必須目標:** BASE公式APIを使った公開商品自動取得、日本語の非技術者向けGUI、商店別のMCP/REST公開パッケージと実画面手順書／動画を提供し、**少なくとも1店の営業中の日本EC商店から公開許諾を得た実商品デモ**を発表することを目指します。これは**開発中の目標**であり、現在の公開デモは引き続き架空商品だけです。 [11/10受入基準](docs/RELEASE_2026-11-10.ja.md) · [実商店Pilot](docs/merchant/PILOT_2026-11-10.ja.md) · [内部開発計画（中国語）](docs/DEVELOPMENT_PLAN.zh-CN.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)。
+### 開発状況（2026年10月29日時点）
 
-### Museの「接続」と一般の商品検索は別
-
-MisePortの公開架空デモは**1つのMuseアカウント内のCustom Connector**で7回のツール呼び出しを実測していますが、Meta公認Directoryへの申請・掲載、未接続の一般ユーザーによる自然検索での表示や推薦は未検証です。[Muse接続と発見の仕組み](docs/MUSE_CONNECT.ja.md) · [個人AIエージェント向けGEO](docs/AGENT_GEO.ja.md)。
-
-## 現在の対応範囲と今後の方向
-
-| 項目 | 2026-10-29時点 |
+| 機能 | 状況 |
 | --- | --- |
-| 商品CSV / JSONの取り込み・検証 | 実装済み |
-| 日本語の商品検索、在庫記録、参考見積もり、JSON-LD | 実装済み |
-| ローカルMCP（stdio） | 実装済み・テストあり |
-| 公開MCP / RESTの架空デモ | 公開・検証記録あり |
-| Museアカウント内の接続テスト | 実測記録あり |
-| BASE・makeshop・EC-CUBE・Shopifyへの**ネイティブAPI同期** | 未実装 |
-| 実店舗の在庫同期・OAuth・複数店舗の権限分離 | 未実装 |
-| AgentごとのGEO順位計測、成果保証 | 未実装 |
-| 決済・注文・キャンセル・返金 | 未実装 |
+| CSV / JSONの検証・取込、検索、監査、JSON-LD出力 | 実装済み |
+| ローカルMCP（stdio）・架空商品の公開MCP / RESTデモ | 実装済み・テストあり |
+| 日本語対応のローカルGUI（`miseport-gui`） | **Alpha実装済み** |
+| BASE v2 β APIの商品読込、BASE / Shopifyの商品CSV読込 | **読み取り専用Alpha実装済み** |
+| 商店別MCP / REST配信ZIP生成（`miseport-publish`）と公開後の接続確認 | **Alpha実装済み** |
+| 実店舗API接続・Windows実機での店主受入・許諾済み実商品デモ | **2026年11月10日の目標／未完了** |
+| その他のECプラットフォームのネイティブAPI同期・無人自動更新 | 今後の検討対象 |
 
-開発優先順位と品質基準は[ロードマップ](docs/ROADMAP.md)・[最新のプロジェクト状態](PROJECT_STATUS.md)にまとめています。ショップの実データを接続する前に、権限・出典・プライバシー・運用上の確認が必要です。
+現在のAlphaには、BASEの公開商品URL候補生成、店主が明示的に指定した最大30件の公開HTTPSページの確認、データ更新時の削除差分レビューなども含まれます。BASE商品CSVはUTF-8 / CP932、Shopify商品CSVはUTF-8を想定しています。
+
+これらは**ソースコード上のAlpha機能**であり、実店舗のAPI・CSV環境での受入や、非技術者によるWindows GUIの実機利用はまだ完了していません。生成したZIPは店主自身のCloudflare Pages等に**手動で公開**する方式で、ショップへの商品書き戻しは行いません。
+
+**次のマイルストーン（2026年11月10日・目標）：** 日本のEC商店が、自分の商品を読み込み・確認し、自分の管理する公開先からAIエージェントへ提供できること。実商店の協力と別途の公開許諾が得られた場合には、実商品を用いたデモ公開も目指します。
+
+詳しくは[商店向けAlpha操作ガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [対応プラットフォーム](docs/PLATFORM_COMPATIBILITY.ja.md) · [製品方針](docs/PRODUCT_STRATEGY.ja.md) · [ロードマップ](docs/ROADMAP.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)をご覧ください。
 
 ## よくある質問（FAQ）
 
-**MisePortは無料ですか？**  
-はい。コードは[Apache-2.0](LICENSE)ライセンスで公開しています。Cloudflareなど外部サービスの利用には別途条件・費用が発生する場合があります。
+**Q. MisePortは無料で使えますか？**  
+はい。ソースコードは[Apache-2.0](LICENSE)ライセンスで公開しています。Cloudflareなど外部サービスを利用する場合は、そのサービスの利用条件や料金が別途適用されます。
 
-**GEO対策ツールですか？**  
-AI検索に読み取らせるための商品情報の整理・出典管理・構造化データ出力を支える基盤です。現行版にSEO順位改善、AIからの推薦獲得、露出量測定の機能はありません。
+**Q. 導入すればAI検索（GEO）の推薦順位が上がりますか？**  
+MisePortが提供するのは、出典付きの商品情報をAIから参照しやすくするための基盤です。検索順位、推薦、流入数や売上の改善を保証するものではありません。
 
-**BASEやmakeshopなどの日本のECショップで使えますか？**  
-利用許可のあるCSV / JSONを準備できればローカルで試せます。ただし、BASE・makeshop・EC-CUBEなどへのログイン、OAuth接続、商品APIの自動同期はまだありません。
+**Q. BASEやShopifyの店舗でも使えますか？**  
+標準CSV / JSONの検証に加え、BASE API・BASE商品CSV・Shopify商品CSVの読み取り専用Alphaを試せます。実店舗との互換性は引き続き検証中です。APIキーは公開デモではなく、店主が管理するローカル環境で扱ってください。
 
-**Museから商品購入までできますか？**  
-いいえ。現在のMisePortは読み取り専用です。公開デモの商品も架空で、注文・決済はできません。Museの公式承認も未取得です。
+**Q. AIエージェントから注文・決済できますか？**  
+いいえ。MisePortは商品情報の読み取りに限定しています。購入する際は元のショップの商品ページをご利用ください。
 
-**価格や送料が表示されない場合は？**  
-未確認の項目を0円や「在庫あり」に置き換えません。データに含まれる出典・更新日時を確認してください。
+**Q. 送料や在庫数が空欄・不明になるのはなぜですか？**  
+未確認の情報を確定値として表示しないためです。`null`は「0」、`unknown`は「在庫あり」を意味しません。判断に必要な場合は、記録日時と元の商品ページをご確認ください。
 
 ## ドキュメント・開発参加
 
-[API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse実測記録](docs/MUSE_INTEGRATION.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [ブランドガイド](docs/BRAND.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [商店向けAgent GEO](docs/AGENT_GEO.ja.md)
+[API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse接続と発見](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [ブランドガイド](docs/BRAND.md)
 
-バグ報告・機能提案は[GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)へ。秘密情報や顧客情報は公開Issueに書き込まないでください。
+不具合報告や機能提案は[GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)へ。秘密情報、APIキー、顧客データは公開Issueに記載しないでください。
 
-MisePortはMeta Muse、Shopify、BASE、makeshopなどの公式製品・提携サービスではありません。商標・プラットフォーム利用条件を尊重し、根拠のない検索順位・売上・対応機能の主張はしません。
+*MisePortはMeta Muse、BASE、Shopify、makeshop等の公式製品・提携サービスではありません。各社の商標およびプラットフォーム利用条件を尊重し、根拠のない提携・推薦・対応状況の表示は行いません。*
