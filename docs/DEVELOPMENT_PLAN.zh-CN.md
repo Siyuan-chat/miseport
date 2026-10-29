@@ -1,4 +1,4 @@
-# MisePort 开发计划（中文版）v1.8
+# MisePort 开发计划（中文版）v1.9
 
 **制定日期：2026 年 10 月 29 日（日本时间）**
 **目标发布日期：2026 年 11 月 10 日**
@@ -77,6 +77,21 @@
 到 2026-10-29，**六轮 PR #14—#19 已合并 main**。从代码视角，商家可以通过 BASE 只读 API 或 BASE/Shopify 官方 CSV Alpha 获取商品，在日语 GUI 中审查、按需检查公开 URL、对比和更新商品快照，生成独立只读 MCP/REST ZIP 并在本地核验；商家把 ZIP 上传到 Cloudflare 后，还可以主动检查公开网站/REST/MCP 是否与本地快照一致。
 
 **必须保留的验收边界：** 测试均以模拟商品、模拟商家或模拟 HTTP 为主。实际 Windows GUI 的店主独立操作、真实 BASE PAT、正式商家 CSV 完整兼容、商家自有 Cloudflare 实际部署、Meta Muse 对真实商品的调用、已授权公开案例和日语实录视频都还没有完成。11/10 Release 前仍需排除 GitHub 自动 Source Archive 中的内部资料和旧资产（Issue #10）。
+
+## 本轮进展：店铺数据隔离与 Issue 整理（2026-10-29）
+
+**已合并 [PR #20](https://github.com/Siyuan-chat/miseport/pull/20)**（提交 `59b40952`）：为 BASE API 和官方商品 CSV 的导入结果新增不可变 `SourceContext`，绑定店铺 ID、店名、首页、数据渠道和 CSV 的确认商品示例 URL。不再允许变更店铺或 CSV 来源后，把旧商品数据按新店铺审核、导出 JSON 或生成 MCP/REST ZIP。后台 API 请求期间改变店铺信息也会丢弃旧响应；失败时先前的审核结果失效。敏感 PAT 不包含在 `SourceContext` 中。
+
+**测试证据：** [代码 CI 8/8 通过，Python 303 项测试通过](https://github.com/Siyuan-chat/miseport/actions/runs/40816709339)；[Windows Alpha 构建成功](https://github.com/Siyuan-chat/miseport/actions/runs/40816709361)。仅证明软件在 Mock/自动化环境中符合对应契约，并不构成真实商店的 API 权限/域名归属证明或非技术店主可用性验收。
+
+**GitHub Issue 清理：**
+
+- **已关闭 3 个：** [#12](https://github.com/Siyuan-chat/miseport/issues/12) 首轮模拟代码已完成；[#13](https://github.com/Siyuan-chat/miseport/issues/13) URL 核查代码完成，其**真实店铺验收已转入 #9**；[#5](https://github.com/Siyuan-chat/miseport/issues/5) 独立 BYO Agent 实现当前不在发布范围。关闭并不抹除历史，也不能代表所有外部验收完成。
+- **P0 发布与独立验收：** [#6](https://github.com/Siyuan-chat/miseport/issues/6) 发布总验收、[#10](https://github.com/Siyuan-chat/miseport/issues/10) 内部文件清理、[#2](https://github.com/Siyuan-chat/miseport/issues/2) 商家 GUI 实际使用、[#7](https://github.com/Siyuan-chat/miseport/issues/7) Windows/PAT 安全、[#4](https://github.com/Siyuan-chat/miseport/issues/4) 日语截图和真实视频。
+- **等待合作店铺的验收：** [#1](https://github.com/Siyuan-chat/miseport/issues/1) BASE 实 API、[#8](https://github.com/Siyuan-chat/miseport/issues/8) 独立 Cloudflare 部署、[#9](https://github.com/Siyuan-chat/miseport/issues/9) 真实商家案例及商品 URL 验收。
+- **保留在后续工作池：** [#3](https://github.com/Siyuan-chat/miseport/issues/3) 主流 EC CSV 完整兼容/导出、[#11](https://github.com/Siyuan-chat/miseport/issues/11) Muse 自然发现与 GEO 基准，不占用 11/10 的基础可靠性研发资源。
+
+**当前开放 10 个 Issue，已关闭 3 个历史/重复/后置工作。** 下一步优先安排**Windows GUI 真实操作验收、完整日语截图手顺书、正式 Tag 前 GitHub 内部文档清理**。商家真实账号由用户之后联系，必须在 11/10 硬性要求下保持“未验证”状态，不能靠 Mock 成果替代。
 
 ## 一、目标与不可妥协的验收标准
 
