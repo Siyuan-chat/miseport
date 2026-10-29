@@ -11,7 +11,8 @@ import queue
 import threading
 from urllib.parse import urlsplit
 
-from .base_v2 import BaseV2Client, BaseAPIError, map_base_items
+from .base_v2 import BaseAPIError, map_base_items
+from .source_adapters import get_source_adapter
 from .importers import load_catalog
 from .refresh import commit_refresh, plan_refresh, RefreshError
 from .publisher import PublicationError, build_merchant_zip
@@ -196,7 +197,7 @@ def main():
 
         def worker(one_time_token):
             try:
-                result = BaseV2Client().fetch_items(one_time_token)
+                result = get_source_adapter("base").fetch_public(one_time_token)
                 jobs.put(("success", result))
             except BaseAPIError as error:
                 jobs.put(("error", str(error)))
