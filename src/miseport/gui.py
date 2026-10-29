@@ -22,6 +22,8 @@ from .publisher import PublicationError, build_merchant_zip
 from .base_urls import (
     BaseURLValidationError, candidate_product_urls, validate_manual_product_urls
 )
+from .public_url_probe import check_product_urls, URLProbeError, MAX_URL_CHECKS
+from .merchant_onboarding import merchant_deploy_guide, DeploymentGuideError
 
 
 def parse_product_urls(text: str) -> dict[int, str]:
@@ -68,6 +70,7 @@ def main():
             return
         raise SystemExit("Only --version is supported")
     import tkinter as tk
+    import webbrowser
     from tkinter import filedialog, messagebox, ttk
 
     root = tk.Tk()
@@ -82,6 +85,7 @@ def main():
     csv_loaded = None
     source_mode = "api"
     csv_loaded_profile = None
+    last_bundle = None
 
     def label(row, name, value="", width=30, secret=False):
         ttk.Label(row, text=name).pack(side="left", padx=(0, 8))
@@ -157,10 +161,17 @@ def main():
     ttk.Label(sample_row, text="実際に確認した1商品のURL:").pack(side="left", padx=(0, 7))
     sample_url = ttk.Entry(sample_row, width=48)
     sample_url.pack(side="left", fill="x", expand=True)
-    candidate_btn = ttk.Button(mapping_page, text="商品URLの候補を一括生成")
-    candidate_btn.pack(anchor="w", pady=3)
+    candidate_buttons = ttk.Frame(mapping_page)
+    candidate_buttons.pack(fill="x", pady=3)
+    candidate_btn = ttk.Button(candidate_buttons, text="商品URLの候補を一括生成")
+    candidate_btn.pack(side="left", padx=(0, 8))
+    link_btn = ttk.Button(candidate_buttons, text="公開商品URLを最大30件確認")
+    link_btn.pack(side="left")
     urls = tk.Text(mapping_page, height=8, wrap="none")
     urls.pack(fill="x", pady=6)
+    link_probe_status = tk.StringVar(value="商品URLのネットワーク検査はまだ行っていません。")
+    ttk.Label(mapping_page, textvariable=link_probe_status,
+              wraplength=900).pack(anchor="w", pady=2)
     review_status = tk.StringVar(value="まだ商品を取得していません。")
     ttk.Label(mapping_page, textvariable=review_status, wraplength=900).pack(anchor="w", pady=6)
     output = ttk.Frame(mapping_page)
@@ -171,6 +182,8 @@ def main():
     export_btn.pack(side="left", padx=10)
     bundle_btn = ttk.Button(output, text="⑥ 商店用MCP/REST ZIPを生成", state="disabled")
     bundle_btn.pack(side="left", padx=10)
+    guide_btn = ttk.Button(output, text="⑦ Cloudflare公開手順")
+    guide_btn.pack(side="left")
     site_row = ttk.Frame(mapping_page)
     site_row.pack(fill="x", pady=5)
     ttk.Label(site_row, text="Cloudflare Pagesの公開URL:").pack(side="left", padx=(0, 7))
@@ -186,12 +199,14 @@ def main():
               wraplength=840).pack(anchor="w")
 
     def apply_items(received):
-        nonlocal items, current, current_inputs, csv_loaded, source_mode
+        nonlocal items, current, current_inputs, csv_loaded, source_mode, last_bundle
         items = received
         source_mode = "api"
         csv_loaded = None
         current = None
         current_inputs = None
+        last_bundle = None
+        link_probe_status.set("商品URLのネットワーク検査はまだ行っていません。")
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
         consent.set(False)
@@ -228,17 +243,48 @@ def main():
         del token
 
     def poll():
+        nonlocal current, current_inputs
         try:
             kind, value = jobs.get_nowait()
         except queue.Empty:
             root.after(120, poll)
             return
-        btn.configure(state="normal")
-        if kind == "success":
-            apply_items(value)
+        if kind in ("url_result", "url_error"):
+            link_btn.configure(state="normal")
+            snapshot, payload = value
+            if snapshot != review_inputs():
+                link_probe_status.set("検査後に入力が変わりました。もう一度確認してください。")
+            elif kind == "url_error":
+                link_probe_status.set(payload)
+                messagebox.showwarning("商品URLの検査", payload)
+            else:
+                counts = payload
+                link_probe_status.set(
+                    "公開URL検査：" + str(counts["confirmed"]) + "件のページ確認、"
+                    + str(counts["uncertain"]) + "件が要確認、"
+                    + str(counts["rejected"]) + "件が閲覧不可です。"
+                    " ページの事実と商品IDは店主が最後に確認してください。")
+                if counts["rejected"]:
+                    current = None
+                    current_inputs = None
+                    consent.set(False)
+                    export_btn.configure(state="disabled")
+                    bundle_btn.configure(state="disabled")
+                    review_status.set("404等のページが含まれます。商品URLを修正して再審査してください。")
+                if counts["uncertain"] or counts["rejected"]:
+                    samples = ", ".join(
+                        str(item["item_id"]) + " (" + item["code"] + ")"
+                        for item in counts["results"] if item["state"] != "confirmed")
+                    messagebox.showwarning("商品URLの検査",
+                        "確実に確認できないURLがあります：\n" + samples[:700]
+                        + "\n公開前に店主が修正してください。")
         else:
-            status.set(value)
-            messagebox.showerror("接続エラー", value)
+            btn.configure(state="normal")
+            if kind == "success":
+                apply_items(value)
+            else:
+                status.set(value)
+                messagebox.showerror("接続エラー", value)
         root.after(120, poll)
 
     def review_inputs():
@@ -330,9 +376,42 @@ def main():
         consent.set(False)
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
+        link_probe_status.set("候補URLは推測です。必要なら「公開商品URLを確認」でネットワーク照合できます。")
         review_status.set(str(len(candidates)) + "件のURL候補を生成しました。"
             " API商品IDに基づく候補です。公開前に確認してからデータ審査を押してください。")
         tabs.select(mapping_page)
+
+    def verify_urls():
+        if source_mode != "api" or not items:
+            messagebox.showwarning("商品URLの検査",
+                "BASE API商品を読み込み、商品URL候補を用意してください。")
+            return
+        try:
+            addresses = parse_product_urls(urls.get("1.0", "end").strip())
+            validate_manual_product_urls(addresses, homepage.get().strip())
+            if not addresses or len(addresses) > MAX_URL_CHECKS:
+                raise URLProbeError("一度に1〜30件のURLを検査してください。")
+        except (ValueError, BaseURLValidationError, URLProbeError):
+            messagebox.showwarning("商品URLの検査",
+                "同じショップの公開商品URLを1〜30件入力してください。")
+            return
+        if not messagebox.askyesno("公開商品URLの確認",
+            "店主が許可した同じショップの公開商品ページだけを検査しますか？\n"
+            "最大30件、HTTPSの公開URLだけに読み取りアクセスします。"
+            " BASE PATは送信しません。"
+            " 運用中のショップに負荷がかからないよう必要な時だけ実行してください。"):
+            return
+        link_btn.configure(state="disabled")
+        snapshot = review_inputs()
+        link_probe_status.set("公開ページを確認しています。途中結果を公開することはありません。")
+        def worker():
+            try:
+                report = check_product_urls(addresses, homepage.get().strip()).summary()
+                jobs.put(("url_result", (snapshot, report)))
+            except (ValueError, OSError):
+                jobs.put(("url_error", (snapshot,
+                    "URLを検査できませんでした。後で再試行するか、店主自身がページを確認してください。")))
+        threading.Thread(target=worker, daemon=True).start()
 
     def review():
         nonlocal current, current_inputs
@@ -407,6 +486,7 @@ def main():
                     " 公開済みクラウドは自動更新されません。")
 
     def save_bundle():
+        nonlocal last_bundle
         if (current is None or not current.publishable or not consent.get()
                 or current_inputs != review_inputs()):
             messagebox.showwarning("確認", "公開対象と商品URLを店主が確認してください。")
@@ -424,14 +504,65 @@ def main():
             messagebox.showerror("生成失敗",
                 "配信URLや商品情報を確認してください。古いファイルは変更していません。")
         else:
+            last_bundle = (str(name), target_origin.get().strip())
             messagebox.showinfo("ZIPを生成しました",
                 str(meta["product_count"]) + "件の公開商品を保存しました。\n"
                 "このZIPはまだWebへ公開されていません。"
-                " 商店のCloudflare Pagesで手動配置とURL確認が必要です。")
+                "「⑦ Cloudflare公開手順」からアップロード方法を確認してください。")
+
+    def show_deploy_guide():
+        if last_bundle is None:
+            messagebox.showwarning("公開手順",
+                "先に商品を審査し、「⑥ 商店用MCP/REST ZIPを生成」で"
+                "ZIPファイルを保存してください。")
+            return
+        filepath, origin = last_bundle
+        try:
+            guide = merchant_deploy_guide(origin)
+        except DeploymentGuideError as exc:
+            messagebox.showerror("公開先", str(exc))
+            return
+        dialog = tk.Toplevel(root)
+        dialog.title("MisePort — Cloudflare Pages 公開の手順")
+        dialog.geometry("850x560")
+        dialog.transient(root)
+        layout = ttk.Frame(dialog, padding=14)
+        layout.pack(fill="both", expand=True)
+        ttk.Label(layout, text="このZIPを店主ご自身のCloudflareに公開します",
+                  font=("", 12, "bold")).pack(anchor="w", pady=(0, 7))
+        ttk.Label(layout, text="保存したZIP: " + Path(filepath).name,
+                  wraplength=770).pack(anchor="w")
+        guide_text = tk.Text(layout, wrap="word", width=94, height=19, padx=9, pady=9)
+        guide_text.pack(fill="both", expand=True, pady=9)
+        guide_text.insert("1.0", "\n\n".join(guide.steps_ja) + "\n\n"
+                          "公開予定のMCP: " + guide.mcp_url
+                          + "\n確認用: " + guide.health_url
+                          + "\n商品API: " + guide.origin + "/api/products\n"
+                          "注意: ZIP生成とオンライン稼働は別です。"
+                          " 最終的なHTTPSとMCPを実際のクライアントで確認してください。")
+        guide_text.configure(state="disabled")
+        links = ttk.Frame(layout)
+        links.pack(fill="x", pady=6)
+        ttk.Button(links, text="Cloudflare管理画面を開く",
+            command=lambda: webbrowser.open(guide.dashboard_url)).pack(side="left", padx=4)
+        ttk.Button(links, text="Cloudflare公式手順",
+            command=lambda: webbrowser.open(guide.docs_url)).pack(side="left", padx=4)
+        def copy_mcp():
+            dialog.clipboard_clear()
+            dialog.clipboard_append(guide.mcp_url)
+            dialog.update_idletasks()
+            messagebox.showinfo("コピーしました",
+                "公開予定のMCP URLをコピーしました。オンライン接続は別途確認してください。",
+                parent=dialog)
+        ttk.Button(links, text="MCP URLをコピー",
+                   command=copy_mcp).pack(side="left", padx=4)
+        ttk.Button(links, text="閉じる", command=dialog.destroy).pack(side="right", padx=4)
 
     btn.configure(command=fetch)
     csv_btn.configure(command=load_csv)
     candidate_btn.configure(command=auto_urls)
+    link_btn.configure(command=verify_urls)
+    guide_btn.configure(command=show_deploy_guide)
     bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
     export_btn.configure(command=save)
