@@ -1,0 +1,54 @@
+name: merchant-windows-alpha
+on:
+  push:
+    branches:
+      - feat/merchant-sprint-01
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-alpha:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install tested runtime and PyInstaller
+        run: |
+          python -m pip install --disable-pip-version-check -e ".[dev]"
+          python -m pip install --disable-pip-version-check "pyinstaller==6.22.3"
+      - name: Test import and CLI version without desktop display
+        run: |
+          python -m miseport.gui --version
+          python -m pytest -q tests/test_base_v2.py tests/test_gui.py tests/test_publisher.py
+      - name: Build unsigned alpha EXE without internal development documents
+        run: |
+          python -m PyInstaller --clean --noconfirm --onefile --windowed --name MisePort --collect-data miseport scripts/launch_gui.py
+          if (!(Test-Path "dist/MisePort.exe")) { throw "Missing EXE" }
+          Get-Item dist/MisePort.exe | Select-Object Length, Name | Format-Table
+          Get-FileHash -Algorithm SHA256 dist/MisePort.exe | Format-List
+        shell: pwsh
+      - name: Prepare explicit alpha warning (not a production release)
+        run: |
+          @'
+          MisePort Merchant GUI - ALPHA build for testing only.
+          This is NOT the November 10 merchant-accepted release.
+          BASE API read-only with owner-managed PAT; token is not persisted.
+          Public product URLs must be confirmed by the merchant.
+          Never enter PAT in https://miseport.pages.dev or public GitHub Issues.
+          Cloudflare hosting requires a separate merchant-owned account.
+          Windows installer signing and real shop acceptance are pending.
+          '@ | Set-Content -Encoding UTF8 dist/README-ALPHA.txt
+        shell: pwsh
+      - uses: actions/upload-artifact@v7
+        with:
+          name: miseport-windows-alpha
+          path: |
+            dist/MisePort.exe
+            dist/README-ALPHA.txt
+          if-no-files-found: error
+          retention-days: 7
