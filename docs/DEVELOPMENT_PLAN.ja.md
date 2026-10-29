@@ -1,8 +1,47 @@
 # MisePort 開発計画 v1.2 — 11月10日「商店実用版」＋実商店デモ
 
+> **INTERNAL — RELEASE EXCLUDE（開発作業用）:** このファイルは11/10公開Tag、GitHub Source Archive、sdist/wheel、Windowsインストーラ、商店用ZIPから除外する。内部開発計画を最後まで公開し続ける方針ではない。既存Git履歴は単純削除では消えない。[公開/内部分類](RELEASE_PUBLICATION_POLICY.ja.md)と[Issue #10](https://github.com/Siyuan-chat/miseport/issues/10)でTag前の清掃を行う。
+
+
 **更新日:** 2026-10-29 JST
 **期限:** 2026-11-10 JST（商店実用版のハードゲート）
 **状態:** PLAN_ONLY。実装済みの機能と未実装のRelease要件を混同しない。具体的な受入条件は [11/10 Release Contract](RELEASE_2026-11-10.ja.md) が優先。
+
+
+## 0. 実行優先度とSprint-1（2026-10-29〜11-01）
+
+**変更理由:** 従来の「機能を作った後に商店が使えるか確認する」順序を改め、11/10に**BASE商店1件での本物のE2E実証**を成立させるクリティカルパスに沿って作る。初日から商店招募・同意と技術開発を**並行**する。架空デモだけでP0を満たしたと表現しない。
+
+**Sprint-1の出口:** BASEの読み取り専用API→既存MisePort Canonical Catalogへの変換と安全フィルターをモックで実証し、日本語GUIの実行形と商店所有の公開ZIPの契約を固める。**ここまでではまだ実商店Release合格ではない**。
+
+| ID | アシスタントが開発できる項目（第一輪） | Done・テストの条件 | 対応Issue |
+|---|---|---|---|
+| **S1-01** | BASE API v2βのread-only clientを作る。HTTP依存を分離、Bearer PATの送信先を公式HTTPSに固定。商品一覧はvisible=true、limit/offsetで全ページ取得 | 匿名モックでページング・401/403/429/5xx・タイムアウト・途中失敗・再試行、秘密のログ除外を検証。現時点で商店のPAT不要 | [#1](https://github.com/Siyuan-chat/miseport/issues/1) |
+| **S1-02** | BASEの通常商品・種類（variations）とMisePort商品Schemaのマッピング。公開状態・価格null・SKU・在庫/税/送料不明・UTC更新を保持 | 価格nullを0にしない。非公開/販売前の情報を公開しない。商品URLが不明なら架空URLを作らない。現在のCatalog契約を勝手に壊さない | [#1](https://github.com/Siyuan-chat/miseport/issues/1) |
+| **S1-03** | 日本語のクリック中心GUIの小さな実物。Windows配布を前提に、まずOSネイティブ画面（tkinter/ttk等）と保護されたローカルWeb画面を比較して選ぶ | 画面は「接続→商品確認→監査→エクスポート」。通常操作にターミナル不要。PATはまずセッション中のメモリ保持のみを優先し、公開クラウドへ送らない | [#2](https://github.com/Siyuan-chat/miseport/issues/2) / [#7](https://github.com/Siyuan-chat/miseport/issues/7) |
+| **S1-04** | 一店舗用の公開Exporter設計と、匿名Fixtureからのread-only MCP/REST用ZIP生成を試作 | ファイルmanifestとハッシュ・公開許諾フィルター・スナップショット時刻を検査。現行の架空商品専用Workerを無確認で実商品に転用しない | [#8](https://github.com/Siyuan-chat/miseport/issues/8) |
+| **S1-05** | GitHub CI、Schema/Fixture回帰、配布物のファイルallowlistと機密検査を準備 | 現行テストが維持され、Tagの自動Source Archive・sdist/wheel・Windows配布物・商店ZIPに内部資料が入らない検査方針が実装可能になる | [#10](https://github.com/Siyuan-chat/miseport/issues/10) |
+| **S1-06** | 操作UIに対応する日本語文言、正式API接続の手順の草案、Muse/E1 Agent評価の固定質問・字幕台本を整備 | 未実装UIを実録と言わない。MuseのCustom Connector実証と自然検索GEOは別指標で記録 | [#4](https://github.com/Siyuan-chat/miseport/issues/4) / [#11](https://github.com/Siyuan-chat/miseport/issues/11) |
+
+**API参照:** [BASE API β](https://apiv2.thebase.com/docs/) / [商品一覧](https://apiv2.thebase.com/docs/endpoints/get-api-items/) / [種類一覧](https://apiv2.thebase.com/docs/endpoints/get-api-items-id-variations/)を2026-10-29に再確認。商品一覧の総件数は提供されず、limit未満の取得件数で最終ページを判定する。PATは発行時の期限を持ち、現在のβ版にOAuthはない。APIの仕様変更は実装時のVersion/確認日とともに追跡する。
+
+### 開発の順番と差分の管理
+
+- **1:** S1-01/02のテスト・Fixture・取り込みレイヤーを作り、データ契約を固定する。
+- **2:** S1-03のUIからモック商品読込→実商品一覧/監査を操作できるようにする。Windows CIや実機テストの境界を記録する。
+- **3:** S1-04のExporterを同一Catalog Fixtureにつなぎ、秘密情報/非公開商品が公開ZIPへ混入しないことを確認する。
+- **4:** Sprint末にGitHub差分、CI、失敗、必要な実店舗PAT/承諾の状況をレビュー。勝手に商店へ連絡しない。
+
+### 今この環境でできること・できないこと
+
+| 区分 | タスク |
+|---|---|
+| **アシスタント単独で開発可能** | GitHubブランチ/Issue/PR、Python/JSコードとモックテスト、Catalog Schema/Adapter、GUIプロトタイプ、CI/配布パッケージ生成とファイル審査、日英文書、正確なMuse Tool説明、GEO/E1実験設計、匿名データのMCP/RESTテスト |
+| **実行可能だが本物の権限・環境が必要** | BASE実商品APIへの接続、商店Cloudflareの独立HTTPS公開、実商店のMuse Custom Connectorテスト、Windows商店PC実機操作、実画面動画の録画 |
+| **ユーザー・商店本人の対応/最終承認が必要** | 営業中の日本商店への連絡・参加承諾、BASE PATの商店側発行/保持、商品データ利用と店名/ロゴ/動画/公開ケースの別々の許諾、商店公開先の管理、外部投稿・Meta正式審査、商店の最終掲載OK、ドメイン購入 |
+| **11/10から外す** | 複数ECのネイティブAPI全部、無人24時間同期、MisePort中央マーケットプレイス、決済、未接続Museユーザーに対する推薦保証 |
+
+**11/01の外部ブロッカー:** 2026-10-29現在、実店舗の協力者・認可済みAPIトークン・公開許諾は未確認。mockテストは進められるが、それを実商店E2Eの合格としない。商店の募集/同意は[Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)で私的連絡先を公開せず追跡する。
 
 ## 1. 一番重要な成果物
 
