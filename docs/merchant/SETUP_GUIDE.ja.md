@@ -14,8 +14,8 @@ MisePortはショップの商品の「名前・商品ページURL・価格・在
 |---|---|---|
 | どんな画面・商品検索か知りたい | **はい（架空デモ）** | [デモサイト](https://miseport.pages.dev/)へ |
 | 自分の商品CSV/JSONを開発者に検証してもらう | **はい（開発者用CLI）** | [README](../../README.md)のローカル手順を参照 |
-| 自分のショップに接続して商品を自動で読む | **いいえ（開発予定）** | [API接続設計](../CONNECTOR_ARCHITECTURE.ja.md) |
-| APIを使わずCSVを読み取るブラウザ画面 | **いいえ（開発予定）** | 下記の「画面ができた後の手順」を参照 |
+| 自分のショップに接続して商品を自動で読む | **BASE read-onlyローカルGUI Alphaあり（実商店未受入）** | [Alpha手順](GUI_ALPHA_GUIDE.ja.md)と[API接続設計](../CONNECTOR_ARCHITECTURE.ja.md)へ |
+| APIを使わず商品CSVを取り込む | **ローカル日語GUI Alphaのコードあり（実商店未受入）** | [GUI Alpha操作説明](GUI_ALPHA_GUIDE.ja.md)へ。Webブラウザの公開デモではできません |
 | 自分のMisePort公開先をワンクリックで作る | **いいえ（開発予定）** | 公開先のアカウント・制限の確認が必要 |
 
 ## 1. 現在試せる公開デモ（実際に試せる手順）
