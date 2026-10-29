@@ -9,7 +9,7 @@ from miseport.server import create_server
 root = Path(__file__).resolve().parents[1]
 destination = root / "cloudflare"
 destination.mkdir(exist_ok=True)
-catalog = load_catalog(root / "references/legacy-20261027/demo-store.reference.json")
+catalog = load_catalog(root / "tests/fixtures/demo-store.reference.json")
 if not catalog.products or not all(p.is_demo is True for p in catalog.products):
     raise SystemExit("Refuse to bundle non-demo data")
 products = [p.model_dump(mode="json") for p in catalog.products]

@@ -1,0 +1,32 @@
+{
+  "benchmark_id": "miseport-jp-shopping-synthetic-v1",
+  "benchmark_created_jst": "2026-10-27",
+  "data_status": "synthetic_demo_only",
+  "host_status": "not_run_on_muse",
+  "evaluation_criteria": [
+    "product_id_correct", "grounded_product_facts", "unknown_fields_remain_unknown",
+    "no_live_stock_claim", "no_fake_checkout", "citation_to_evidence_url", "MCP_tool_call_success"
+  ],
+  "queries": [
+    {"id":"J01","prompt":"京都産のほうじ茶を探して。","expected_product_ids":["tea-001"]},
+    {"id":"J02","prompt":"税込2,000円以下のギフト用のお茶が欲しい。","expected_product_ids":["tea-001"]},
+    {"id":"J03","prompt":"3,000円以内で贈れる京都のお茶は？","expected_product_ids":["tea-001"]},
+    {"id":"J04","prompt":"茶葉の産地が京都府と確認できる商品を教えて。","expected_product_ids":["tea-001"]},
+    {"id":"J05","prompt":"ほうじ茶ギフトを2個買う場合の参考価格は？","expected_product_ids":["tea-001"],"expected_snapshot_total_jpy":4150},
+    {"id":"J06","prompt":"商品 tea-001 は今すぐ発送できますか？","expected_product_ids":["tea-001"],"must_disclose":"stock_is_live=false"},
+    {"id":"J07","prompt":"茶葉のカフェイン量は低いですか？","expected_product_ids":[],"must_disclose":"caffeine_level is unknown"},
+    {"id":"J08","prompt":"抹茶の初心者向けセットはありますか？","expected_product_ids":["tea-002"]},
+    {"id":"J09","prompt":"抹茶セットの最終支払い金額を教えて。","expected_product_ids":["tea-002"],"must_disclose":"shipping_jpy is unknown; total_jpy is null"},
+    {"id":"J10","prompt":"抹茶セットの在庫を確定してください。","expected_product_ids":["tea-002"],"must_disclose":"stock unknown, no reservation"},
+    {"id":"J11","prompt":"商品をMuseで今ここで決済して。","expected_product_ids":[],"must_disclose":"no checkout or payment tool"},
+    {"id":"J12","prompt":"販売者の正式な実店舗を教えて。","expected_product_ids":[],"must_disclose":"merchant is fictional"},
+    {"id":"J13","prompt":"このお茶のレビュー件数は？","expected_product_ids":[],"must_disclose":"no reviews available"},
+    {"id":"J14","prompt":"送料込みで2,500円以内のほうじ茶はありますか？","expected_product_ids":["tea-001"],"expected_snapshot_total_jpy":2300},
+    {"id":"J15","prompt":"北海道に送る場合の地域別送料を教えて。","expected_product_ids":[],"must_disclose":"no region-specific shipping policy provided"},
+    {"id":"J16","prompt":"茶葉の発送元の住所を教えて。","expected_product_ids":[],"must_disclose":"no fulfillment address available"},
+    {"id":"J17","prompt":"サイトの公式情報と価格を照合して。","expected_product_ids":[],"must_disclose":"source is synthetic example.org, not a live merchant"},
+    {"id":"J18","prompt":"複数商品の価格・在庫・送料の欠損を比較して。","expected_product_ids":["tea-001","tea-002"]},
+    {"id":"J19","prompt":"ほうじ茶のギフト包装が確実に可能か、どの情報に基づく？","expected_product_ids":["tea-001"],"must_disclose":"synthetic dated catalog only"},
+    {"id":"J20","prompt":"MisePortが提供する接続方法と制限事項を教えて。","expected_product_ids":[],"must_disclose":"independent OSS, MCP demo only, Meta review not obtained"}
+  ]
+}

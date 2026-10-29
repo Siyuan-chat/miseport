@@ -11,9 +11,14 @@ import queue
 import threading
 from urllib.parse import urlsplit
 
-from .base_v2 import BaseV2Client, BaseAPIError, map_base_items
-from .importers import save_catalog
+from .base_v2 import BaseAPIError, map_base_items
+from .source_adapters import get_source_adapter
+from .importers import load_catalog
+from .refresh import commit_refresh, plan_refresh, RefreshError
 from .publisher import PublicationError, build_merchant_zip
+from .base_urls import (
+    BaseURLValidationError, candidate_product_urls, validate_manual_product_urls
+)
 
 
 def parse_product_urls(text: str) -> dict[int, str]:
@@ -40,11 +45,13 @@ def parse_product_urls(text: str) -> dict[int, str]:
 
 def preview_mapping(items: list[dict], merchant_id: str, merchant_name: str,
                     merchant_homepage: str, url_lines: str, is_demo: bool = False):
+    provided = parse_product_urls(url_lines)
+    validate_manual_product_urls(provided, merchant_homepage.strip())
     return map_base_items(
         items,
         merchant_id=merchant_id.strip(), merchant_name=merchant_name.strip(),
         merchant_homepage=merchant_homepage.strip(),
-        source_urls=parse_product_urls(url_lines), is_demo=is_demo,
+        source_urls=provided, is_demo=is_demo,
         snapshot_at=datetime.now(timezone.utc),
     )
 
@@ -68,6 +75,7 @@ def main():
     jobs = queue.Queue()
     items = []
     current = None
+    current_inputs = None
 
     def label(row, name, value="", width=30, secret=False):
         ttk.Label(row, text=name).pack(side="left", padx=(0, 8))
@@ -121,10 +129,18 @@ def main():
         tree.column(name, width=width)
     tree.pack(fill="both", expand=True)
 
-    ttk.Label(mapping_page, text="公開する商品のURLを確認して入力してください。"
-              " 1行につき「商品ID=https://実際の商品ページ」を指定します。"
-              " APIの管理用リンクから推測したURLは使いません。",
+    ttk.Label(mapping_page, text="BASEの商品ページ形式（店舗URL/items/商品ID）を使って、"
+              "確認済みの1商品からURL候補を一括生成できます。"
+              " 候補は実際のWebアクセス検証済みではありません。"
+              " 正しい店を開けるか、公開前に店主が確認してください。",
               wraplength=850).pack(anchor="w", pady=4)
+    sample_row = ttk.Frame(mapping_page)
+    sample_row.pack(fill="x", pady=4)
+    ttk.Label(sample_row, text="実際に確認した1商品のURL:").pack(side="left", padx=(0, 7))
+    sample_url = ttk.Entry(sample_row, width=48)
+    sample_url.pack(side="left", fill="x", expand=True)
+    candidate_btn = ttk.Button(mapping_page, text="商品URLの候補を一括生成")
+    candidate_btn.pack(anchor="w", pady=3)
     urls = tk.Text(mapping_page, height=8, wrap="none")
     urls.pack(fill="x", pady=6)
     review_status = tk.StringVar(value="まだ商品を取得していません。")
@@ -152,9 +168,10 @@ def main():
               wraplength=840).pack(anchor="w")
 
     def apply_items(received):
-        nonlocal items, current
+        nonlocal items, current, current_inputs
         items = received
         current = None
+        current_inputs = None
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
         consent.set(False)
@@ -180,7 +197,7 @@ def main():
 
         def worker(one_time_token):
             try:
-                result = BaseV2Client().fetch_items(one_time_token)
+                result = get_source_adapter("base").fetch_public(one_time_token)
                 jobs.put(("success", result))
             except BaseAPIError as error:
                 jobs.put(("error", str(error)))
@@ -204,8 +221,40 @@ def main():
             messagebox.showerror("接続エラー", value)
         root.after(120, poll)
 
+    def review_inputs():
+        return (merchant_id.get(), merchant_name.get(), homepage.get(),
+                urls.get("1.0", "end").strip())
+
+    def auto_urls():
+        nonlocal current, current_inputs
+        if not items:
+            messagebox.showwarning("商品URL", "BASEから商品を読み込んでください。")
+            return
+        if not messagebox.askyesno("商品URLの一括生成",
+                "サンプルURLを実際のショップ画面で確認しましたか？\n"
+                "BASEの標準URLルールを使って候補を生成します。"
+                " ほかの商品URLは必ずしもWeb実測済みではありません。"):
+            return
+        try:
+            candidates = candidate_product_urls(items, homepage.get().strip(),
+                sample_url.get().strip(), merchant_confirmed=True)
+        except BaseURLValidationError as exc:
+            messagebox.showerror("URLを確認してください", str(exc))
+            return
+        urls.delete("1.0", tk.END)
+        urls.insert("1.0", "\n".join(str(k) + "=" + v
+                    for k, v in sorted(candidates.items())))
+        current = None
+        current_inputs = None
+        consent.set(False)
+        export_btn.configure(state="disabled")
+        bundle_btn.configure(state="disabled")
+        review_status.set(str(len(candidates)) + "件のURL候補を生成しました。"
+            " API商品IDに基づく候補です。公開前に確認してからデータ審査を押してください。")
+        tabs.select(mapping_page)
+
     def review():
-        nonlocal current
+        nonlocal current, current_inputs
         try:
             if not items:
                 raise ValueError("まずBASEから商品を取得してください。")
@@ -218,8 +267,10 @@ def main():
             export_btn.configure(state="disabled")
             bundle_btn.configure(state="disabled")
             current = None
+            current_inputs = None
             return
         current = result
+        current_inputs = review_inputs()
         consent.set(False)
         summary = result.summary()
         message = (str(summary["mapped_products"]) + "件の公開候補。"
@@ -232,7 +283,7 @@ def main():
         bundle_btn.configure(state="normal" if result.publishable else "disabled")
 
     def save():
-        if current is None or not current.publishable:
+        if current is None or not current.publishable or current_inputs != review_inputs():
             messagebox.showwarning("確認", "商品情報をすべて確認してください。")
             return
         if not consent.get():
@@ -242,16 +293,36 @@ def main():
             title="カタログJSONを保存", defaultextension=".json",
             filetypes=[("JSON", "*.json")], initialfile="miseport-catalog.json")
         if filename:
+            path = Path(filename)
             try:
-                save_catalog(current.catalog, Path(filename))
-            except (OSError, ValueError):
-                messagebox.showerror("保存失敗", "保存できませんでした。保存先を確認してください。")
+                old = load_catalog(path) if path.exists() else None
+                changes = plan_refresh(old, current)
+                approve_removed = False
+                if changes.removed:
+                    approve_removed = messagebox.askyesno(
+                        "削除される商品を確認",
+                        str(len(changes.removed)) + "件が今回の公開対象から削除されます。"
+                        "前回のファイルは、新しい完全な情報で置き換えられます。"
+                        "削除を承認しますか？"
+                    )
+                    if not approve_removed:
+                        return
+                commit_refresh(path, current, approve_removed=approve_removed)
+            except (OSError, ValueError, RefreshError):
+                messagebox.showerror("保存失敗",
+                    "保存先・店舗情報・前回のカタログを確認してください。"
+                    " 古い正常なファイルを勝手に上書きしません。")
             else:
-                messagebox.showinfo("保存しました", "ローカルのJSONに保存しました。\n"
-                    "これはクラウド公開やリアルタイム同期を意味しません。")
+                messagebox.showinfo("保存しました",
+                    "追加" + str(len(changes.added)) + "件 / "
+                    "変更" + str(len(changes.changed)) + "件 / "
+                    "削除" + str(len(changes.removed)) + "件。\n"
+                    "ローカルに完全な商品カタログを保存しました。"
+                    " 公開済みクラウドは自動更新されません。")
 
     def save_bundle():
-        if current is None or not current.publishable or not consent.get():
+        if (current is None or not current.publishable or not consent.get()
+                or current_inputs != review_inputs()):
             messagebox.showwarning("確認", "公開対象と商品URLを店主が確認してください。")
             return
         name = filedialog.asksaveasfilename(
@@ -273,6 +344,7 @@ def main():
                 " 商店のCloudflare Pagesで手動配置とURL確認が必要です。")
 
     btn.configure(command=fetch)
+    candidate_btn.configure(command=auto_urls)
     bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
     export_btn.configure(command=save)

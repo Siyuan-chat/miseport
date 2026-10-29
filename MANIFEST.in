@@ -1,21 +1,27 @@
-# RELEASE BLOCKER (2026-10-29): CURRENT DEVELOPMENT MANIFEST IS NOT CLEAN FOR v0.1 MERCHANT RELEASE.
-# This recursively includes internal docs, PROJECT_STATUS and historical references. BEFORE THE 11/10 TAG,
-# use docs/RELEASE_PUBLICATION_POLICY.ja.md and Issue #10 to replace it with explicit PUBLIC files,
-# migrate required sanitized fixtures, and inspect the actual sdist/wheel/source archives. NOT FOR PUBLIC RELEASE AS-IS.
-include README.en.md README.ja.md Dockerfile Dockerfile.http .dockerignore PROJECT_STATUS.md SECURITY.md
+# Public Python source distribution allowlist. Internal plans and legacy archive are excluded.
+# GitHub's automatic source ZIP still requires the 11/10 pre-tag repository cleanup.
+include README.md README.en.md README.ja.md LICENSE SECURITY.md CHANGELOG.md CONTRIBUTING.md
+include Dockerfile Dockerfile.http .dockerignore .env.example
+include MANIFEST.in
 recursive-include examples *.json *.csv
-recursive-include docs *.md
-recursive-include assets *.svg *.png *.ico *.json *.md
-recursive-include site *.html
-recursive-include scripts *.py
-recursive-include references *.md *.json
-recursive-include .github *.yml *.yaml
+recursive-include tests *.py
+recursive-include tests/fixtures *.json
+include docs/API.md docs/CATALOG.md docs/CLOUDFLARE.md docs/HTTP_SERVICE.md docs/SDK.md
+include docs/ROADMAP.md docs/MUSE_CONNECT.ja.md docs/AGENT_GEO.ja.md
+include docs/PRODUCT_STRATEGY.ja.md docs/CONNECTOR_ARCHITECTURE.ja.md docs/PLATFORM_COMPATIBILITY.ja.md
+include docs/merchant/GUI_ALPHA_GUIDE.ja.md docs/merchant/SETUP_GUIDE.ja.md
+include assets/original/miseport-logo.png assets/original/miseport-brand-board.png assets/original/provenance.json
+include site/index.html
+include scripts/build_cloudflare_demo.py scripts/check_site.py scripts/export_schemas.py
+include scripts/package_cloudflare_pages.py scripts/probe_public_demo.py
+include scripts/verify_distribution.py scripts/audit_release.py scripts/release_preflight.py scripts/launch_gui.py
 include cloudflare/*.mjs cloudflare/*.json cloudflare/*.jsonc cloudflare/*.yaml
+include cloudflare/pnpm-lock.yaml cloudflare/pnpm-workspace.yaml
+include src/miseport/merchant_worker.js
+prune references
 prune cloudflare/node_modules
 prune cloudflare/public
 prune cloudflare/.wrangler
 prune cloudflare/bundle
+prune docs/evidence
 global-exclude *.pyc *.pyo
-
-# Merchant publication template must be available in source and wheel packages.
-include src/miseport/merchant_worker.js
