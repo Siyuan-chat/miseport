@@ -1,5 +1,7 @@
 # MisePort release gates
 
+> **Release artifact safety blocker:** [PUBLIC/INTERNAL classification](RELEASE_PUBLICATION_POLICY.ja.md) · [Issue #10](https://github.com/Siyuan-chat/miseport/issues/10). Internal plans, historical logs, old brand assets and archival references must not be in the 11/10 tag/source ZIP, sdist/wheel or merchant installer. Current MANIFEST.in is not release-clean. Existing public Git history is separate from artifact cleanup.
+>
 > **2026-10-29 superseding rule:** The definitive **2026-11-10 merchant-usable** release checklist is [RELEASE_2026-11-10.ja.md](RELEASE_2026-11-10.ja.md). It includes a **consented, real operating Japanese merchant public demo**, secured BASE read-only API ingestion, Japanese GUI and real-screen merchant guidance. The earlier synthetic-developer readiness items below do not satisfy this release by themselves. [Pilot agreement/recruitment](merchant/PILOT_2026-11-10.ja.md) / [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9). No candidate/permission has yet been verified.
 
 Reference: user-supplied 2026-10-27 checklist; reconciled 2026-10-29. Current status and evidence authority: `../PROJECT_STATUS.md` and `VALIDATION.md`. This is a checklist, not authorization to publish. The old 14-test record is historical; current local protocol evidence applies only to the current implementation.
