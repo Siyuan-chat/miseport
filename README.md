@@ -25,7 +25,9 @@
 
 ### 開発中の商店向けAlpha（2026-10-29）
 
-GitHubのソースには **BASE v2 βの読み取り専用商品取込、日語ローカルGUI、商店別MCP/REST配信ZIP生成** のAlphaコードが含まれます。開発環境では `miseport-gui`（GUI）と `miseport-publish`（配信ZIP生成）を試せます。BASEの公式商品ページ規則に基づき、店主が確認した**1件の公開商品URLから同一店舗の候補URLを一括生成**する試作も進めていますが、全件のHTTP検証はまだです。公開商品の更新は店主のレビューを通し、削除差分を確認してから保存します。さらに**BASEのCSV商品管理 App、Shopifyの商品CSVの読み取り専用インポート（Alpha）**を日語GUIに追加しています。CSVを使う場合、BASEはUTF-8/CP932、ShopifyはUTF-8を想定し、ShopifyのJPY価格・在庫拠点数は店主が確認します。正式な実店互換性やプラットフォームへの書戻しは未検証です。
+GitHubのソースには **BASE v2 βの読み取り専用商品取込、日語ローカルGUI、商店別MCP/REST配信ZIP生成** のAlphaコードが含まれます。開発環境では `miseport-gui`（GUI）と `miseport-publish`（配信ZIP生成）を試せます。BASEの公式商品ページ規則に基づき、店主が確認した**1件の公開商品URLから同一店舗の候補URLを一括生成**できます。さらに店主の明示操作で、最大30件の公開HTTPSページについてcanonical/OG URLを核查するAlpha機能があります。**全商品のネットワーク確認や価格・在庫の最新性は保証されません。**公開商品の更新は店主のレビューを通し、削除差分を確認してから保存します。さらに**BASEのCSV商品管理 App、Shopifyの商品CSVの読み取り専用インポート（Alpha）**を日語GUIに追加しています。CSVを使う場合、BASEはUTF-8/CP932、ShopifyはUTF-8を想定し、ShopifyのJPY価格・在庫拠点数は店主が確認します。正式な実店互換性やプラットフォームへの書戻しは未検証です。
+
+商店別MCP/REST配信ZIPの手動Cloudflareアップロード手順と、アップロード後に公開されたREST/MCPのバージョンと商品を確認する日語GUIテストも追加しました（**実商店の公開先は未検証**）。
 
 **実店舗のBASE API接続、Windows GUI実機の店主受入、商店自身のCloudflare公開、Muse自然検索での発見、11/10正式Releaseはいずれも未検証です。** Alpha実装があることと一般商店向け正式対応は区別してください。[Alpha操作ガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md)。
 
