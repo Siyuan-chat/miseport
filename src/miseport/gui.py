@@ -815,7 +815,7 @@ def main():
                 }
                 smoke_report.parent.mkdir(parents=True, exist_ok=True)
                 smoke_report.write_text(
-                    json.dumps(result, ensure_ascii=False, indent=2) + "\\n",
+                    json.dumps(result, ensure_ascii=False, indent=2) + "\n",
                     encoding="utf-8")
             finally:
                 root.destroy()
