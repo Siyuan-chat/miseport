@@ -403,10 +403,11 @@ def main():
             return
         link_btn.configure(state="disabled")
         snapshot = review_inputs()
+        saved_homepage = homepage.get().strip()
         link_probe_status.set("公開ページを確認しています。途中結果を公開することはありません。")
         def worker():
             try:
-                report = check_product_urls(addresses, homepage.get().strip()).summary()
+                report = check_product_urls(addresses, saved_homepage).summary()
                 jobs.put(("url_result", (snapshot, report)))
             except (ValueError, OSError):
                 jobs.put(("url_error", (snapshot,
