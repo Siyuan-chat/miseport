@@ -18,6 +18,12 @@ MisePort is being developed as a **self-service tool for independent Japanese me
 
 **November 10 merchant release target:** a real shop's **authorized BASE read-only product sync**, Japanese no-code GUI, merchant-controlled MCP/REST publishing, actual Japanese walkthrough video, and **one public demo featuring a real operating Japanese merchant with separate publication consent**. These are **planned, not yet implemented or approved**; the current public demo remains fictional. [Release contract](docs/RELEASE_2026-11-10.ja.md) · [Consent-based pilot](docs/merchant/PILOT_2026-11-10.ja.md) · [Internal development plan (Chinese)](docs/DEVELOPMENT_PLAN.zh-CN.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9).
 
+## Merchant Alpha code (not production-ready)
+
+The source checkout now includes a **read-only BASE API v2 beta importer**, a Japanese local GUI (`miseport-gui`), a merchant-owned read-only Cloudflare MCP/REST ZIP builder (`miseport-publish`), and source-adapter/safe-refresh components. The GUI can propose public product URL candidates from **one merchant-confirmed example** using BASE's documented `/items/{id}` route. Those candidates have **not** been independently checked over HTTP and require merchant review.
+
+**Not yet validated:** live BASE merchant credentials, Windows GUI real-user operation, production merchant deployment, Muse organic discovery, or the November 10 merchant release. Existing `miseport.pages.dev` remains the fictional demonstration. [Japanese Alpha guide](docs/merchant/GUI_ALPHA_GUIDE.ja.md).
+
 ## Quick start
 
 Requires Python 3.10 or newer. From the project directory:
