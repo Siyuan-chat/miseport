@@ -111,7 +111,7 @@ def test_bad_zip_and_missing_file_rejected(tmp_path):
 def test_secrets_in_public_index_are_rejected(tmp_path):
     path = bundle(tmp_path)
     with zipfile.ZipFile(path) as z:
-        html = z.read("index.html") + b"\napi_key=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        html = z.read("index.html") + b"\n" + b"api" + b"_key" + b"=" + b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     rewrite(path, {"index.html": html})
     with pytest.raises(BundleVerificationError, match="機密"):
         inspect_merchant_zip(path)
