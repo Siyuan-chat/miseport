@@ -60,6 +60,8 @@ def merchant_deploy_guide(origin: str) -> MerchantDeployGuide:
         "「Get started」→「Drag and drop your files」を選びます。"
         " Direct Upload方式を選ぶと、同じプロジェクトを後からGit連携へ直接切り替えられません。",
         "4. 入力した公開ドメインと同じプロジェクト名で作成し、保存したZIPをドラッグ＆ドロップします。"
+        " Cloudflareで実際に発行されたURLが入力した公開ドメインと異なる場合、" 
+        " ZIPをアップロードせず、MisePortで正しいURLを入力して再生成してください。" 
         " 画面の内容を確認して「Deploy site」を押します。MisePortは自動でアップロードしません。",
         "5. ご自身のブラウザでHTTPS公開ページ・/healthz・/api/productsを確認します。"
         " 対応するMCPクライアントで/mcpへの接続も確認します。"
