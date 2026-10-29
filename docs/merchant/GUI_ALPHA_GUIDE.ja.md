@@ -47,3 +47,9 @@
 公式BASE API資料: https://apiv2.thebase.com/docs/
 
 公式のBASE商品ページ構成: https://docs.thebase.in/template/directory/page/
+
+## 商店専用ZIPの公開前チェック（Alpha）
+
+MisePortのZIP生成コードは、**正常な旧ZIPを上書きする前に**公開用ファイルの一覧とハッシュ・生成した商品CatalogとMCP Workerの一致・公開先ドメインを確認します。検証に失敗した場合は旧ファイルを維持し、配信を行いません。
+
+技術者が手動で検証する場合は、開発環境で `miseport-verify-bundle merchant.zip --origin https://your-store.pages.dev` を実行できます。返却されるのは検証結果であり、**クラウドへのデプロイやMuseからの到達確認ではありません**。商店が商品公開を許可したことの法的証明や最新の在庫保証でもありません。
