@@ -8,6 +8,22 @@
 
 本项目**内部研发讨论、计划、技术方案、任务管理默认使用中文**；面向日本商家的 README、操作手顺书、界面、FAQ、视频字幕使用**日语**；国际开发者文档保留**英文**。
 
+## 第一轮开发实际结果（2026 年 10 月 29 日）
+
+> **代码已提交至独立分支，尚未合并正式 main；本节是进度记录，不等于商家版正式验收。**
+
+- **GitHub 分支：** [feat/merchant-sprint-01](https://github.com/Siyuan-chat/miseport/tree/feat/merchant-sprint-01)
+- **代码审查：** [Draft PR #14](https://github.com/Siyuan-chat/miseport/pull/14)（14 个文件，包括 Python BASE API、商品 Mapper、日语 GUI、Cloudflare 商家 MCP/REST、打包和测试）
+- **S1-01 / S1-02：** BASE v2 β 商品的只读分页、异常与安全处理及普通商品/变体映射，**模拟 API 测试通过**。未在有授权的实际 BASE 店铺调用。
+- **S1-03：** 已实现本地日语 GUI 的连接/查看/审计/JSON/商家 ZIP 导出原型。**Windows Alpha EXE 构建已成功**，但实际 Windows 桌面操作、普通店主验收及签名未完成。
+- **S1-04：** 架空商品生成商家专属 Cloudflare Pages ZIP，Node 测试已调用生成的 HTTP MCP initialize、tools/list、tools/call、报价与 JSON-LD。**尚未在实际商家自有域名部署**。
+- **S1-05：** 发布归档敏感信息/内部文件审核工具已实现并测试，但现有 MANIFEST 内部文档递归收录仍待在正式标签前清理（Issue #10）。
+- **S1-06：** [日语 GUI Alpha 操作说明](https://github.com/Siyuan-chat/miseport/blob/feat/merchant-sprint-01/docs/merchant/GUI_ALPHA_GUIDE.ja.md)已编写，真实演示视频尚未录制。
+
+**CI 证据：** [完整矩阵 8/8 通过，Python 167 项测试通过](https://github.com/Siyuan-chat/miseport/actions/runs/40806005768)；[Windows Alpha 编译通过](https://github.com/Siyuan-chat/miseport/actions/runs/40806005935)。以上为代码和模拟数据验证。
+
+**11/10 仍有硬性阻断项：** 真实商店参与和读取/展示授权 [#9](https://github.com/Siyuan-chat/miseport/issues/9)；BASE 商品公开 URL 的批量自动核验 [#13](https://github.com/Siyuan-chat/miseport/issues/13)；真正可供商家独立使用的 Windows GUI / 云端部署验收；正式发布前内部资料清理 [#10](https://github.com/Siyuan-chat/miseport/issues/10)。严禁将当前 Alpha 等同于商家正式版。
+
 ## 一、目标与不可妥协的验收标准
 
 **MisePort 是免费优先、开源、商家自主管理商品数据的 Agent Commerce 工具，不是集中式比价平台。** 用户无需编写代码，通过自己的店铺账号授权读取商品，经审核后生成供 Muse 等 AI Agent 使用的公开商品数据与接口。
