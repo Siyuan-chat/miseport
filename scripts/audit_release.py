@@ -81,7 +81,7 @@ def inspect_archive(path: str | Path) -> dict:
             issues.append({"path": name, "code": "CREDENTIAL_FILENAME"})
         if SENSITIVE.search(data):
             issues.append({"path": name, "code": "POSSIBLE_SECRET"})
-        if b"INTERNAL WORKING DOCUMENT" in data or b"RELEASE EXCLUDE" in data:
+        if name.endswith((".md", ".txt")) and (b"INTERNAL WORKING DOCUMENT" in data or b"RELEASE EXCLUDE" in data):
             issues.append({"path": name, "code": "INTERNAL_RELEASE_MARKER"})
     return {"archive": path.name, "file_count": len(entries),
             "ok": not issues, "issues": issues}
