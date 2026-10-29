@@ -10,6 +10,12 @@ MisePort is a local product-catalog bridge for Japanese shops and AI assistants.
 
 **Public synthetic demo:** [Website](https://miseport.pages.dev/) · [Connection guide](https://miseport.pages.dev/docs/) · [OpenAPI](https://miseport.pages.dev/openapi.json). MCP endpoint: `https://miseport.pages.dev/mcp`. All seven read-only tools passed a real public HTTP MCP client test on 2026-10-29. The account-local Muse custom connector passed two rounds of MCP testing on 2026-10-29 ([evidence](docs/MUSE_INTEGRATION.md)); this does not establish public directory approval or production merchant readiness. Demo products are fictional and dated snapshots. Source: [Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport). See [Cloudflare deployment](docs/CLOUDFLARE.md) and [Python HTTP service](docs/HTTP_SERVICE.md).
 
+## Product direction: merchant-owned, local-first, free-first
+
+MisePort is being developed as a **self-service tool for independent Japanese merchants**, not as a centralized product marketplace or comparison engine. The next merchant-facing experience aims to let people import a store CSV, check missing facts and export portable product data **without writing code, registering for MisePort, or paying for software**. Publishing a remotely callable MCP endpoint remains optional and requires a merchant-controlled public host; external free-tier limits and accounts still apply. Open catalog contracts and adapters will let other commerce/agent services integrate without requiring MisePort to aggregate merchant data.
+
+**This no-code browser experience is planned, not implemented in v0.1.** [Product strategy and boundaries (Japanese)](docs/PRODUCT_STRATEGY.ja.md) · [Current status](PROJECT_STATUS.md).
+
 ## Quick start
 
 Requires Python 3.10 or newer. From the project directory:
