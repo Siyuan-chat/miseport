@@ -741,7 +741,6 @@ def main():
         # in an isolated virtual display. No API call or real shop data.
         def capture_actual_gui():
             from PIL import ImageGrab
-            import json as _json
             capture_dir.mkdir(parents=True, exist_ok=True)
             merchant_id.delete(0, tk.END)
             merchant_id.insert(0, "demo-shop")
@@ -749,7 +748,7 @@ def main():
             homepage.delete(0, tk.END)
             homepage.insert(0, "https://example.org/")
             sample_url.insert(0, "https://example.org/items/101")
-            urls.insert("1.0", "101=https://example.org/items/101\\n"
+            urls.insert("1.0", "101=https://example.org/items/101\n"
                         "102=https://example.org/items/102")
             status.set("【架空デモ画面】商品データを確認する例です。")
             review_status.set("【画面説明用・架空商品】審査が完了した記録ではありません。")
@@ -774,9 +773,9 @@ def main():
             mapping_canvas.yview_moveto(1)
             screenshot("03-publish-steps.png")
             (capture_dir / "README.txt").write_text(
-                "Real MisePort Tkinter GUI screenshots made with synthetic data.\\n"
-                "No actual merchant, PAT, Cloudflare account, or production acceptance.\\n"
-                "Order: source and products / review / publishing actions.\\n",
+                "Real MisePort Tkinter GUI screenshots made with synthetic data.\n"
+                "No actual merchant, PAT, Cloudflare account, or production acceptance.\n"
+                "Order: source and products / review / publishing actions.\n",
                 encoding="utf-8"
             )
             root.destroy()
