@@ -1,6 +1,6 @@
 # Deployment and submission preparation — draft
 
-This document is a preparation guide. It does not certify deployment, security review, Muse eligibility, or submission acceptance.
+Historical preparation guide (written before the public demo). **Current update — 2026-10-29:** the fictional, read-only Cloudflare demo and HTTP MCP endpoint are live at https://miseport.pages.dev/ and https://miseport.pages.dev/mcp; independent public MCP tests and account-local Muse custom-connector tests have been recorded. See [current status](../PROJECT_STATUS.md), [Cloudflare evidence](CLOUDFLARE.md), and [Muse evidence](MUSE_INTEGRATION.md). This does not establish production merchant readiness, security approval, public Muse directory admission, or any checkout capability. The remainder of this file describes the initial local-only plan and its boundaries.
 
 ## What exists in this scope
 
@@ -9,7 +9,7 @@ This document is a preparation guide. It does not certify deployment, security r
 - Seven MCP tools: `about_miseport`, `search_products`, `get_product`, `check_inventory`, `get_quote`, `audit_catalog`, `export_product_jsonld`.
 - A static bilingual landing-page draft in `site/index.html`.
 
-There is no public MCP service in this scope. Serving the HTML page does not make the stdio process remotely accessible. No payment, order, checkout, reservation, or customer-account capability is included.
+The initial local-only scope had no public MCP service. A separate, synthetic-only HTTP MCP implementation has since been deployed (see current update above). Serving only HTML still does not expose a local stdio process remotely. No payment, order, checkout, reservation, or customer-account capability is included.
 
 ## Local installation review
 
@@ -34,6 +34,6 @@ The static HTML draft has no analytics, external font, contact form, or purchase
 
 ## Muse / November 10 readiness
 
-Muse participation, supported integration type, submission requirements, review timelines, and brand usage have **not been verified**. Confirm current official requirements before drafting a final submission. November 10 is a planning target only; neither review completion nor acceptance can be promised.
+At the time of this draft Muse integration had not been verified. Account-local custom-connector tests have now been recorded, but public admission, submission status, and review timelines remain unverified. Confirm current official requirements before drafting a final submission. November 10 is a planning target only; neither review completion nor acceptance can be promised.
 
 Before any public submission, record the official requirements and date checked; replace demo data only with authorized data; verify the repository and domain; provide reproducible installation evidence, real test results, support ownership, and a truthful privacy statement. Keep unsupported claims out of the site and submission.
