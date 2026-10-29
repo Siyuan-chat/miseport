@@ -1,25 +1,33 @@
-# MisePort roadmap — reconciled 2026-10-29
+# MisePort Roadmap — 11/10 Merchant-Usable Release
 
-**Detailed controlling plan for v0.1 → merchant v0.2/v0.3:** [DEVELOPMENT_PLAN.ja.md](DEVELOPMENT_PLAN.ja.md) (2026-10-29; dated release gates, acceptance tests, risks). The short historical table below is retained for provenance. GitHub Issues [#1–#8](https://github.com/Siyuan-chat/miseport/issues) track the current backlog.
+**Updated 2026-10-29 JST.** This page replaces the earlier developer-only 11/10 schedule. Planned milestones are not delivered capabilities. [Current evidence/status](../PROJECT_STATUS.md) · [Japanese detailed development plan](DEVELOPMENT_PLAN.ja.md) · [Hard release contract](RELEASE_2026-11-10.ja.md).
 
-Brand and launch target come from the user's original charter: MisePort, 2026-11-10 JST. The old Oct 27–Nov 10 dates are historical planning, not proof those stages ran. **Current 2026-10-29 status:** public source, GitHub CI, a fictional Cloudflare HTTP/MCP demo, and account-local Muse connector validation have been recorded. The roadmap below is a planning baseline; production merchant integrations, independent brand approval and external submissions remain open and require the relevant authorization. `../PROJECT_STATUS.md` is the single current state entry.
+## P0: by 2026-11-10, a shop owner can actually use MisePort
 
-| Window (JST) | Deliverable / exit criterion |
-|---|---|
-| Oct 29 | Reconcile recovered legacy source, current tested core and original brand; preserve input identity and incompatible API/schema differences |
-| Oct 30–31 | Review original-logo production and schema/API decisions for audit, merchant provenance, quote/JSON-LD and legacy adapters; complete only selected, tested scope |
-| Nov 1–2 | Finish local packaging/CI/container verification; choose and independently test remote SDK/transport before any hosted-service claim |
-| Nov 3–4 | Validate bilingual website on desktop/mobile; prepare actual host/domain, SEO metadata and deployment/rollback materials |
-| Nov 5–6 | Verify Muse eligibility; run fixture-bound 20-query client benchmark if access is available; otherwise document exact block and independent protocol results |
-| Nov 7–8 | Candidate security/license/content review, original brand assets, demo and community drafts; obtain any needed external-action authorization |
-| Nov 9–10 | Final maintainer-controlled release gates; publish/deploy/submit only when authorized and ready; record evidence and outstanding third-party review separately |
+- A merchant without programming skills can launch a Japanese Windows GUI and connect **their own BASE shop using official read-only API credentials**, fetch public products, review variants/prices/sources, and manually resync.
+- The merchant can generate a shop-specific public-only catalog, JSON-LD and read-only MCP/REST hosting ZIP and deploy it at an **authorized merchant-controlled HTTPS URL** using documented steps.
+- **At least one actual operating Japanese ecommerce merchant** has separately consented to data extraction and to public use of their name/URL/product examples/video. Publish a truthful real-store Agent query demo and dated case; a synthetic shop or unapproved/publicly scraped storefront does not count.
+- Versioned distribution, validated Windows merchant workflow, secret-safe tests, Japanese screenshot manual and real-screen subtitled video are published.
+- Optional CSV fallback is useful but **not a substitute for the API-auto-ingestion requirement**. No payments, central product index or promise of Agent automatic discovery.
 
-Recovered evidence audit, merchant attributes, snapshot quotes, inventory queries and Product JSON-LD have now been implemented locally with a validated legacy adapter and regression tests. The demo-only hosted service and account-local Muse client evaluation now have recorded acceptance evidence; final brand approval, real merchant integration and community/public-directory submissions remain separate gates. See `LEGACY_BASELINE.md` and `API.md`.
+### Critical path
 
-Repository [Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport) is now public and uploaded, with seven successful GitHub CI jobs (see `GITHUB_TESTING.md`). Domain `miseport.dev`, optional docs alias and `api.miseport.dev/mcp` remain planned targets. Merchant outreach, OAuth/platform integration, transactions, domain purchases and external directory/platform submissions are not activated by the old roadmap. No promise is made about third-party approval or merchant uptake by Nov 10.
+| Date JST | Execution gate | Tracking |
+| --- | --- | --- |
+| **10/29** | Freeze merchant-ready scope; publish consent-based recruitment plan; check BASE API and existing core | [Release](RELEASE_2026-11-10.ja.md), [Pilot](merchant/PILOT_2026-11-10.ja.md) |
+| **10/30–10/31** | Build BASE API mock and local GUI/security prototype; identify/contact 2–3 eligible merchants by authorized means; reach provisional participation | [#1](https://github.com/Siyuan-chat/miseport/issues/1), [#7](https://github.com/Siyuan-chat/miseport/issues/7), [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
+| **11/01** | Target one shop's separate extraction/publication permissions; successfully read real BASE API data | [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
+| **11/02–11/05** | Finish review/audit and merchant-specific deploy ZIP; obtain a distinct, merchant-approved HTTPS MCP/REST endpoint | [#2](https://github.com/Siyuan-chat/miseport/issues/2), [#8](https://github.com/Siyuan-chat/miseport/issues/8) |
+| **11/06–11/08** | Windows distribution and independent nontechnical test; capture real shop demo and Japanese captions with permission; Agent client tests | [#4](https://github.com/Siyuan-chat/miseport/issues/4), [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
+| **11/09–11/10** | Merchant final approval, CI/security/rights and rollback review, GitHub Release and **one real-shop public case** | [#6](https://github.com/Siyuan-chat/miseport/issues/6) |
 
-## Product direction frozen on 2026-10-29
+**Blocking dependency:** a real operating seller must consent and have eligible shop API access; there is **no confirmed participant as of this plan**. If not obtained, state that the release criterion is unmet. Do not label an internal synthetic demo as an external merchant success. Do not contact merchants or use real accounts without authorized channels/permission.
 
-[Merchant-owned / local-first product charter (Japanese)](PRODUCT_STRATEGY.ja.md) is the controlling scope decision for **post-v0.1 merchant UX**: no central marketplace, open source and free-first, no-code browser import/export, optional merchant-owned hosting, versioned canonical contracts and adapters. The public demo remains synthetic-only; nontechnical self-service and actual merchant data deployment are **not implemented**. Do not expand the Nov 10 release into a centralized aggregator or payment service.
+## Post-launch (only after P0)
 
-After the v0.1 release gates, the **preferred merchant entry point is API auto-ingestion**, not manual CSV: (1) a Japanese no-code connection wizard and safe read-only credential handling, with BASE v2 beta PAT as the first proposed adapter; (2) official platform CSV/JSON import as a permanent fallback and verified output profiles for major platforms; (3) merchant-owned deployable read-only package with audited publish/update/rollback steps; (4) first authorized merchant pilot measuring setup time, field fidelity, sync updates and answer accuracy; then (5) Shopify, Color Me, makeshop and other adapters. **BYO Agent** may supply data using authorized official tools but is never required. Platform export must be tested separately from the write-back operation. Each supported platform ships with Japanese illustrated instructions, error recovery, and a real screen-capture demo. See [ADR-0002](CONNECTOR_ARCHITECTURE.ja.md), [compatibility matrix](PLATFORM_COMPATIBILITY.ja.md), [merchant manual](merchant/SETUP_GUIDE.ja.md) and [video plan](merchant/VIDEO_DEMO_PLAN.ja.md). Keep hosting-account requirements visible; do not claim zero-cost, one-click setup or API compatibility before verification.
+- Extend native APIs to approved Shopify/Color Me/makeshop/EC-CUBE integrations as eligible, with version-specific permissions.
+- Validate official platform CSV import **and** platform-compatible output separately; no writeback by default.
+- Add optional merchant-owned scheduled sync/Webhooks, open Adapter interface, richer evidence/quality checks, and repeatable Japanese Agent benchmark.
+- Remain free-first, single-shop-owned and protocol-independent; do not build a central marketplace.
+
+**History:** The Git repository retains the superseded v0.1-developer / v0.2-December roadmap in version history. [ADR-0001](PRODUCT_STRATEGY.ja.md) and [ADR-0002](CONNECTOR_ARCHITECTURE.ja.md) still define product ownership and authorization boundaries; this page controls the immediate release scope.
