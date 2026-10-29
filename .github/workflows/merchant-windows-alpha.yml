@@ -34,6 +34,36 @@ jobs:
           Get-Item dist/MisePort.exe | Select-Object Length, Name | Format-Table
           Get-FileHash -Algorithm SHA256 dist/MisePort.exe | Format-List
         shell: pwsh
+      - name: Launch the actual packaged Windows GUI (offline smoke test)
+        shell: pwsh
+        run: |
+          $report = Join-Path $env:RUNNER_TEMP 'miseport-gui-startup.json'
+          $exe = (Resolve-Path 'dist/MisePort.exe').Path
+          $arguments = '--smoke-test "' + $report + '"'
+          $process = Start-Process -FilePath $exe -ArgumentList $arguments -PassThru
+          if (-not $process.WaitForExit(60000)) {
+            $process.Kill($true)
+            throw "Packaged MisePort.exe did not complete its GUI startup check."
+          }
+          if ($process.ExitCode -ne 0) {
+            throw "Packaged MisePort.exe failed with exit code $($process.ExitCode)."
+          }
+          if (!(Test-Path -LiteralPath $report)) {
+            throw 'Packaged GUI did not create its offline startup report.'
+          }
+          $result = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
+          if ($result.status -ne 'ok' -or $result.scope -ne 'packaged_gui_startup_only') {
+            throw 'Packaged GUI startup checks failed.'
+          }
+          if ($result.network_used -ne $false -or $result.merchant_credentials_used -ne $false) {
+            throw 'Offline smoke test unexpectedly claims real merchant or network usage.'
+          }
+          foreach ($check in $result.checks.PSObject.Properties) {
+            if ($check.Value -ne $true) {
+              throw "Packaged GUI check failed: $($check.Name)"
+            }
+          }
+          Write-Host "Packaged Windows Tk GUI initialization passed (offline, no merchant acceptance)."
       - name: Prepare explicit alpha warning (not a production release)
         run: |
           @'
