@@ -1,4 +1,4 @@
-# MisePort 开发计划（中文版）v1.7
+# MisePort 开发计划（中文版）v1.8
 
 **制定日期：2026 年 10 月 29 日（日本时间）**
 **目标发布日期：2026 年 11 月 10 日**
@@ -50,7 +50,7 @@
 
 ## 第五轮：商家首次使用与公开核查（2026-10-29）
 
-- **PR #18（代码审查中）：** [商品 URL 检查和 Cloudflare 日语发布向导](https://github.com/Siyuan-chat/miseport/pull/18)。
+- **PR #18 已合并 main（提交 d566ab7b）：** [商品 URL 检查和 Cloudflare 日语发布向导](https://github.com/Siyuan-chat/miseport/pull/18)。模拟数据 CI 8/8 通过，Python 274 项测试通过；Windows Alpha 构建成功。这不等于真实店铺验收。
 - **商品页面核查：** 以商家确认的 BASE 商品 URL 为输入，仅在店主主动点击时读取最多 30 个同店铺 HTTPS 页面；通过已核验的公网 IP 建立 TLS 连接，不携带 BASE PAT、Cookie 或代理，也不自动跟随重定向。页面的 canonical/OG URL 与商品 ID 匹配才报告“确认”；404/410、重定向、缺少或冲突的页面证据分别列为不能确认的状态。该检查没有承诺对全部商家主题或页面的通用支持，**真实店铺尚未实测**。
 - **日语 GUI 优化：** 增加“批量检查 URL”以及“Cloudflare 发布步骤”，显示核查结果、打开 Cloudflare 管理页和官方说明、复制预计 MCP URL。ZIP 仍由店主控制，**不自动上传、不保存 Cloudflare 凭证**。
 - **Cloudflare 域名一致性：** 若 Cloudflare 分配的实际 pages.dev 地址与预先填入的地址不同，必须返回 MisePort 重建 ZIP；否则 Worker 的严格 Host 检查可能阻止公网请求。参照 [Cloudflare Direct Upload 官方说明](https://developers.cloudflare.com/pages/get-started/direct-upload/)。
@@ -60,7 +60,7 @@
 
 ## 第六轮：商家部署后的公开连接检查（2026-10-29）
 
-**代码 PR：** [#19 商家上传后的一键 MCP/REST 公网检查](https://github.com/Siyuan-chat/miseport/pull/19)（当前以实际 PR / CI 状态为准）。
+**PR #19 已合并 main（提交 8ad762b9）：** [商家上传后的一键 MCP/REST 公网检查](https://github.com/Siyuan-chat/miseport/pull/19)。功能在 Mock HTTP/MCP 下完成 Python 293 项测试并通过 8/8 CI，Windows Alpha 构建通过。**这些不是实际 Cloudflare 部署证明。**
 
 该轮在商家本地创建的发布 ZIP 中引入明确的`snapshot_at`健康信息，并实现不依赖 Cloudflare 账号或商店密钥的只读连接检查：
 
@@ -71,6 +71,12 @@
 - **测试：** 使用模拟 HTTP/MCP 成功、旧版本、错误 SKU、不同价格、错误工具、非公开域名和网络故障等用例；**真正的商家 Cloudflare 在线部署尚未发生**。
 
 **特别区分：** 本轮能测试“指定 URL 是否提供与 ZIP 对应的商品接口”，**不等于 Muse 自然发现该商店、Meta 官方登记成功或商家获得真实订单。** 下一步为店主实际 Windows 操作试用、公开 URL 的真实网络验收、商家自身 Cloudflare 部署、最终 11/10 发布包清理。
+
+### 当前已完成的本地商家技术路径
+
+到 2026-10-29，**六轮 PR #14—#19 已合并 main**。从代码视角，商家可以通过 BASE 只读 API 或 BASE/Shopify 官方 CSV Alpha 获取商品，在日语 GUI 中审查、按需检查公开 URL、对比和更新商品快照，生成独立只读 MCP/REST ZIP 并在本地核验；商家把 ZIP 上传到 Cloudflare 后，还可以主动检查公开网站/REST/MCP 是否与本地快照一致。
+
+**必须保留的验收边界：** 测试均以模拟商品、模拟商家或模拟 HTTP 为主。实际 Windows GUI 的店主独立操作、真实 BASE PAT、正式商家 CSV 完整兼容、商家自有 Cloudflare 实际部署、Meta Muse 对真实商品的调用、已授权公开案例和日语实录视频都还没有完成。11/10 Release 前仍需排除 GitHub 自动 Source Archive 中的内部资料和旧资产（Issue #10）。
 
 ## 一、目标与不可妥协的验收标准
 
