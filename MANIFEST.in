@@ -1,4 +1,4 @@
-include README.ja.md Dockerfile Dockerfile.http .dockerignore PROJECT_STATUS.md SECURITY.md
+include README.en.md README.ja.md Dockerfile Dockerfile.http .dockerignore PROJECT_STATUS.md SECURITY.md
 recursive-include examples *.json *.csv
 recursive-include docs *.md
 recursive-include assets *.svg *.png *.ico *.json *.md
