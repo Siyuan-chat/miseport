@@ -14,7 +14,7 @@ include assets/original/miseport-logo.png assets/original/miseport-brand-board.p
 include site/index.html
 include scripts/build_cloudflare_demo.py scripts/check_site.py scripts/export_schemas.py
 include scripts/package_cloudflare_pages.py scripts/probe_public_demo.py
-include scripts/verify_distribution.py scripts/audit_release.py scripts/launch_gui.py
+include scripts/verify_distribution.py scripts/audit_release.py scripts/release_preflight.py scripts/launch_gui.py
 include cloudflare/*.mjs cloudflare/*.json cloudflare/*.jsonc cloudflare/*.yaml
 include cloudflare/pnpm-lock.yaml cloudflare/pnpm-workspace.yaml
 include src/miseport/merchant_worker.js
