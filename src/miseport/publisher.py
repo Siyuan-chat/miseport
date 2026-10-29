@@ -135,6 +135,10 @@ def build_merchant_zip(catalog: Catalog, destination: str | Path, *, origin: str
         with zipfile.ZipFile(temp, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
             for name, body in sorted(entries.items()):
                 archive.writestr(name, body)
+        # Verify the complete packaged Worker and catalog before replacing
+        # any previous good merchant ZIP. An integrity failure leaves dest alone.
+        from .bundle_probe import inspect_merchant_zip
+        inspect_merchant_zip(temp, expected_origin=origin)
         os.replace(temp, dest)
     finally:
         if temp is not None and temp.exists():
