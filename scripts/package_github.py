@@ -1,4 +1,9 @@
-"""Create a reviewable source-only upload ZIP with explicit allowlists.
+"""DEVELOPMENT-ONLY GitHub upload helper; NOT a public merchant release packager.
+
+See docs/RELEASE_PUBLICATION_POLICY.ja.md and Issue #10: this currently
+includes internal docs and archives, and must not generate 11/10 release assets.
+
+Create a reviewable source-only upload ZIP with explicit allowlists.
 
 Original historical binary packages, environments, Git internals, credentials,
 local logs and caches are excluded. This script never connects to GitHub.
