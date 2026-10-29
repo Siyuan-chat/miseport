@@ -110,7 +110,7 @@ MisePortは**商店所有・ローカルファースト・無料優先**のオ�
 
 **これは次の開発段階の設計です。現行版にネイティブAPI自動読込、ブラウザでの商店CSV取込・商店別ワンクリック公開はありません。** APIキーは公開デモに入力せず、店舗所有の安全な環境で管理します。 [製品方針（ADR-0001）](docs/PRODUCT_STRATEGY.ja.md) · [自動接続とBYO認証設計（ADR-0002）](docs/CONNECTOR_ARCHITECTURE.ja.md) · [対応プラットフォーム](docs/PLATFORM_COMPATIBILITY.ja.md) · [商店主向け日本語手順書](docs/merchant/SETUP_GUIDE.ja.md) · [動画デモ制作計画](docs/merchant/VIDEO_DEMO_PLAN.ja.md)。
 
-**11/10商店実用版の必須目標:** BASE公式APIを使った公開商品自動取得、日本語の非技術者向けGUI、商店別のMCP/REST公開パッケージと実画面手順書／動画を提供し、**少なくとも1店の営業中の日本EC商店から公開許諾を得た実商品デモ**を発表することを目指します。これは**開発中の目標**であり、現在の公開デモは引き続き架空商品だけです。 [11/10受入基準](docs/RELEASE_2026-11-10.ja.md) · [実商店Pilot](docs/merchant/PILOT_2026-11-10.ja.md) · [詳細開発計画](docs/DEVELOPMENT_PLAN.ja.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)。
+**11/10商店実用版の必須目標:** BASE公式APIを使った公開商品自動取得、日本語の非技術者向けGUI、商店別のMCP/REST公開パッケージと実画面手順書／動画を提供し、**少なくとも1店の営業中の日本EC商店から公開許諾を得た実商品デモ**を発表することを目指します。これは**開発中の目標**であり、現在の公開デモは引き続き架空商品だけです。 [11/10受入基準](docs/RELEASE_2026-11-10.ja.md) · [実商店Pilot](docs/merchant/PILOT_2026-11-10.ja.md) · [内部開発計画（中国語）](docs/DEVELOPMENT_PLAN.zh-CN.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)。
 
 ### Museの「接続」と一般の商品検索は別
 
