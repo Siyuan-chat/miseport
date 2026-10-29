@@ -25,7 +25,7 @@ if len(sources) != 1:
     raise SystemExit("Expected one source archive")
 with tarfile.open(sources[0]) as archive:
     names = archive.getnames()
-    required = ["examples/products.json", "references/legacy-20261027/demo-store.reference.json",
+    required = ["examples/products.json", "tests/fixtures/demo-store.reference.json",
                 "assets/original/miseport-logo.png", "tests/test_legacy.py"]
     if not all(any(name.endswith("/" + suffix) for name in names) for suffix in required):
         raise SystemExit("Source archive is missing required test/data assets")
