@@ -16,6 +16,8 @@ MisePort is being developed as a **self-service tool for independent Japanese me
 
 **This no-code browser experience and native API auto-sync are planned, not implemented in v0.1.** Do not paste store tokens into the public synthetic demo. [Product charter](docs/PRODUCT_STRATEGY.ja.md) · [Read-only connector design](docs/CONNECTOR_ARCHITECTURE.ja.md) · [Platform compatibility](docs/PLATFORM_COMPATIBILITY.ja.md) · [Japanese merchant setup manual](docs/merchant/SETUP_GUIDE.ja.md) · [Video demo plan](docs/merchant/VIDEO_DEMO_PLAN.ja.md) · [Current status](PROJECT_STATUS.md).
 
+**Development schedule:** [staged roadmap (Japanese)](docs/DEVELOPMENT_PLAN.ja.md) · [tracked GitHub Issues](https://github.com/Siyuan-chat/miseport/issues). Planned milestones are not shipped product capabilities.
+
 ## Quick start
 
 Requires Python 3.10 or newer. From the project directory:
