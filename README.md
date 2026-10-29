@@ -4,7 +4,7 @@
 
 **日本の小さなお店を、AIエージェントへ。**
 
-**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [商店向けAlphaガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
+**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [商店向けAlphaガイド](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [実画面に基づく日本語手順](docs/merchant/VISUAL_GUIDE.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
 
 [![CI](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml/badge.svg)](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE) ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-0B2F54)
 
