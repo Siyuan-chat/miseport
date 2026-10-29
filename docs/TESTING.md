@@ -37,7 +37,11 @@ python scripts/check_gui_screenshots.py artifacts/gui-screenshots
 - Custom Connectorの個別成功 ≠ Meta公式Directory承認や一般購買質問での自動推薦。
 - JSON-LDファイル生成 ≠ 元ショップの商品ページへ構造化データが埋め込まれた。
 
+**安定した画面付き資料:** [実際のTkinter Alpha画面を3枚内蔵したオフライン日本語HTML](merchant/GUI_VISUAL_ALPHA.html)。画像は仮想ディスプレイで合成商品を表示して撮影したものです。商店所有のWindows実機の操作証明ではありません。
+
 ## 4. Releaseのファイル検査
+
+**公開Tag候補は [release/merchant-2026-11-10-rc](https://github.com/Siyuan-chat/miseport/tree/release/merchant-2026-11-10-rc) から検査します。** [Clean Release Preflight CI](https://github.com/Siyuan-chat/miseport/actions/workflows/clean-release-preflight.yml) ではGit追跡ファイルの内部資料除外、Markdown相対リンク検査と実際のsdist検査を行います。合格しても実店舗受入は別です。
 
 `scripts/audit_release.py`は公開ZIP/Python sdistのファイル内容を検査します。**GitHubのTag自動Source ArchiveはTagの全追跡ファイルを含む**ため、別途`python scripts/release_preflight.py`で内部資料・古い候補素材を除外したことを確認してからTagを発行します。すでに公開されたGit履歴は単純削除によって非公開にはなりません。
 
