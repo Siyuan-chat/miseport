@@ -13,7 +13,8 @@ def load_module(name, path):
     return mod
 
 
-def test_tag_preflight_blocks_development_docs_and_retired_assets():
+def test_tag_preflight_blocks_development_docs_and_retired_assets(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
     module = load_module("miseport_release_preflight", "scripts/release_preflight.py")
     dirty = [
         "README.md",
