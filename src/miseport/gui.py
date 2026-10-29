@@ -12,7 +12,8 @@ import threading
 from urllib.parse import urlsplit
 
 from .base_v2 import BaseV2Client, BaseAPIError, map_base_items
-from .importers import save_catalog
+from .importers import load_catalog
+from .refresh import commit_refresh, plan_refresh, RefreshError
 from .publisher import PublicationError, build_merchant_zip
 from .base_urls import (
     BaseURLValidationError, candidate_product_urls, validate_manual_product_urls
@@ -291,13 +292,32 @@ def main():
             title="カタログJSONを保存", defaultextension=".json",
             filetypes=[("JSON", "*.json")], initialfile="miseport-catalog.json")
         if filename:
+            path = Path(filename)
             try:
-                save_catalog(current.catalog, Path(filename))
-            except (OSError, ValueError):
-                messagebox.showerror("保存失敗", "保存できませんでした。保存先を確認してください。")
+                old = load_catalog(path) if path.exists() else None
+                changes = plan_refresh(old, current)
+                approve_removed = False
+                if changes.removed:
+                    approve_removed = messagebox.askyesno(
+                        "削除される商品を確認",
+                        str(len(changes.removed)) + "件が今回の公開対象から削除されます。"
+                        "前回のファイルは、新しい完全な情報で置き換えられます。"
+                        "削除を承認しますか？"
+                    )
+                    if not approve_removed:
+                        return
+                commit_refresh(path, current, approve_removed=approve_removed)
+            except (OSError, ValueError, RefreshError):
+                messagebox.showerror("保存失敗",
+                    "保存先・店舗情報・前回のカタログを確認してください。"
+                    " 古い正常なファイルを勝手に上書きしません。")
             else:
-                messagebox.showinfo("保存しました", "ローカルのJSONに保存しました。\n"
-                    "これはクラウド公開やリアルタイム同期を意味しません。")
+                messagebox.showinfo("保存しました",
+                    "追加" + str(len(changes.added)) + "件 / "
+                    "変更" + str(len(changes.changed)) + "件 / "
+                    "削除" + str(len(changes.removed)) + "件。\n"
+                    "ローカルに完全な商品カタログを保存しました。"
+                    " 公開済みクラウドは自動更新されません。")
 
     def save_bundle():
         if (current is None or not current.publishable or not consent.get()
