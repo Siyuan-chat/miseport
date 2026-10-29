@@ -5,6 +5,15 @@
 
 Updated: 2026-10-29 (Asia/Tokyo). Single state entry; maintained by primary agent.
 
+> **INTERNAL WORKING LOG — RELEASE EXCLUDE.** The existing public Git history cannot be made private by omitting this file from a Release asset. See [publication policy](docs/RELEASE_PUBLICATION_POLICY.ja.md) and [Issue #10](https://github.com/Siyuan-chat/miseport/issues/10). This log must be removed or replaced by a concise public STATUS before the 2026-11-10 tag.
+
+## Release publication and Muse discovery decision (2026-10-29)
+
+- The public development tree includes internal release planning, QA history, pilot recruitment and old brand/archive files. Explicit keep/review/remove classifications are in `docs/RELEASE_PUBLICATION_POLICY.ja.md`; **current MANIFEST.in and scripts/package_github.py are not release-safe**. They have warning markers; no deletion or history rewrite has occurred. Issue #10 is a hard release gate.
+- Meta's published Muse guidelines confirm three distinct pathways: account-local custom connector (MisePort 7-call synthetic test verified), official approved connector directory (MisePort not submitted/approved), and natural product discovery via browsing and compatible commercial catalogs (MisePort ranking/visibility not verified). See `docs/MUSE_CONNECT.ja.md`.
+- Agent GEO is defined as merchant-controlled accurate source pages/approved product feeds **plus** good read-only connector behavior where connected. A hosted MCP alone does not establish general discovery. See `docs/AGENT_GEO.ja.md` and Issue #11.
+- No changes to the runnable merchant API connector, GUI, actual shop deployment, Meta platform submission, external merchant contact or real case publication were made by this documentation work.
+
 ## Superseding 11/10 release requirement (2026-10-29)
 
 The maintainer now requires the **2026-11-10 release to be usable by a real Japanese merchant**, not only developers, and seeks **at least one publicly demonstrated, consented case from an operating Japanese ecommerce shop** at launch. P0 includes authorized BASE API real-product ingestion, Japanese no-code UX, secure owner-managed credentials, merchant-specific read-only MCP/REST publication, Japanese real-screen tutorial/video, and the real-merchant showcase with separate rights/publication approval. [Hard release gate](docs/RELEASE_2026-11-10.ja.md), [current execution plan](docs/DEVELOPMENT_PLAN.ja.md), [merchant consent/recruitment plan](docs/merchant/PILOT_2026-11-10.ja.md), [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9). The earlier timeline placing merchant capabilities in December is superseded. **All these new merchant-facing functions and the real-shop pilot remain unimplemented/unconfirmed at this status snapshot**. The project currently has no confirmed participating merchant, no merchant API token, no real shop production data, and no public real-shop demo. A third party's participation and publication approval cannot be guaranteed.
