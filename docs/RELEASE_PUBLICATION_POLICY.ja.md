@@ -25,7 +25,7 @@
 | パス | 11/10の扱い | 公開後に代わりとなるもの |
 |---|---|---|
 | `PROJECT_STATUS.md` | **INTERNAL-REMOVE**。自動テストの古い状況や運用履歴を含む | 公開 `docs/STATUS.md` と `CHANGELOG.md`、現行CIリンク |
-| `docs/DEVELOPMENT_PLAN.ja.md` | **INTERNAL-REMOVE**。作業日付、内部ゲート・担当割当 | 公開用 `docs/ROADMAP.md`（要書き直し） |
+| `docs/DEVELOPMENT_PLAN.zh-CN.md` | **INTERNAL-REMOVE**。作業日付、内部ゲート・担当割当 | 公開用 `docs/ROADMAP.md`（要書き直し） |
 | `docs/RELEASE_2026-11-10.ja.md`, `docs/RELEASE_CHECKLIST.md` | **INTERNAL-REMOVE**。公開可否判断の作業資料 | 完了した範囲のみRelease Notesへ |
 | `docs/merchant/PILOT_2026-11-10.ja.md` | **INTERNAL-REMOVE**。商店募集・同意フローの運用手順 | 本人が公開承認した実店舗Case Studyのみ |
 | `docs/merchant/VIDEO_DEMO_PLAN.ja.md` | **INTERNAL-REMOVE**。撮影スクリプト | 収録済み動画・字幕・操作手順リンク |
