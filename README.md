@@ -4,7 +4,7 @@
 
 **日本の小さなお店を、AIエージェントへ。**
 
-**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
+**日本語（このページ）** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [Muse接続方法と検索の仕組み](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
 
 [![CI](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml/badge.svg)](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE) ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-0B2F54)
 
@@ -112,6 +112,10 @@ MisePortは**商店所有・ローカルファースト・無料優先**のオ�
 
 **11/10商店実用版の必須目標:** BASE公式APIを使った公開商品自動取得、日本語の非技術者向けGUI、商店別のMCP/REST公開パッケージと実画面手順書／動画を提供し、**少なくとも1店の営業中の日本EC商店から公開許諾を得た実商品デモ**を発表することを目指します。これは**開発中の目標**であり、現在の公開デモは引き続き架空商品だけです。 [11/10受入基準](docs/RELEASE_2026-11-10.ja.md) · [実商店Pilot](docs/merchant/PILOT_2026-11-10.ja.md) · [詳細開発計画](docs/DEVELOPMENT_PLAN.ja.md) · [Issue #9](https://github.com/Siyuan-chat/miseport/issues/9)。
 
+### Museの「接続」と一般の商品検索は別
+
+MisePortの公開架空デモは**1つのMuseアカウント内のCustom Connector**で7回のツール呼び出しを実測していますが、Meta公認Directoryへの申請・掲載、未接続の一般ユーザーによる自然検索での表示や推薦は未検証です。[Muse接続と発見の仕組み](docs/MUSE_CONNECT.ja.md) · [個人AIエージェント向けGEO](docs/AGENT_GEO.ja.md)。
+
 ## 現在の対応範囲と今後の方向
 
 | 項目 | 2026-10-29時点 |
@@ -147,7 +151,7 @@ AI検索に読み取らせるための商品情報の整理・出典管理・構
 
 ## ドキュメント・開発参加
 
-[API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse実測記録](docs/MUSE_INTEGRATION.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [ブランドガイド](docs/BRAND.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [SEO/GEO運用方針](docs/SEO_GEO.md)
+[API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse実測記録](docs/MUSE_INTEGRATION.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [ブランドガイド](docs/BRAND.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [商店向けAgent GEO](docs/AGENT_GEO.ja.md)
 
 バグ報告・機能提案は[GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)へ。秘密情報や顧客情報は公開Issueに書き込まないでください。
 
