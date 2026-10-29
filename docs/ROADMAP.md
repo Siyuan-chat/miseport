@@ -1,6 +1,6 @@
 # MisePort roadmap — reconciled 2026-10-29
 
-Brand and launch target come from the user's original charter: MisePort, 2026-11-10 JST. The old Oct 27–Nov 10 dates are historical planning, not proof those stages ran. Current executable scope remains local development and reviewable drafts; external actions require their corresponding authorization. `../PROJECT_STATUS.md` is the single current state entry.
+Brand and launch target come from the user's original charter: MisePort, 2026-11-10 JST. The old Oct 27–Nov 10 dates are historical planning, not proof those stages ran. **Current 2026-10-29 status:** public source, GitHub CI, a fictional Cloudflare HTTP/MCP demo, and account-local Muse connector validation have been recorded. The roadmap below is a planning baseline; production merchant integrations, independent brand approval and external submissions remain open and require the relevant authorization. `../PROJECT_STATUS.md` is the single current state entry.
 
 | Window (JST) | Deliverable / exit criterion |
 |---|---|
@@ -12,6 +12,6 @@ Brand and launch target come from the user's original charter: MisePort, 2026-11
 | Nov 7–8 | Candidate security/license/content review, original brand assets, demo and community drafts; obtain any needed external-action authorization |
 | Nov 9–10 | Final maintainer-controlled release gates; publish/deploy/submit only when authorized and ready; record evidence and outstanding third-party review separately |
 
-Recovered evidence audit, merchant attributes, snapshot quotes, inventory queries and Product JSON-LD have now been implemented locally with a validated legacy adapter and regression tests. Demo-only hosted service, external client evaluation, final brand approval and community submission remain separate gates. See `LEGACY_BASELINE.md` and `API.md`.
+Recovered evidence audit, merchant attributes, snapshot quotes, inventory queries and Product JSON-LD have now been implemented locally with a validated legacy adapter and regression tests. The demo-only hosted service and account-local Muse client evaluation now have recorded acceptance evidence; final brand approval, real merchant integration and community/public-directory submissions remain separate gates. See `LEGACY_BASELINE.md` and `API.md`.
 
 Repository [Siyuan-chat/miseport](https://github.com/Siyuan-chat/miseport) is now public and uploaded, with seven successful GitHub CI jobs (see `GITHUB_TESTING.md`). Domain `miseport.dev`, optional docs alias and `api.miseport.dev/mcp` remain planned targets. Merchant outreach, OAuth/platform integration, transactions, domain purchases and external directory/platform submissions are not activated by the old roadmap. No promise is made about third-party approval or merchant uptake by Nov 10.
