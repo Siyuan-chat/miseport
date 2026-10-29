@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 from .base_v2 import BaseAPIError, map_base_items
 from .source_adapters import get_source_adapter, MerchantProfile
+from .source_context import capture_source_context, context_is_current, SourceContextError
 from .platform_csv import (
     PlatformCSVError, import_base_product_csv, import_shopify_product_csv
 )
@@ -88,6 +89,25 @@ def main():
     source_mode = "api"
     csv_loaded_profile = None
     last_bundle = None
+    loaded_source = None
+
+    def source_config(mode):
+        if mode == "api":
+            return ("api", "base", "")
+        return ("csv", csv_kind.get(), sample_url.get().strip())
+
+    def source_at_inputs(mode):
+        kind, platform, sample = source_config(mode)
+        return capture_source_context(
+            kind, platform, merchant_id.get(), merchant_name.get(),
+            homepage.get(), example_url=sample)
+
+    def imported_for_current_shop():
+        kind, platform, sample = source_config(source_mode)
+        return context_is_current(
+            loaded_source, mode=kind, platform=platform,
+            merchant_id=merchant_id.get(), merchant_name=merchant_name.get(),
+            merchant_homepage=homepage.get(), example_url=sample)
 
     def label(row, name, value="", width=30, secret=False):
         ttk.Label(row, text=name).pack(side="left", padx=(0, 8))
@@ -206,9 +226,16 @@ def main():
               " 商品の鮮度やMuseによる自動発見は保証しません。",
               wraplength=840).pack(anchor="w")
 
-    def apply_items(received):
-        nonlocal items, current, current_inputs, csv_loaded, source_mode, last_bundle
+    def apply_items(received, import_context):
+        nonlocal items, current, current_inputs, csv_loaded, source_mode, last_bundle, loaded_source
+        if (import_context != source_at_inputs("api")):
+            status.set("読み込み中に店舗情報が変更されました。新しい店舗情報で再取得してください。")
+            messagebox.showwarning("店舗の確認",
+                "商品を読み込んだ後に店舗情報が変わりました。誤った店の商品を"
+                "公開しないため、現在の読み込み結果は破棄しました。")
+            return
         items = received
+        loaded_source = import_context
         source_mode = "api"
         csv_loaded = None
         current = None
@@ -232,24 +259,39 @@ def main():
         tabs.select(products_page)
 
     def fetch():
+        nonlocal loaded_source, current, current_inputs
         token = pat.get()
         pat.delete(0, tk.END)
         if not token:
             messagebox.showwarning("認証", "ショップ所有者のBASE PATを入力してください。")
             return
+        try:
+            context = source_at_inputs("api")
+        except SourceContextError as exc:
+            messagebox.showwarning("店舗の確認", str(exc))
+            return
+        # A failed refresh cannot leave a previous approval available for
+        # export under possibly changed shop fields.
+        loaded_source = None
+        current = None
+        current_inputs = None
+        consent.set(False)
+        export_btn.configure(state="disabled")
+        bundle_btn.configure(state="disabled")
         btn.configure(state="disabled")
+        csv_btn.configure(state="disabled")
         status.set("BASEから取得中…この画面を閉じるとPATは保存されません。")
 
-        def worker(one_time_token):
+        def worker(one_time_token, imported_context):
             try:
                 result = get_source_adapter("base").fetch_public(one_time_token)
-                jobs.put(("success", result))
+                jobs.put(("success", (result, imported_context)))
             except BaseAPIError as error:
                 jobs.put(("error", str(error)))
             except Exception:
                 jobs.put(("error", "商品の取得に失敗しました。詳細は接続設定を確認してください。"))
             # This worker never persists or logs the token.
-        threading.Thread(target=worker, args=(token,), daemon=True).start()
+        threading.Thread(target=worker, args=(token, context), daemon=True).start()
         del token
 
     def poll():
@@ -307,10 +349,12 @@ def main():
                         + "\n公開前に店主が修正してください。")
         else:
             btn.configure(state="normal")
+            csv_btn.configure(state="normal")
             if kind == "success":
-                apply_items(value)
+                records, context = value
+                apply_items(records, context)
             else:
-                status.set(value)
+                status.set(value + " 直前の確認結果は無効です。再取得してください。")
                 messagebox.showerror("接続エラー", value)
         root.after(120, poll)
 
@@ -320,7 +364,7 @@ def main():
                 csv_kind.get(), source_mode)
 
     def load_csv():
-        nonlocal current, current_inputs, csv_loaded, csv_loaded_profile, source_mode, items, last_bundle
+        nonlocal current, current_inputs, csv_loaded, csv_loaded_profile, source_mode, items, last_bundle, loaded_source
         filename = filedialog.askopenfilename(title="公式商品CSVを選ぶ",
                    filetypes=[("CSVファイル", "*.csv")])
         if not filename:
@@ -330,6 +374,7 @@ def main():
                 " 商品が未公開・内部資料の場合は読み込みを取り消してください。"):
             return
         try:
+            frozen_context = source_at_inputs("csv")
             profile = MerchantProfile(
                 merchant_id=merchant_id.get().strip(),
                 merchant_name=merchant_name.get().strip(),
@@ -357,6 +402,7 @@ def main():
                 " 注文/顧客CSVは利用できません。")
             return
         csv_loaded = result
+        loaded_source = frozen_context
         last_bundle = None
         live_btn.configure(state="disabled")
         live_status.set("CSVを変更しました。新しいZIPを生成してから接続テストしてください。")
@@ -384,7 +430,7 @@ def main():
 
     def auto_urls():
         nonlocal current, current_inputs
-        if source_mode != "api" or not items:
+        if source_mode != "api" or not items or not imported_for_current_shop():
             messagebox.showwarning("商品URL", "BASEから商品を読み込んでください。")
             return
         if not messagebox.askyesno("商品URLの一括生成",
@@ -412,7 +458,7 @@ def main():
         tabs.select(mapping_page)
 
     def verify_urls():
-        if source_mode != "api" or not items:
+        if source_mode != "api" or not items or not imported_for_current_shop():
             messagebox.showwarning("商品URLの検査",
                 "BASE API商品を読み込み、商品URL候補を用意してください。")
             return
@@ -447,6 +493,8 @@ def main():
     def review():
         nonlocal current, current_inputs
         try:
+            if not imported_for_current_shop():
+                raise ValueError("店舗名・URL・CSVの種類が変わりました。商品を再読込してください。")
             if source_mode == "csv":
                 if csv_loaded is None or csv_loaded_profile != csv_kind.get():
                     raise ValueError("CSVの種類を確認し、もう一度読み込んでください。")
@@ -479,7 +527,8 @@ def main():
         bundle_btn.configure(state="normal" if result.publishable else "disabled")
 
     def save():
-        if current is None or not current.publishable or current_inputs != review_inputs():
+        if (current is None or not current.publishable or
+                current_inputs != review_inputs() or not imported_for_current_shop()):
             messagebox.showwarning("確認", "商品情報をすべて確認してください。")
             return
         if not consent.get():
@@ -519,7 +568,7 @@ def main():
     def save_bundle():
         nonlocal last_bundle
         if (current is None or not current.publishable or not consent.get()
-                or current_inputs != review_inputs()):
+                or current_inputs != review_inputs() or not imported_for_current_shop()):
             messagebox.showwarning("確認", "公開対象と商品URLを店主が確認してください。")
             return
         name = filedialog.asksaveasfilename(
