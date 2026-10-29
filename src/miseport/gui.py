@@ -228,7 +228,10 @@ def main():
 
     def apply_items(received, import_context):
         nonlocal items, current, current_inputs, csv_loaded, source_mode, last_bundle, loaded_source
-        if (import_context != source_at_inputs("api")):
+        if not context_is_current(
+                import_context, mode="api", platform="base",
+                merchant_id=merchant_id.get(), merchant_name=merchant_name.get(),
+                merchant_homepage=homepage.get()):
             status.set("読み込み中に店舗情報が変更されました。新しい店舗情報で再取得してください。")
             messagebox.showwarning("店舗の確認",
                 "商品を読み込んだ後に店舗情報が変わりました。誤った店の商品を"
