@@ -2,6 +2,10 @@
 
 Updated: 2026-10-29 (Asia/Tokyo). Single state entry; maintained by primary agent.
 
+## Product direction decision (2026-10-29)
+
+The maintainer selected **merchant-owned / local-first / free-first** as the long-term product approach. MisePort is a tool installed or used by individual Japanese shops, **not** a centralized comparison site or merchant aggregation network. The planned merchant workflow prioritizes a Japanese browser-based, no-code CSV import, audit, review and export without requiring a MisePort account, plus optional merchant-controlled remote publication. Neutral, versioned catalog contracts and future import/export adapters preserve third-party interoperability. No-code merchant UI, merchant-specific deployment bundles, live shop sync and effortless one-click hosting are **not implemented** in the current v0.1/demo. See [ADR-0001](docs/PRODUCT_STRATEGY.ja.md). This direction does not authorize a domain purchase, merchant outreach, public directories or live orders.
+
 ## Authorized scope
 
 Current implementation began from an empty Git repository. Historical ZIP became available on 2026-10-29 and is now source/reference evidence; its test/runtime claims are not counted as reproduced results. User authorized development, GitHub upload/testing, then website and MCP deployment on their Cloudflare account and Muse integration testing. User has no purchased domain. Domain purchase, payments, real orders, public connector-directory submission, outreach and automations are not authorized.
