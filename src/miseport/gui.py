@@ -68,14 +68,20 @@ def main():
     """Open a local window only. Never starts an HTTP listener or stores a token."""
     import sys
     capture_dir = None
+    smoke_report = None
     if len(sys.argv) > 1:
         if sys.argv[1:] == ["--version"]:
             print("MisePort merchant GUI 0.1 prototype")
             return
         if len(sys.argv) == 3 and sys.argv[1] == "--capture-screenshots":
             capture_dir = Path(sys.argv[2])
+        elif len(sys.argv) == 3 and sys.argv[1] == "--smoke-test":
+            # Offline packaged-EXE startup check; never loads merchant data.
+            smoke_report = Path(sys.argv[2])
         else:
-            raise SystemExit("Only --version or --capture-screenshots OUTDIR are supported")
+            raise SystemExit(
+                "Only --version, --capture-screenshots OUTDIR or "
+                "--smoke-test REPORT.json are supported")
     import tkinter as tk
     import webbrowser
     from tkinter import filedialog, messagebox, ttk
@@ -781,6 +787,40 @@ def main():
             root.destroy()
 
         root.after(850, capture_actual_gui)
+    if smoke_report is not None:
+        # Exercise the *real* Tk widgets when launched from a Windows
+        # PyInstaller executable. This does not test BASE, credentials,
+        # Cloudflare deployment, screen rendering, or merchant usability.
+        def check_packaged_startup():
+            try:
+                root.update_idletasks()
+                checks = {
+                    "window_created": bool(root.winfo_exists()),
+                    "window_width": root.winfo_width() >= 880,
+                    "window_height": root.winfo_height() >= 580,
+                    "two_workflow_tabs": len(tabs.tabs()) == 2,
+                    "empty_product_list": not tree.get_children(),
+                    "pat_not_present": not pat.get(),
+                    "initial_consent_off": not consent.get(),
+                    "json_export_disabled": str(export_btn.cget("state")) == "disabled",
+                    "bundle_export_disabled": str(bundle_btn.cget("state")) == "disabled",
+                    "live_probe_disabled": str(live_btn.cget("state")) == "disabled",
+                }
+                result = {
+                    "status": "ok" if all(checks.values()) else "failed",
+                    "scope": "packaged_gui_startup_only",
+                    "network_used": False,
+                    "merchant_credentials_used": False,
+                    "checks": checks,
+                }
+                smoke_report.parent.mkdir(parents=True, exist_ok=True)
+                smoke_report.write_text(
+                    json.dumps(result, ensure_ascii=False, indent=2) + "\\n",
+                    encoding="utf-8")
+            finally:
+                root.destroy()
+
+        root.after(600, check_packaged_startup)
     root.after(120, poll)
     root.mainloop()
 
