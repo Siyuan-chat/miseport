@@ -1,5 +1,7 @@
 # MisePort roadmap — reconciled 2026-10-29
 
+**Detailed controlling plan for v0.1 → merchant v0.2/v0.3:** [DEVELOPMENT_PLAN.ja.md](DEVELOPMENT_PLAN.ja.md) (2026-10-29; dated release gates, acceptance tests, risks). The short historical table below is retained for provenance. GitHub Issues [#1–#8](https://github.com/Siyuan-chat/miseport/issues) track the current backlog.
+
 Brand and launch target come from the user's original charter: MisePort, 2026-11-10 JST. The old Oct 27–Nov 10 dates are historical planning, not proof those stages ran. **Current 2026-10-29 status:** public source, GitHub CI, a fictional Cloudflare HTTP/MCP demo, and account-local Muse connector validation have been recorded. The roadmap below is a planning baseline; production merchant integrations, independent brand approval and external submissions remain open and require the relevant authorization. `../PROJECT_STATUS.md` is the single current state entry.
 
 | Window (JST) | Deliverable / exit criterion |
