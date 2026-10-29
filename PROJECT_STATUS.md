@@ -1,5 +1,8 @@
 # MisePort current status
 
+> **RELEASE EXCLUDE — INTERNAL WORKING DOCUMENT.** This file is temporarily visible in the public development branch but **must be removed or replaced before the 2026-11-10 public Git tag / source archive / distribution**. Preserve only in a separately authorized private workspace. See [publication policy](docs/RELEASE_PUBLICATION_POLICY.ja.md). This label does not make the already-published Git history private.
+
+
 Updated: 2026-10-29 (Asia/Tokyo). Single state entry; maintained by primary agent.
 
 ## Superseding 11/10 release requirement (2026-10-29)
