@@ -1,3 +1,7 @@
+# RELEASE BLOCKER (2026-10-29): CURRENT DEVELOPMENT MANIFEST IS NOT CLEAN FOR v0.1 MERCHANT RELEASE.
+# This recursively includes internal docs, PROJECT_STATUS and historical references. BEFORE THE 11/10 TAG,
+# use docs/RELEASE_PUBLICATION_POLICY.ja.md and Issue #10 to replace it with explicit PUBLIC files,
+# migrate required sanitized fixtures, and inspect the actual sdist/wheel/source archives. NOT FOR PUBLIC RELEASE AS-IS.
 include README.en.md README.ja.md Dockerfile Dockerfile.http .dockerignore PROJECT_STATUS.md SECURITY.md
 recursive-include examples *.json *.csv
 recursive-include docs *.md
