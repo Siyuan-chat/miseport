@@ -1,5 +1,5 @@
 // Single-merchant read-only Cloudflare Pages Advanced Mode Worker.
-// Generated code substitutes __MISEPORT_DATA__ and __MISEPORT_HOST__.
+// Compiled by the merchant-only publisher using static catalog and origin values.
 // No credentials, orders, payments, dynamic server-side catalog writes or outbound fetches.
 const DATA = __MISEPORT_DATA__;
 const HOST = __MISEPORT_HOST__;
