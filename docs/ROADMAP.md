@@ -1,6 +1,6 @@
 # MisePort Roadmap — 11/10 Merchant-Usable Release
 
-**Updated 2026-10-29 JST.** This page replaces the earlier developer-only 11/10 schedule. Planned milestones are not delivered capabilities. [Current evidence/status](../PROJECT_STATUS.md) · [Japanese detailed development plan](DEVELOPMENT_PLAN.ja.md) · [Hard release contract](RELEASE_2026-11-10.ja.md).
+**Updated 2026-10-29 JST.** This page replaces the earlier developer-only 11/10 schedule. Planned milestones are not delivered capabilities. [Current evidence/status](../PROJECT_STATUS.md) · [Internal development plan (Chinese)](DEVELOPMENT_PLAN.zh-CN.md) · [Hard release contract](RELEASE_2026-11-10.ja.md).
 
 ## P0: by 2026-11-10, a shop owner can actually use MisePort
 
