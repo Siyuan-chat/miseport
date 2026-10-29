@@ -34,7 +34,7 @@
 
 **自动测试证据：** [PR #15 的 8/8 CI、Python 208 项测试通过](https://github.com/Siyuan-chat/miseport/actions/runs/40810437650)；[PR #16 代码 CI 8/8 通过（Python 229 项测试通过）](https://github.com/Siyuan-chat/miseport/actions/runs/40811628035)，[Windows Alpha EXE 构建成功](https://github.com/Siyuan-chat/miseport/actions/runs/40811628053)。这些是 **Mock/代码层面**的验证，不是商业生产环境安全审查、Windows 实际操作或已取得真实商家同意。
 
-**后续无真实账号即可开发：** 在独立分支 [feat/merchant-bundle-preflight](https://github.com/Siyuan-chat/miseport/tree/feat/merchant-bundle-preflight) 开展 ZIP 离线完整性、Worker 与商品一致性、域名/Manifest/hash 检查，生成失败时不覆盖上一个完整发布包。**这一批的最终测试与合并状态以对应 PR/CI 为准，不要提前标记 RELEASED。**
+**无需真实账号的进一步完成项：** [PR #17](https://github.com/Siyuan-chat/miseport/pull/17) 已合并 `main`（`f484dca2`）：新增 `miseport-verify-bundle` ZIP 离线校验、Worker 与商品目录/公开域名/Manifest/hash 一致性测试，生成失败不覆盖旧发布包。[对应完整 CI](https://github.com/Siyuan-chat/miseport/actions/runs/40812734350) 与 [Windows Alpha 构建](https://github.com/Siyuan-chat/miseport/actions/runs/40812658804) 已通过，Python 237 项测试通过。**这只是离线包检查，不是公网部署或真实商家验收。**
 
 **仍必须留到实际商家验收：** BASE 真正读取权、公开商品 URL 的实际可访问性、真实 Windows 点击操作、商家自控 Cloudflare 公网 MCP、Meta Muse 实际商品调用、公开授权案例和视频。
 
@@ -42,9 +42,9 @@
 
 用户已明确要求**优先将无需真实店铺账号的工程工作继续推进**，实际商家由用户随后寻找。当前不进行未经批准的商家外联，不请求商家在对话或公开 Issue 中提供 PAT，也不为了模拟通过而宣称已有真实商家试点。
 
-**目前已合并：** [PR #14](https://github.com/Siyuan-chat/miseport/pull/14)、[PR #15](https://github.com/Siyuan-chat/miseport/pull/15)、[PR #16](https://github.com/Siyuan-chat/miseport/pull/16)。BASE 官方只读 API（模拟测试）、日语 GUI Alpha、商家 ZIP、URL 候选生成、快照安全刷新、BASE/Shopify 官方 CSV Alpha 均在 `main`。
+**目前已合并：** [PR #14](https://github.com/Siyuan-chat/miseport/pull/14)、[PR #15](https://github.com/Siyuan-chat/miseport/pull/15)、[PR #16](https://github.com/Siyuan-chat/miseport/pull/16)、[PR #17](https://github.com/Siyuan-chat/miseport/pull/17)。BASE 官方只读 API（模拟测试）、日语 GUI Alpha、商家 ZIP、URL 候选生成、快照安全刷新、BASE/Shopify 官方 CSV Alpha 均在 `main`。
 
-**无需商家即可推进的下一批：** [PR #17 发布 ZIP 离线完整性核查](https://github.com/Siyuan-chat/miseport/pull/17)（独立验证文件哈希、商品、公开域名、运行 Worker；核查失败不覆盖旧包），以及真正可运行的 Windows GUI 验收准备、官方 CSV 版本兼容 Fixture、发布文件预检查、Muse 已连接工具 E1 自动验收。以上都不能替代真正的商家运行数据与发布许可。
+**下一批无需商家即可推进：** 完善无代码 GUI 的实际界面体验与自动化操作验收、不同平台/版本官方商品 CSV Fixture、商家商品 URL 的安全在线核验（先做模拟 HTTP）、商家 ZIP 本地 MCP E1 回归、GitHub Tag 前内部文件清理的安全迁移方案。外部真实店铺授权和公开视频仍由用户后续安排；任何模拟测试都不能冒充真实店铺验收。
 
 **仍不变的硬条件：** 11 月 10 日的“商家可用版+至少一间真实日本商家 Demo”目标不自动降低。如果届时未能获得店铺授权、公开视频和真实店主端到端验收，必须将对应项记录为**未完成**，不以模拟数据宣称合格。
 
