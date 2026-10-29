@@ -4,7 +4,7 @@
 
 **日本の小さなお店を、AIエージェントへ。**
 
-**日本語** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [商店向けガイド（Alpha）](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
+**日本語** · [English](README.en.md) · [公開デモ](https://miseport.pages.dev/) · [MCP接続ガイド](https://miseport.pages.dev/docs/?lang=ja) · [商店向けガイド（Alpha）](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [実画面の日本語操作手順](docs/merchant/VISUAL_GUIDE.ja.md) · [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)
 
 [![CI](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml/badge.svg)](https://github.com/Siyuan-chat/miseport/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE) ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-0B2F54)
 
@@ -150,7 +150,7 @@ MisePortは商品情報の参照に特化したツールです。購入はショ
 
 ## ドキュメント・開発参加
 
-[API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse接続ガイド](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [製品方針](docs/PRODUCT_STRATEGY.ja.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [ブランドガイド](docs/BRAND.md)
+[公開ステータス](docs/STATUS.md) · [テスト/受入範囲](docs/TESTING.md) · [API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse接続ガイド](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [製品方針](docs/PRODUCT_STRATEGY.ja.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [ブランドガイド](docs/BRAND.md)
 
 バグ報告や機能提案は[GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)へお寄せください。
 

@@ -7,14 +7,14 @@ recursive-include examples *.json *.csv
 recursive-include tests *.py
 recursive-include tests/fixtures *.json
 include docs/API.md docs/CATALOG.md docs/CLOUDFLARE.md docs/HTTP_SERVICE.md docs/SDK.md
-include docs/ROADMAP.md docs/MUSE_CONNECT.ja.md docs/AGENT_GEO.ja.md
+include docs/ROADMAP.md docs/STATUS.md docs/TESTING.md docs/MUSE_CONNECT.ja.md docs/AGENT_GEO.ja.md
 include docs/PRODUCT_STRATEGY.ja.md docs/CONNECTOR_ARCHITECTURE.ja.md docs/PLATFORM_COMPATIBILITY.ja.md
-include docs/merchant/GUI_ALPHA_GUIDE.ja.md docs/merchant/SETUP_GUIDE.ja.md
+include docs/merchant/GUI_ALPHA_GUIDE.ja.md docs/merchant/SETUP_GUIDE.ja.md docs/merchant/VISUAL_GUIDE.ja.md
 include assets/original/miseport-logo.png assets/original/miseport-brand-board.png assets/original/provenance.json
 include site/index.html
 include scripts/build_cloudflare_demo.py scripts/check_site.py scripts/export_schemas.py
 include scripts/package_cloudflare_pages.py scripts/probe_public_demo.py
-include scripts/verify_distribution.py scripts/audit_release.py scripts/release_preflight.py scripts/launch_gui.py
+include scripts/verify_distribution.py scripts/audit_release.py scripts/release_preflight.py scripts/launch_gui.py scripts/check_gui_screenshots.py
 include cloudflare/*.mjs cloudflare/*.json cloudflare/*.jsonc cloudflare/*.yaml
 include cloudflare/pnpm-lock.yaml cloudflare/pnpm-workspace.yaml
 include src/miseport/merchant_worker.js

@@ -67,19 +67,23 @@ def preview_mapping(items: list[dict], merchant_id: str, merchant_name: str,
 def main():
     """Open a local window only. Never starts an HTTP listener or stores a token."""
     import sys
+    capture_dir = None
     if len(sys.argv) > 1:
         if sys.argv[1:] == ["--version"]:
             print("MisePort merchant GUI 0.1 prototype")
             return
-        raise SystemExit("Only --version is supported")
+        if len(sys.argv) == 3 and sys.argv[1] == "--capture-screenshots":
+            capture_dir = Path(sys.argv[2])
+        else:
+            raise SystemExit("Only --version or --capture-screenshots OUTDIR are supported")
     import tkinter as tk
     import webbrowser
     from tkinter import filedialog, messagebox, ttk
 
     root = tk.Tk()
     root.title("MisePort — お店の商品をAIへ")
-    root.geometry("1000x690")
-    root.minsize(780, 540)
+    root.geometry("1120x760")
+    root.minsize(880, 580)
 
     jobs = queue.Queue()
     items = []
@@ -121,9 +125,12 @@ def main():
     frame.pack(fill="both", expand=True)
     ttk.Label(frame, text="MisePort（試作） / BASEの商品を読み取り専用で取得",
               font=("", 14, "bold")).pack(anchor="w", pady=(0, 8))
-    ttk.Label(frame, text="公式API・items.readのPATはこのPC内で一時使用し、保存しません。"
-              " 商品URLはショップ側で確認したURLを登録してください。",
-              wraplength=900).pack(anchor="w", pady=(0, 10))
+    ttk.Label(frame, text="商品を読み込む → 公開商品を確認する → ZIPを生成する → 公開後にMCPを確認する",
+              font=("", 10, "bold"), wraplength=990).pack(anchor="w", pady=(0, 5))
+    ttk.Label(frame, text="BASEの読み取り専用PATはこのPC内で一時使用し、保存しません。"
+              " APIが使えない場合は公式商品CSVを選べます。"
+              " 公開前に店主が商品・価格・URLを必ず確認してください。",
+              wraplength=990).pack(anchor="w", pady=(0, 10))
 
     row1 = ttk.Frame(frame)
     row1.pack(fill="x", pady=3)
@@ -158,9 +165,49 @@ def main():
     tabs = ttk.Notebook(frame)
     tabs.pack(fill="both", expand=True)
     products_page = ttk.Frame(tabs, padding=8)
-    mapping_page = ttk.Frame(tabs, padding=8)
+    # The review page has many controls. Keep every action reachable even at
+    # Windows display scaling of 125–150% and smaller laptop windows.
+    mapping_outer = ttk.Frame(tabs)
+    mapping_canvas = tk.Canvas(mapping_outer, borderwidth=0,
+                               highlightthickness=0)
+    mapping_scrollbar = ttk.Scrollbar(mapping_outer, orient="vertical",
+                                    command=mapping_canvas.yview)
+    mapping_canvas.configure(yscrollcommand=mapping_scrollbar.set)
+    mapping_scrollbar.pack(side="right", fill="y")
+    mapping_canvas.pack(side="left", fill="both", expand=True)
+    mapping_page = ttk.Frame(mapping_canvas, padding=(12, 9, 18, 14))
+    mapping_window = mapping_canvas.create_window((0, 0),
+                                                  window=mapping_page, anchor="nw")
+
+    def update_scroll_region(_event=None):
+        mapping_canvas.configure(scrollregion=mapping_canvas.bbox("all"))
+
+    def resize_review(_event):
+        mapping_canvas.itemconfigure(mapping_window, width=_event.width)
+
+    mapping_page.bind("<Configure>", update_scroll_region)
+    mapping_canvas.bind("<Configure>", resize_review)
+
+    def scroll_review(event):
+        if tabs.select() != str(mapping_outer):
+            return
+        if getattr(event, "num", None) == 4:
+            direction = -1
+        elif getattr(event, "num", None) == 5:
+            direction = 1
+        else:
+            delta = getattr(event, "delta", 0)
+            if not delta:
+                return
+            direction = -1 if delta > 0 else 1
+        mapping_canvas.yview_scroll(direction, "units")
+
+    root.bind_all("<MouseWheel>", scroll_review, add="+")
+    root.bind_all("<Button-4>", scroll_review, add="+")
+    root.bind_all("<Button-5>", scroll_review, add="+")
+
     tabs.add(products_page, text="② 商品一覧")
-    tabs.add(mapping_page, text="③ 商品URL・監査・出力")
+    tabs.add(mapping_outer, text="③ 商品URL・監査・出力（下へスクロール）")
 
     tree = ttk.Treeview(products_page, columns=("id", "name", "price", "stock", "status"),
                         show="headings", height=12)
@@ -429,7 +476,7 @@ def main():
                    "行読み込みました。③でデータを確認してください。"
                    " CSVの確認日時は元の更新日時と異なります。")
         review_status.set("CSVの出典、価格、公開状態、商品URLを確認してください。")
-        tabs.select(mapping_page)
+        tabs.select(mapping_outer)
 
     def auto_urls():
         nonlocal current, current_inputs
@@ -458,7 +505,7 @@ def main():
         link_probe_status.set("候補URLは推測です。必要なら「公開商品URLを確認」でネットワーク照合できます。")
         review_status.set(str(len(candidates)) + "件のURL候補を生成しました。"
             " API商品IDに基づく候補です。公開前に確認してからデータ審査を押してください。")
-        tabs.select(mapping_page)
+        tabs.select(mapping_outer)
 
     def verify_urls():
         if source_mode != "api" or not items or not imported_for_current_shop():
@@ -689,6 +736,51 @@ def main():
     bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
     export_btn.configure(command=save)
+    if capture_dir is not None:
+        # Documentation screenshots are created from the REAL Tk widgets
+        # in an isolated virtual display. No API call or real shop data.
+        def capture_actual_gui():
+            from PIL import ImageGrab
+            capture_dir.mkdir(parents=True, exist_ok=True)
+            merchant_id.delete(0, tk.END)
+            merchant_id.insert(0, "demo-shop")
+            merchant_name.insert(0, "デモ茶舗（架空）")
+            homepage.delete(0, tk.END)
+            homepage.insert(0, "https://example.org/")
+            sample_url.insert(0, "https://example.org/items/101")
+            urls.insert("1.0", "101=https://example.org/items/101\n"
+                        "102=https://example.org/items/102")
+            status.set("【架空デモ画面】商品データを確認する例です。")
+            review_status.set("【画面説明用・架空商品】審査が完了した記録ではありません。")
+            tree.insert("", "end", values=(101, "ほうじ茶 100g（架空）",
+                    "1850円", 10, "公開候補（架空）"))
+            tree.insert("", "end", values=(102, "日本茶ギフト（架空）",
+                    "2600円", "不明", "要確認（架空）"))
+            root.update_idletasks()
+
+            def screenshot(filename):
+                root.update()
+                x, y = root.winfo_rootx(), root.winfo_rooty()
+                w, h = root.winfo_width(), root.winfo_height()
+                im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
+                im.save(capture_dir / filename)
+
+            tabs.select(products_page)
+            screenshot("01-shops-and-products.png")
+            tabs.select(mapping_outer)
+            mapping_canvas.yview_moveto(0)
+            screenshot("02-product-review.png")
+            mapping_canvas.yview_moveto(1)
+            screenshot("03-publish-steps.png")
+            (capture_dir / "README.txt").write_text(
+                "Real MisePort Tkinter GUI screenshots made with synthetic data.\n"
+                "No actual merchant, PAT, Cloudflare account, or production acceptance.\n"
+                "Order: source and products / review / publishing actions.\n",
+                encoding="utf-8"
+            )
+            root.destroy()
+
+        root.after(850, capture_actual_gui)
     root.after(120, poll)
     root.mainloop()
 

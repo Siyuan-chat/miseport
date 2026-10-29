@@ -1,0 +1,42 @@
+name: merchant-gui-visual
+on:
+  push:
+    branches:
+      - 'feat/merchant-gui-walkthrough'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install virtual display and Japanese CJK fonts
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb xauth fonts-noto-cjk
+      - name: Install MisePort and visual testing tools
+        run: |
+          python -m pip install --disable-pip-version-check -e ".[dev]"
+          python -m pip install --disable-pip-version-check pillow
+      - name: Capture REAL Tk widgets with synthetic product data
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          mkdir -p artifacts/gui-screenshots
+          xvfb-run -a -s "-screen 0 1600x1000x24" \
+            python -m miseport.gui --capture-screenshots artifacts/gui-screenshots
+          python scripts/check_gui_screenshots.py artifacts/gui-screenshots
+      - name: Upload real GUI screenshots (synthetic demo, not merchant proof)
+        uses: actions/upload-artifact@v7
+        with:
+          name: miseport-actual-tk-screenshots
+          path: artifacts/gui-screenshots/
+          if-no-files-found: error
+          retention-days: 7

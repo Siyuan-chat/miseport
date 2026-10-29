@@ -24,7 +24,7 @@ The source checkout now includes a **read-only BASE API v2 beta importer**, a Ja
 
 The Alpha also includes a Japanese Cloudflare Direct Upload guide and an owner-triggered HTTPS health/REST/MCP smoke test that compares the deployed snapshot and a representative product with the local ZIP. **No independent merchant deployment has been verified.**
 
-**Not yet validated:** live BASE merchant credentials, Windows GUI real-user operation, production merchant deployment, Muse organic discovery, or the November 10 merchant release. Existing `miseport.pages.dev` remains the fictional demonstration. [Japanese Alpha guide](docs/merchant/GUI_ALPHA_GUIDE.ja.md).
+**Not yet validated:** live BASE merchant credentials, Windows GUI real-user operation, production merchant deployment, Muse organic discovery, or the November 10 merchant release. Existing `miseport.pages.dev` remains the fictional demonstration. [Japanese Alpha guide](docs/merchant/GUI_ALPHA_GUIDE.ja.md) · [real GUI screenshot walkthrough](docs/merchant/VISUAL_GUIDE.ja.md).
 
 ## Quick start
 
