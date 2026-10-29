@@ -18,7 +18,7 @@
 
 | プラットフォーム | 正式な商品読取経路 | 商品CSV | MisePortでの開発順序 |
 |---|---|---|---|
-| **BASE** | [新API β](https://apiv2.thebase.com/docs/) はPAT認証、`GET /api/items`・`items.read`。β版のOAuthは今後追加予定で、正式仕様は変更の可能性あり | [CSV商品管理 App](https://help.thebase.in/hc/ja/articles/900000043803-) でダウンロード・更新。利用するApp/商品種に制限あり | **P1 API第一候補**。読取専用PATから開始。CSV入出力は個別検証 |
+| **BASE** | [新API β](https://apiv2.thebase.com/docs/) はPAT認証、`GET /api/items`・`items.read`。β版のOAuthは今後追加予定で、正式仕様は変更の可能性あり | [CSV商品管理 App](https://help.thebase.in/hc/ja/articles/900000043803) でダウンロード・更新。利用するApp/商品種に制限あり | **P1 API第一候補**。読取専用PATから開始。CSV入出力は個別検証 |
 | **Shopify** | [GraphQL Admin API](https://shopify.dev/docs/api/admin-graphql/latest) + アプリ承認（`read_products`、在庫取得に必要なら`read_inventory`）。[認証ガイド](https://shopify.dev/docs/apps/build/authentication-authorization)。汎用「APIキー貼り付け」を推奨しない | [公式商品CSV](https://help.shopify.com/ja/manual/products/import-export/using-csv)。Handle・バリエーション等の依存関係あり | P1/P2。公式アプリ認証設計を先に確認、CSV対応テスト |
 | **カラーミーショップ** | [API](https://help.shop-pro.jp/hc/ja/articles/115009114647)利用可。公式[CLI＆Skills](https://developer.shop-pro.jp/news/releases/release_cli_skills_20260410)はOAuthと`GET /v1/products`を案内 | [商品データのCSVダウンロード](https://shop-pro.jp/functions/csv/)は各プランで利用可能。[操作手順](https://help.shop-pro.jp/hc/ja/articles/360062479334-) | P2。OAuth/既存CLIの再利用可能性、CSVエンコーディングを検証 |
 | **makeshop** | [GraphQL shop admin API](https://developers.makeshop.jp/api/)で商品・在庫を取得。利用登録とアプリの認証情報が必要。[API仕様](https://developers.makeshop.jp/api/graphql/index.html) | [2025-12以降の公式CSV書式](https://manual.makeshop.jp/hc/ja/articles/53061016220441-) は列名・フォーマット選択に注意 | P2。認証準備・商品属性マッピング後にパイロット |
