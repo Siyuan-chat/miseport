@@ -12,7 +12,13 @@ from audit_release import INTERNAL_FILES, INTERNAL_PREFIXES
 
 
 OLD_ASSETS = {
-    "assets/brand-v01-review.png",
+    "assets/storefront-v02.svg",
+    "assets/storefront-v02-dark.svg",
+    "assets/storefront-v02.png",
+    "assets/favicon-storefront-v02.png",
+    "scripts/brand_assets.py",
+    "scripts/package_github.py",
+        "assets/brand-v01-review.png",
     "assets/geometry-v01.json",
     "assets/social-cover.png",
     "assets/favicon.ico",
