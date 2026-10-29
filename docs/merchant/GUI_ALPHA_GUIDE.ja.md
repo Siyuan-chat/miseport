@@ -52,6 +52,21 @@ ZIP生成後に **「⑦ Cloudflare公開手順」** から操作手順を開け
 
 詳しい公式説明: [Cloudflare Pages Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/)。**MisePortのGUIは商店のCloudflareアカウントを管理しません。** ZIP生成と「インターネットへの公開成功」は別です。
 
+## アップロード後の「⑧ 公開後のMCP接続を確認」（Alpha）
+
+商店自身のCloudflare PagesにZIPをアップロードし、実際のHTTPS公開URLが生成ZIPで指定したURLと**完全一致**することを確認してから、MisePortのGUIに戻って **「⑧ 公開後のMCP接続を確認」** を押してください。CloudflareアカウントやBASEのPATをMisePortに渡す必要はありません。
+
+この検査は、保存済みZIPと公開サーバーについて次を**読み取り専用で**照合します。
+
+1. ZIPのManifest、商品数、スナップショット日時、公開先、MCP Workerの内容が改変されていないかローカルで確認。
+2. 公開HTTPSの `/healthz` から、商店用（非架空）、読み取り専用、商品数、生成時刻がZIPと一致することを確認。
+3. `/api/products` の商品件数と `/mcp` の `initialize`、`tools/list` を確認。
+4. `get_product` で保存した代表SKUの価格と元の販売ページURLが一致することを確認。
+
+**結果が成功しても、Meta Museの自動発見や商品推薦、全商品の最新性、店舗所有の証明にはなりません。** これは「この公開URLから、このZIPと一致する読み取り専用商品API/MCPを取得できた」という技術的な接続確認です。Cloudflareや商品ページの設定が変わった場合は、公開先の設定から見直してください。
+
+外部HTTPS接続をするのは**商店がボタンを押して確認したときだけ**です。Cookie、APIキー、BASE PAT、Cloudflare認証情報は送信せず、任意のURLへリダイレクトしません。
+
 ## Alphaの現在の制限
 
 - 開発者は Python 環境から GUI を起動できる。通常の商店ユーザーには **Windows Alpha EXE** の実機受入まで正式配布しない。
