@@ -158,7 +158,7 @@ def check_live_merchant_deployment(
             status, result = fetch(method, origin + suffix, data, timeout, MAX_RESPONSE_BYTES)
         except DeploymentCheckError:
             raise
-        except (OSError, ValueError):
+        except Exception:
             raise DeploymentCheckError("公開サーバーの検査に失敗しました。") from None
         if status != 200 or type(result) is not dict:
             raise DeploymentCheckError("公開先のJSONを確認できません。")
@@ -167,26 +167,31 @@ def check_live_merchant_deployment(
     health = request("GET", "/healthz")
     if (health.get("ok") is not True or health.get("read_only") is not True
             or health.get("demo_only") is not False
+            or type(health.get("product_count")) is not int
             or health.get("product_count") != expected_product_count
             or health.get("snapshot_at") != expected_snapshot_at):
         raise DeploymentCheckError("公開中の商品数またはバージョンがZIPと一致しません。")
     rest = request("GET", "/api/products")
-    if (rest.get("total") != expected_product_count
+    if (type(rest.get("total")) is not int
+            or rest.get("total") != expected_product_count
             or not isinstance(rest.get("products"), list)):
         raise DeploymentCheckError("商品REST APIの内容が一致しません。")
     hello = request("POST", "/mcp", {"jsonrpc":"2.0","id":1,"method":"initialize",
         "params":{"protocolVersion":MCP_PROTOCOL,"capabilities":{},
                   "clientInfo":{"name":"MisePort-verifier","version":"0.1"}}})
     initialized = _rpc_reply(hello, 1)
-    if (initialized.get("protocolVersion") != MCP_PROTOCOL or
-            initialized.get("serverInfo", {}).get("name") != "MisePort Merchant"):
+    info = initialized.get("serverInfo")
+    if (initialized.get("protocolVersion") != MCP_PROTOCOL
+            or not isinstance(info, dict)
+            or info.get("name") != "MisePort Merchant"):
         raise DeploymentCheckError("MCP initializeが一致しません。")
     response = request("POST", "/mcp", {"jsonrpc":"2.0","id":2,"method":"tools/list"})
     tools = _rpc_reply(response, 2).get("tools")
-    if (not isinstance(tools, list)
-            or {x.get("name") for x in tools if isinstance(x,dict)} != REQUIRED_TOOLS
-            or any(x.get("annotations", {}).get("readOnlyHint") is not True
-                   for x in tools if isinstance(x,dict))):
+    if (not isinstance(tools, list) or len(tools) != len(REQUIRED_TOOLS)
+            or any(not isinstance(x, dict) or not isinstance(x.get("annotations"), dict)
+                   for x in tools)
+            or {x.get("name") for x in tools} != REQUIRED_TOOLS
+            or any(x["annotations"].get("readOnlyHint") is not True for x in tools)):
         raise DeploymentCheckError("MCPの読み取り専用ツール構成が一致しません。")
     result = request("POST", "/mcp", {"jsonrpc":"2.0","id":3,"method":"tools/call",
         "params":{"name":"get_product","arguments":{"sku":expected_sku}}})
@@ -195,6 +200,7 @@ def check_live_merchant_deployment(
     if (not isinstance(product,dict) or detail.get("found") is not True
             or product.get("sku") != expected_sku
             or product.get("source_url") != expected_source_url
+            or type(product.get("price_jpy")) is not int
             or product.get("price_jpy") != expected_price_jpy
             or product.get("is_demo") is not False):
         raise DeploymentCheckError("MCPの商品情報が保存済みZIPと一致しません。")
