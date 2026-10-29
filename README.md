@@ -110,6 +110,8 @@ MisePortは**商店所有・ローカルファースト・無料優先**のオ�
 
 **これは次の開発段階の設計です。現行版にネイティブAPI自動読込、ブラウザでの商店CSV取込・商店別ワンクリック公開はありません。** APIキーは公開デモに入力せず、店舗所有の安全な環境で管理します。 [製品方針（ADR-0001）](docs/PRODUCT_STRATEGY.ja.md) · [自動接続とBYO認証設計（ADR-0002）](docs/CONNECTOR_ARCHITECTURE.ja.md) · [対応プラットフォーム](docs/PLATFORM_COMPATIBILITY.ja.md) · [商店主向け日本語手順書](docs/merchant/SETUP_GUIDE.ja.md) · [動画デモ制作計画](docs/merchant/VIDEO_DEMO_PLAN.ja.md)。
 
+**開発スケジュール:** [段階別開発計画（2026/10/29〜2027/2、日語）](docs/DEVELOPMENT_PLAN.ja.md) · [GitHub開発タスク](https://github.com/Siyuan-chat/miseport/issues)。開発日程は目標であり、現在の公開デモは架空商品の読み取り専用です。
+
 ## 現在の対応範囲と今後の方向
 
 | 項目 | 2026-10-29時点 |
