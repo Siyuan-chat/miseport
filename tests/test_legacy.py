@@ -9,7 +9,7 @@ from miseport.importers import CatalogError, load_catalog, save_catalog
 from miseport.legacy import LegacyAdapter
 
 ROOT = Path(__file__).resolve().parents[1]
-LEGACY = ROOT / "references/legacy-20261027/demo-store.reference.json"
+LEGACY = ROOT / "tests/fixtures/demo-store.reference.json"
 
 
 @pytest.fixture
