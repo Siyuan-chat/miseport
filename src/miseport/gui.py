@@ -24,6 +24,8 @@ from .base_urls import (
 )
 from .public_url_probe import check_product_urls, URLProbeError, MAX_URL_CHECKS
 from .merchant_onboarding import merchant_deploy_guide, DeploymentGuideError
+from .deployment_probe import check_live_merchant_deployment, DeploymentCheckError
+from .bundle_probe import inspect_merchant_zip, BundleVerificationError
 
 
 def parse_product_urls(text: str) -> dict[int, str]:
@@ -190,6 +192,12 @@ def main():
     target_origin = ttk.Entry(site_row, width=48)
     target_origin.pack(side="left", fill="x", expand=True)
     target_origin.insert(0, "https://your-store.pages.dev")
+    live_row = ttk.Frame(mapping_page)
+    live_row.pack(fill="x", pady=4)
+    live_btn = ttk.Button(live_row, text="⑧ 公開後のMCP接続を確認", state="disabled")
+    live_btn.pack(side="left", padx=(0, 8))
+    live_status = tk.StringVar(value="ZIPを公開後にMCPとREST APIを検査できます。")
+    ttk.Label(live_row, textvariable=live_status, wraplength=680).pack(side="left")
     consent = tk.BooleanVar(value=False)
     ttk.Checkbutton(mapping_page, variable=consent, text="公開商品とリンクを店主が確認し、"
                     "第三者へ配信する前に内容を再確認します。").pack(anchor="w", pady=7)
@@ -206,6 +214,8 @@ def main():
         current = None
         current_inputs = None
         last_bundle = None
+        live_btn.configure(state="disabled")
+        live_status.set("商品を公開してから接続テストを行います。")
         link_probe_status.set("商品URLのネットワーク検査はまだ行っていません。")
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
@@ -249,7 +259,24 @@ def main():
         except queue.Empty:
             root.after(120, poll)
             return
-        if kind in ("url_result", "url_error"):
+        if kind in ("live_result", "live_error"):
+            live_btn.configure(state="normal")
+            bundle_checked, data = value
+            if bundle_checked != last_bundle:
+                live_status.set("別のZIPが生成されました。再度接続テストしてください。")
+            elif kind == "live_error":
+                live_status.set(data)
+                messagebox.showwarning("公開MCPの検査", data)
+            else:
+                live_status.set("公開先を確認しました。商品" +
+                    str(data["product_count"]) + "件、MCP " +
+                    str(len(data["mcp_tools"])) +
+                    "ツール。実際のMuseからの発見・利用は別の検証です。")
+                messagebox.showinfo("MCP/REST接続が成功しました",
+                    "登録された商品情報と生成ZIPのバージョンが一致し、"
+                    "MCP initialize・tools/list・get_productが成功しました。"
+                    " 本番運用やMetaでの推薦を保証するものではありません。")
+        elif kind in ("url_result", "url_error"):
             link_btn.configure(state="normal")
             snapshot, payload = value
             if snapshot != review_inputs():
@@ -293,7 +320,7 @@ def main():
                 csv_kind.get(), source_mode)
 
     def load_csv():
-        nonlocal current, current_inputs, csv_loaded, csv_loaded_profile, source_mode, items
+        nonlocal current, current_inputs, csv_loaded, csv_loaded_profile, source_mode, items, last_bundle
         filename = filedialog.askopenfilename(title="公式商品CSVを選ぶ",
                    filetypes=[("CSVファイル", "*.csv")])
         if not filename:
@@ -330,6 +357,9 @@ def main():
                 " 注文/顧客CSVは利用できません。")
             return
         csv_loaded = result
+        last_bundle = None
+        live_btn.configure(state="disabled")
+        live_status.set("CSVを変更しました。新しいZIPを生成してから接続テストしてください。")
         csv_loaded_profile = csv_kind.get()
         source_mode = "csv"
         items = []
@@ -505,7 +535,14 @@ def main():
             messagebox.showerror("生成失敗",
                 "配信URLや商品情報を確認してください。古いファイルは変更していません。")
         else:
-            last_bundle = (str(name), target_origin.get().strip())
+            first_product = current.catalog.products[0]
+            last_bundle = (
+                str(name), target_origin.get().strip(),
+                meta["snapshot_generated_at"], meta["product_count"],
+                first_product.sku, first_product.source_url, first_product.price_jpy,
+            )
+            live_btn.configure(state="normal")
+            live_status.set("商店自身のCloudflareへアップロード後、ここでMCP接続を確認できます。")
             messagebox.showinfo("ZIPを生成しました",
                 str(meta["product_count"]) + "件の公開商品を保存しました。\n"
                 "このZIPはまだWebへ公開されていません。"
@@ -517,7 +554,7 @@ def main():
                 "先に商品を審査し、「⑥ 商店用MCP/REST ZIPを生成」で"
                 "ZIPファイルを保存してください。")
             return
-        filepath, origin = last_bundle
+        filepath, origin, *_ = last_bundle
         try:
             guide = merchant_deploy_guide(origin)
         except DeploymentGuideError as exc:
@@ -559,7 +596,40 @@ def main():
                    command=copy_mcp).pack(side="left", padx=4)
         ttk.Button(links, text="閉じる", command=dialog.destroy).pack(side="right", padx=4)
 
+    def verify_live():
+        if last_bundle is None:
+            messagebox.showwarning("公開の確認", "まず商店用のZIPを生成してください。")
+            return
+        if not messagebox.askyesno("公開先のMCPを確認",
+            "商店自身がCloudflareへZIPをアップロードした後、公開HTTPSサイトへ"
+            "商品APIとMCPの読み取り要求を送ります。"
+            " BASE PATやCloudflare認証情報は送信しません。実行しますか？"):
+            return
+        selected = last_bundle
+        live_btn.configure(state="disabled")
+        live_status.set("指定した公開先でMCPと商品データを確認しています。")
+
+        def worker():
+            try:
+                path, origin, stamp, count, sku, source_url, price = selected
+                local = inspect_merchant_zip(path, expected_origin=origin)
+                if (local["product_count"] != count
+                        or local["snapshot_generated_at"] != stamp):
+                    raise DeploymentCheckError("保存済みZIPが前回の内容と一致しません。")
+                report = check_live_merchant_deployment(
+                    origin, expected_snapshot_at=stamp,
+                    expected_product_count=count, expected_sku=sku,
+                    expected_source_url=source_url, expected_price_jpy=price,
+                ).summary()
+                jobs.put(("live_result", (selected, report)))
+            except (DeploymentCheckError, BundleVerificationError, ValueError, OSError):
+                jobs.put(("live_error", (selected,
+                    "公開先がZIPと一致しないか、MCPに接続できませんでした。"
+                    " CloudflareのURL、ZIPの再デプロイ、/healthzを確認してください。")))
+        threading.Thread(target=worker, daemon=True).start()
+
     btn.configure(command=fetch)
+    live_btn.configure(command=verify_live)
     csv_btn.configure(command=load_csv)
     candidate_btn.configure(command=auto_urls)
     link_btn.configure(command=verify_urls)

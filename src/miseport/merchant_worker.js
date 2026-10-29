@@ -173,7 +173,8 @@ export default {
     }
     if (request.method!=="GET") return reply({error:"read-only service"},405,origin);
     if (url.pathname==="/healthz") return reply({ok:true,read_only:true,
-      demo_only:DATA.demo_only,product_count:PRODUCTS.length},200,origin);
+      demo_only:DATA.demo_only,product_count:PRODUCTS.length,
+      snapshot_at:DATA.snapshot_at},200,origin);
     if (url.pathname==="/api/products") {
       try {return reply(searched({query:url.searchParams.get("query")||""}),200,origin);}
       catch (_) {return reply({error:"bad query"},400,origin);}
