@@ -4,7 +4,7 @@ from pathlib import Path
 
 from miseport.importers import load_catalog
 
-REFERENCE = Path(__file__).resolve().parents[1] / "references/legacy-20261027"
+REFERENCE = Path(__file__).resolve().parents[1] / "tests/fixtures"
 
 
 def test_archived_reference_keeps_host_evaluation_explicitly_unrun():
