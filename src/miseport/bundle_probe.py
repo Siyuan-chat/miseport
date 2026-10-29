@@ -64,6 +64,8 @@ def inspect_merchant_zip(path: str | Path, *, expected_origin: str | None = None
                     or sum(i.file_size for i in infos) > MAX_UNCOMPRESSED):
                 raise BundleVerificationError("ZIPの公開ファイル構成を確認してください。")
             data = {name: z.read(name) for name in names}
+    except BundleVerificationError:
+        raise
     except (zipfile.BadZipFile, OSError, RuntimeError, ValueError):
         raise BundleVerificationError("ZIPファイルを安全に読み取れません。") from None
 
