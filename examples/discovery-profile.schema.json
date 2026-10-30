@@ -52,7 +52,6 @@
       "type": "string"
     },
     "products": {
-      "default": [],
       "items": {
         "$ref": "#/$defs/ProductEnrichment"
       },
