@@ -31,6 +31,7 @@ class PageEvidence:
     body: bytes = b""
     truncated: bool = False
     redirect_location: str | None = None
+    x_robots_tag: str | None = None
 
 
 @dataclass(frozen=True)
@@ -133,12 +134,15 @@ def _fetch_page(url: str, timeout: float, max_bytes: int) -> PageEvidence:
         # Redirects are reported but never followed to another host or LAN.
         location = response.getheader("Location")
         if 300 <= status < 400:
-            return PageEvidence(status, content_type, redirect_location=location)
+            return PageEvidence(status, content_type, redirect_location=location,
+                                x_robots_tag=response.getheader("X-Robots-Tag"))
         if status != 200:
-            return PageEvidence(status, content_type)
+            return PageEvidence(status, content_type,
+                                x_robots_tag=response.getheader("X-Robots-Tag"))
         data = response.read(max_bytes + 1)
         return PageEvidence(status, content_type, data[:max_bytes],
-                            truncated=len(data) > max_bytes)
+                            truncated=len(data) > max_bytes,
+                            x_robots_tag=response.getheader("X-Robots-Tag"))
     finally:
         conn.close()
 
