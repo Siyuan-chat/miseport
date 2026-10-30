@@ -186,7 +186,8 @@ def host_review(benchmark, probes, traces):
                 and all(type(rev.get(k)) is bool for k in REVIEW))
             if reviewed:
                 passed = (sorted(rev["observed_product_ids"]) ==
-                    sorted(case["expected_product_ids"]) and all(rev[k] for k in REVIEW))
+                    sorted(case["expected_product_ids"]) and all(rev[k] for k in REVIEW)
+                    and errors == 0)
         out.append({"id": case["id"],
             "status": "unreviewed" if not reviewed else "passed" if passed else "failed",
             "tool_call_count": calls, "tool_error_count": errors})
