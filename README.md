@@ -125,7 +125,7 @@ miseport export-jsonld tea-002 --catalog examples/products.json
 | `audit_catalog` | 欠落項目やデータの整合性をチェックする |
 | `export_product_jsonld` | Schema.org `Product` / `Offer`のJSON-LDを生成する |
 
-Claude DesktopなどのMCP対応クライアントから利用できます。Meta MuseでもCustom Connector経由の接続例があります。詳しくは[Muse接続ガイド](docs/MUSE_CONNECT.ja.md)と[Agent GEOの考え方](docs/AGENT_GEO.ja.md)をご覧ください。
+Claude DesktopなどのMCP対応クライアントから利用できます。Meta MuseでもCustom Connector経由の接続例があります。詳しくは[Muse接続ガイド](docs/MUSE_CONNECT.ja.md) · [Agent評価（20件・実測範囲）](docs/AGENT_EVAL.md)と[Agent GEOの考え方](docs/AGENT_GEO.ja.md)をご覧ください。
 
 ## 商店向けツール（Experimental / Alpha）
 
