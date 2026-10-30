@@ -95,3 +95,17 @@ def test_host_review_flags_fail_and_prohibited_tools_rejected(tmp_path):
     path.write_text(json.dumps(trace), encoding="utf-8")
     with pytest.raises(ValueError, match="tool_calls"):
         host_review(BENCH, PROBES, path)
+
+
+def test_host_tool_error_never_counts_as_pass_even_when_review_flags_are_true(tmp_path):
+    trace = {"host": "sample", "model": "sample", "captured_at": "2026-10-30",
+        "cases": [{"id": "J01", "answer": "a result", "reviewed_by": "human",
+            "tool_calls": [{"name": "search_products", "is_error": True}],
+            "review": {"observed_product_ids": ["tea-001"],
+                "facts_grounded": True, "unknown_handled": True,
+                "source_cited": True, "safe_behavior": True}}]}
+    path = tmp_path / "host-tool-failure.json"
+    path.write_text(json.dumps(trace), encoding="utf-8")
+    result = host_review(BENCH, PROBES, path)
+    assert result["tool_errors"] == 1 and result["failed"] == 1
+    assert result["passed"] == 0 and result["reviewed"] == 1
