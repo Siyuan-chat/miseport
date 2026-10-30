@@ -1,0 +1,324 @@
+{
+  "schema_version": "miseport-eval-probes/1.0",
+  "scope": "synthetic local protocol assertions, not model answers",
+  "probes": [
+    {
+      "id": "J01",
+      "tool": "search_products",
+      "arguments": {
+        "query": "ほうじ茶",
+        "origin_prefecture": "京都府"
+      },
+      "checks": [
+        {
+          "path": "products[*].sku",
+          "equals": [
+            "tea-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J02",
+      "tool": "search_products",
+      "arguments": {
+        "gift_wrapping": true,
+        "max_price_jpy": 2000
+      },
+      "checks": [
+        {
+          "path": "products[*].sku",
+          "equals": [
+            "tea-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J03",
+      "tool": "search_products",
+      "arguments": {
+        "gift_wrapping": true,
+        "origin_prefecture": "京都府",
+        "max_price_jpy": 3000
+      },
+      "checks": [
+        {
+          "path": "products[*].sku",
+          "equals": [
+            "tea-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J04",
+      "tool": "get_product",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "product.origin_prefecture",
+          "equals": "京都府"
+        }
+      ]
+    },
+    {
+      "id": "J05",
+      "tool": "get_quote",
+      "arguments": {
+        "sku": "tea-001",
+        "quantity": 2
+      },
+      "checks": [
+        {
+          "path": "total_jpy",
+          "equals": 4150
+        },
+        {
+          "path": "is_binding",
+          "equals": false
+        }
+      ]
+    },
+    {
+      "id": "J06",
+      "tool": "check_inventory",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "stock_is_live",
+          "equals": false
+        },
+        {
+          "path": "stock_quantity",
+          "equals": 12
+        }
+      ]
+    },
+    {
+      "id": "J07",
+      "tool": "get_product",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "product.caffeine_level",
+          "equals": null
+        }
+      ]
+    },
+    {
+      "id": "J08",
+      "tool": "search_products",
+      "arguments": {
+        "query": "抹茶"
+      },
+      "checks": [
+        {
+          "path": "products[*].sku",
+          "equals": [
+            "tea-002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J09",
+      "tool": "get_quote",
+      "arguments": {
+        "sku": "tea-002"
+      },
+      "checks": [
+        {
+          "path": "shipping_jpy",
+          "equals": null
+        },
+        {
+          "path": "total_jpy",
+          "equals": null
+        },
+        {
+          "path": "complete_total",
+          "equals": false
+        }
+      ]
+    },
+    {
+      "id": "J10",
+      "tool": "check_inventory",
+      "arguments": {
+        "sku": "tea-002"
+      },
+      "checks": [
+        {
+          "path": "stock",
+          "equals": "unknown"
+        },
+        {
+          "path": "stock_quantity",
+          "equals": null
+        },
+        {
+          "path": "stock_is_live",
+          "equals": false
+        }
+      ]
+    },
+    {
+      "id": "J11",
+      "tool": "about_miseport",
+      "arguments": {},
+      "checks": [
+        {
+          "path": "read_only",
+          "equals": true
+        },
+        {
+          "path": "checkout",
+          "equals": "merchant source_url only"
+        }
+      ]
+    },
+    {
+      "id": "J12",
+      "tool": "about_miseport",
+      "arguments": {},
+      "checks": [
+        {
+          "path": "demo_product_count",
+          "equals": 2
+        }
+      ]
+    },
+    {
+      "id": "J13",
+      "tool": "export_product_jsonld",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "jsonld.aggregateRating",
+          "absent": true
+        },
+        {
+          "path": "jsonld.review",
+          "absent": true
+        }
+      ]
+    },
+    {
+      "id": "J14",
+      "tool": "get_quote",
+      "arguments": {
+        "sku": "tea-001",
+        "quantity": 1
+      },
+      "checks": [
+        {
+          "path": "total_jpy",
+          "equals": 2300
+        }
+      ]
+    },
+    {
+      "id": "J15",
+      "tool": "get_quote",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "shipping_basis",
+          "equals": "catalog per-order snapshot; destination not evaluated"
+        }
+      ]
+    },
+    {
+      "id": "J16",
+      "tool": "get_product",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "product.fulfillment_address",
+          "absent": true
+        }
+      ]
+    },
+    {
+      "id": "J17",
+      "tool": "get_product",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "product.is_demo",
+          "equals": true
+        },
+        {
+          "path": "product.source_url",
+          "equals": "https://example.org/products/tea-001"
+        }
+      ]
+    },
+    {
+      "id": "J18",
+      "tool": "audit_catalog",
+      "arguments": {},
+      "checks": [
+        {
+          "path": "missing_fields.shipping_jpy",
+          "equals": [
+            "tea-002"
+          ]
+        },
+        {
+          "path": "missing_fields.stock",
+          "equals": [
+            "tea-002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J19",
+      "tool": "get_product",
+      "arguments": {
+        "sku": "tea-001"
+      },
+      "checks": [
+        {
+          "path": "product.gift_wrapping",
+          "equals": true
+        },
+        {
+          "path": "product.evidence_url",
+          "equals": "https://example.org/products/tea-001"
+        }
+      ]
+    },
+    {
+      "id": "J20",
+      "tool": "about_miseport",
+      "arguments": {},
+      "checks": [
+        {
+          "path": "read_only",
+          "equals": true
+        },
+        {
+          "path": "demo_product_count",
+          "equals": 2
+        }
+      ]
+    }
+  ]
+}

@@ -21,6 +21,7 @@ miseport-http = "miseport.http:main"
 miseport-gui = "miseport.gui:main"
 miseport-publish = "miseport.publisher:main"
 miseport-verify-bundle = "miseport.bundle_probe:main"
+miseport-eval = "miseport.eval:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
