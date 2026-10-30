@@ -20,6 +20,7 @@ from .importers import load_catalog
 
 
 class ProductEnrichment(BaseModel):
+    """Merchant-reviewed enrichment; not a substitute for platform approval."""
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     sku: str = Field(min_length=1, max_length=128)
     brand: str | None = Field(default=None, min_length=1, max_length=150)

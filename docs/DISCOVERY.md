@@ -23,9 +23,27 @@ miseport-discovery-readiness --catalog tests/fixtures/demo-store.reference.json 
 
 技術的データ契約: `DiscoveryProfile` (`miseport-discovery/1.0`)。商品ごとの `sku`, `brand`, `brand_verified` を保持し、同一SKU重複、存在しないSKU、商店ID不一致、未知の設定キーを拒否します。`python scripts/export_schemas.py` でJSON Schemaを再生成できます。
 
-## 今後のD2: 本来の商品ページのWeb監査
 
-原販売ページのcanonical、robots/noindex、JSON-LD、sitemap、情報一致などを検証し、**「ページが取得できた」**と**「検索エンジンが実際に登録した」**を分けます。店舗サイトに変更を加えず、認証も要求しません。
+## D2 — 元の公開商品ページ監査（2026-10-30 Alpha）
+
+この機能は商店の**本来の商品ページ**のHTTP応答、canonical、robots.txt（Googlebot / OAI-SearchBot）、meta / X-Robots-Tag noindex、Product JSON-LDのSKU/URL/名前/価格/在庫記述を読み取り比較します。サンプルを使う場合は**すべてローカルで実行**し、Webへアクセスしません。
+
+```sh
+miseport-web-discovery-audit --catalog tests/fixtures/demo-store.reference.json --offline-manifest examples/discovery-web-evidence.demo.json --output artifacts/discovery/page-audit.json
+```
+
+`examples/discovery-*.demo.*` は架空の原本HTML / robots.txt資料です。オフライン入力はスナップショットの**コピー**であり、実際にページが配信されているという証明ではありません。
+
+実店舗へのネットワーク検査は、商店がそのショップの公開商品ページへの読み取りアクセスを明示的に許可した場合に限って、次のように**個別に開始**できます（自動定期巡回ではありません）。
+
+```sh
+miseport-web-discovery-audit --catalog /path/to/merchant-reviewed.json --live --merchant-approved --max-products 5 --output artifacts/discovery/live-audit.json
+```
+
+同じ店舗のHTTPSページのみ、最大10商品、各リクエスト最大4秒、HTML 128KiB、robots.txt 64KiB。DNSは公開IPに制限しTLS検証済みIPへ接続します。Cookie / API Token /認証情報を送らず、リダイレクトを追いません。URLクエリ付きの商品の**オンライン検査は今は未対応**で、オフラインデータ監査に切り替えます。商品ページが大きすぎる場合や、robots.txtを取得できない場合は、結果を未検証のまま残します。
+
+検査項目が満たされても、**Googleにインデックス済み、Merchant Listing掲載可能、ChatGPT / Museで自然発見された、売上が向上した**などの証明にはなりません。インデックス状況は、権限のあるSearch Console等の別証拠を待って記録します。商店所有の既存商品ページは変更せず、重複商品ページを勝手に生成しません。
+
 
 ## 資料と適用範囲
 

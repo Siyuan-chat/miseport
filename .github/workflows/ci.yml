@@ -118,3 +118,47 @@ jobs:
           path: artifacts/agent-eval/local-protocol.json
           if-no-files-found: error
           retention-days: 7
+
+  discovery-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install tested Python package
+        run: python -m pip install -e ".[dev]"
+      - name: Generate synthetic discovery and webpage evidence only (offline)
+        run: |
+          mkdir -p artifacts/discovery
+          miseport-discovery-readiness \
+            --catalog tests/fixtures/demo-store.reference.json \
+            --profile examples/discovery-profile.example.json \
+            --output artifacts/discovery/readiness.json
+          miseport-web-discovery-audit \
+            --catalog tests/fixtures/demo-store.reference.json \
+            --offline-manifest examples/discovery-web-evidence.demo.json \
+            --output artifacts/discovery/web-audit.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("artifacts/discovery")
+          readiness = json.loads((root / "readiness.json").read_text())
+          web = json.loads((root / "web-audit.json").read_text())
+          assert readiness["catalog_product_count"] == 2
+          assert readiness["agent_discovery_verified"] is False
+          assert readiness["channel_submission_performed"] is False
+          assert web["checked"] == 1 and web["with_issues"] == 0
+          assert web["agent_natural_discovery_verified"] is False
+          print("Offline synthetic discovery evidence verified; no site or feed access.")
+          PY
+      - name: Upload synthetic diagnostics only
+        uses: actions/upload-artifact@v7
+        with:
+          name: miseport-synthetic-discovery-preflight
+          path: artifacts/discovery/*.json
+          if-no-files-found: error
+          retention-days: 7

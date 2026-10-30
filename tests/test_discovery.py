@@ -70,3 +70,11 @@ def test_schema_rejects_duplicates_unknown_fields_and_false_brand_attestations()
         DiscoveryProfile.model_validate(data)
     schema = DiscoveryProfile.model_json_schema()
     assert schema["properties"]["schema_version"] and schema["$defs"]["ProductEnrichment"]
+
+
+
+def test_checked_in_discovery_profile_json_schema_matches_pydantic():
+    expected = DiscoveryProfile.model_json_schema()
+    actual = json.loads((Path(__file__).resolve().parents[1]
+        / "examples/discovery-profile.schema.json").read_text(encoding="utf-8"))
+    assert actual == expected

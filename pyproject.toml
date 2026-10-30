@@ -24,6 +24,7 @@ miseport-verify-bundle = "miseport.bundle_probe:main"
 miseport-eval = "miseport.eval:main"
 miseport-compare-catalogs = "miseport.catalog_compare:main"
 miseport-discovery-readiness = "miseport.discovery:main"
+miseport-web-discovery-audit = "miseport.web_discovery:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
