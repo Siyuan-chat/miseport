@@ -21,8 +21,8 @@ JSON-LD uses [Schema.org Product](https://schema.org/Product) and [Offer](https:
 Legacy input example (kept separate from current sample IDs):
 
 ```sh
-miseport validate references/legacy-20261027/demo-store.reference.json
-miseport import references/legacy-20261027/demo-store.reference.json --output catalog.json
+miseport validate tests/fixtures/demo-store.reference.json
+miseport import tests/fixtures/demo-store.reference.json --output catalog.json
 miseport quote tea-001 --quantity 2 --catalog catalog.json
 ```
 
