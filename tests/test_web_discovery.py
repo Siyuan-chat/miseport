@@ -137,3 +137,19 @@ def test_offline_rejects_unknown_or_duplicate_products_and_too_large_html(tmp_pa
     file.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(WebAuditError, match="size"):
         audit_offline(catalog(), file)
+
+
+
+def test_missing_robots_and_missing_offer_are_unknown_not_ready():
+    raw = ('<html><head><link rel="canonical" href="' + URL
+           + '"><script type="application/ld+json">'
+           + json.dumps({"@type": "Product", "sku": "tea-001",
+                         "name": "京都産ほうじ茶 ギフト 80g", "url": URL})
+           + '</script></head></html>').encode("utf-8")
+    report = audit_web_pages(catalog(), {"tea-001": page(raw)})
+    p = report["products"][0]
+    assert p["robots_allow"]["Googlebot"] is None
+    assert p["jsonld_price"] == "not_verifiable"
+    assert p["page_evidence_sufficient"] is False
+    assert "googlebot_robots_unverified" in p["issues"]
+    assert "jsonld_price_not_verifiable" in p["issues"]
