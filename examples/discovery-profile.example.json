@@ -1,0 +1,11 @@
+{
+  "schema_version": "miseport-discovery/1.0",
+  "merchant_id": "demo-kyoto-tea",
+  "products": [
+    {
+      "sku": "tea-001",
+      "brand": "架空の茶ブランド",
+      "brand_verified": true
+    }
+  ]
+}
