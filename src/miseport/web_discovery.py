@@ -212,14 +212,16 @@ def audit_web_pages(catalog, pages: dict[str, PageEvidence], *,
             offer = _offer_data(node) if node is not None else None
             price = _price_state(offer, product)
             availability = _availability_state(offer, product)
-            if price == "mismatch":
-                reasons.append("jsonld_price_mismatch")
-            if availability == "mismatch":
-                reasons.append("jsonld_availability_mismatch")
+            if price != "matches":
+                reasons.append("jsonld_price_" + price)
+            if availability not in ("matches", "unknown_source_stock"):
+                reasons.append("jsonld_availability_" + availability)
         robot_permission = _robots_states(robots_text, product.source_url)
         for agent, permitted in robot_permission.items():
             if permitted is False:
                 reasons.append(agent.lower() + "_robots_disallow")
+            if permitted is None:
+                reasons.append(agent.lower() + "_robots_unverified")
         values.append({
             "sku": sku, "http_status": evidence.status_code,
             "canonical": canonical, "noindex_detected": noindex,
