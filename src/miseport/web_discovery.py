@@ -12,7 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 import json
 import re
-from urllib.parse import urlsplit, urljoin
+from urllib.parse import urlsplit, urljoin, urlunsplit
 from urllib.robotparser import RobotFileParser
 
 from .base_urls import _store_origin, BaseURLValidationError
@@ -59,6 +59,14 @@ class _Markers(HTMLParser):
             self.jsonld.append("".join(self._buffer))
             self._collect = False
             self._buffer = []
+
+
+def _owner_origin(url):
+    """Validate a URL's HTTPS host without treating its query as a new host."""
+    parts = urlsplit(url)
+    if parts.fragment:
+        raise WebAuditError("public product fragment URLs need manual review")
+    return _store_origin(urlunsplit(parts._replace(query="", fragment="")))
 
 
 def _product_nodes(value):
@@ -161,7 +169,7 @@ def audit_web_pages(catalog, pages: dict[str, PageEvidence], *,
         product, evidence = catalog.by_sku[sku], pages[sku]
         try:
             origin = _store_origin(product.merchant_homepage)
-            if _store_origin(product.source_url) != origin:
+            if _owner_origin(product.source_url) != origin:
                 raise WebAuditError("product URL does not match merchant origin")
         except (BaseURLValidationError, TypeError):
             raise WebAuditError("merchant/product URLs must share a verified HTTPS origin") from None
@@ -177,32 +185,41 @@ def audit_web_pages(catalog, pages: dict[str, PageEvidence], *,
         if evidence.truncated or len(evidence.body) > MAX_HTML_BYTES:
             reasons.append("html_truncated")
         marker = _Markers()
-        if not reasons:
+        readable = not reasons
+        if readable:
             marker.feed(evidence.body.decode("utf-8", "replace"))
-        canonical_urls = [urljoin(product.source_url, x) for x in marker.canonicals]
-        canonical = ("missing" if not canonical_urls else
-            "matches" if len(set(canonical_urls)) == 1 and
-                         canonical_urls[0].rstrip("/") == product.source_url.rstrip("/")
-            else "mismatch")
-        if canonical != "matches":
-            reasons.append("canonical_" + canonical)
-        noindex = _noindex(marker, evidence)
-        if noindex:
-            reasons.append("noindex_directive_detected")
+        canonical, noindex, structured = "not_evaluated", None, "not_evaluated"
+        price, availability = "not_evaluated", "not_evaluated"
+        if readable:
+            canonical_urls = [urljoin(product.source_url, x) for x in marker.canonicals]
+            canonical = ("missing" if not canonical_urls else
+                "matches" if len(set(canonical_urls)) == 1 and
+                canonical_urls[0].rstrip("/") == product.source_url.rstrip("/")
+                else "mismatch")
+            if canonical != "matches":
+                reasons.append("canonical_" + canonical)
+            noindex = _noindex(marker, evidence)
+            if noindex:
+                reasons.append("noindex_directive_detected")
+            node, structured = _find_jsonld(marker, product)
+            if structured != "matched":
+                reasons.append("product_jsonld_" + structured)
+            if node is not None:
+                if node.get("url") and node["url"] != product.source_url:
+                    reasons.append("jsonld_url_mismatch")
+                if node.get("name") and node["name"] != product.name:
+                    reasons.append("jsonld_name_mismatch")
+            offer = _offer_data(node) if node is not None else None
+            price = _price_state(offer, product)
+            availability = _availability_state(offer, product)
+            if price == "mismatch":
+                reasons.append("jsonld_price_mismatch")
+            if availability == "mismatch":
+                reasons.append("jsonld_availability_mismatch")
         robot_permission = _robots_states(robots_text, product.source_url)
         for agent, permitted in robot_permission.items():
             if permitted is False:
                 reasons.append(agent.lower() + "_robots_disallow")
-        node, structured = _find_jsonld(marker, product)
-        if structured != "matched":
-            reasons.append("product_jsonld_" + structured)
-        offer = _offer_data(node) if node is not None else None
-        price = _price_state(offer, product)
-        availability = _availability_state(offer, product)
-        if price == "mismatch":
-            reasons.append("jsonld_price_mismatch")
-        if availability == "mismatch":
-            reasons.append("jsonld_availability_mismatch")
         values.append({
             "sku": sku, "http_status": evidence.status_code,
             "canonical": canonical, "noindex_detected": noindex,
@@ -286,7 +303,7 @@ def audit_live(catalog, *, approved=False, max_products=MAX_PAGES,
         origin = _store_origin(products[0].merchant_homepage)
         for product in products:
             if _store_origin(product.merchant_homepage) != origin or \
-               _store_origin(product.source_url) != origin:
+               _owner_origin(product.source_url) != origin:
                 raise WebAuditError("shop product URLs must share origin")
             # Existing safe HTTPS transport supports only paths without query.
             if urlsplit(product.source_url).query or urlsplit(product.source_url).fragment:
