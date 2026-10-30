@@ -93,3 +93,28 @@ jobs:
               assert not any(set(name.split('/')) & {'node_modules', '.wrangler', '.git'} for name in names)
           print('Pages upload ZIP has static files and Advanced Mode Worker, without local dependencies.')
           PY
+
+  agent-eval-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install tested read-only MCP stack
+        run: python -m pip install -e ".[dev]"
+      - name: Capture real local MCP protocol evidence (synthetic 20 probes)
+        run: |
+          mkdir -p artifacts/agent-eval
+          miseport-eval protocol --output artifacts/agent-eval/local-protocol.json
+          python -m json.tool artifacts/agent-eval/local-protocol.json > /dev/null
+      - name: Upload protocol evidence (NOT Agent answers)
+        uses: actions/upload-artifact@v7
+        with:
+          name: miseport-synthetic-mcp-20-probes
+          path: artifacts/agent-eval/local-protocol.json
+          if-no-files-found: error
+          retention-days: 7
