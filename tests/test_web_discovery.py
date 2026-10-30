@@ -22,7 +22,7 @@ def html(*, canonical=URL, price="1850", available="InStock", noindex=False):
         + ('<meta name="robots" content="noindex, nofollow">' if noindex else '')
         + '<script type="application/ld+json">'
         + json.dumps({"@context": "https://schema.org", "@type": "Product",
-            "sku": "tea-001", "name": "架空商品", "url": URL,
+            "sku": "tea-001", "name": "京都産ほうじ茶 ギフト 80g", "url": URL,
             "offers": {"@type": "Offer", "price": price, "priceCurrency": "JPY",
                        "availability": "https://schema.org/" + available}})
         + '</script></head><body>架空商品（テスト）</body></html>'
