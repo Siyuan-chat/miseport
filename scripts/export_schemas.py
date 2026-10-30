@@ -3,11 +3,13 @@ from pathlib import Path
 import json
 from miseport.core import Product
 from miseport.legacy import CanonicalDocument, LegacyDocument
+from miseport.discovery import DiscoveryProfile
 
 root = Path(__file__).resolve().parents[1]
 for filename, model in [("product.schema.json", Product),
                         ("catalog-envelope.schema.json", CanonicalDocument),
-                        ("legacy-catalog.schema.json", LegacyDocument)]:
+                        ("legacy-catalog.schema.json", LegacyDocument),
+                        ("discovery-profile.schema.json", DiscoveryProfile)]:
     (root / "examples" / filename).write_text(
         json.dumps(model.model_json_schema(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print("Generated product, canonical envelope and legacy catalog schemas.")
