@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "ProductEnrichment": {
+      "additionalProperties": false,
+      "description": "Merchant-reviewed enrichment; not a substitute for platform approval.",
+      "properties": {
+        "sku": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Sku",
+          "type": "string"
+        },
+        "brand": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand"
+        },
+        "brand_verified": {
+          "default": false,
+          "title": "Brand Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "sku"
+      ],
+      "title": "ProductEnrichment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Merchant-reviewed supplement; never silently substitute merchant name for brand.",
+  "properties": {
+    "schema_version": {
+      "const": "miseport-discovery/1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "merchant_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Merchant Id",
+      "type": "string"
+    },
+    "products": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ProductEnrichment"
+      },
+      "maxItems": 10000,
+      "title": "Products",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "merchant_id"
+  ],
+  "title": "DiscoveryProfile",
+  "type": "object"
+}
