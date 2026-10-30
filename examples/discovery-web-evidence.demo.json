@@ -1,0 +1,11 @@
+{
+  "schema_version": "miseport-web-evidence/1.0",
+  "robots_file": "discovery-robots.demo.txt",
+  "items": [
+    {
+      "sku": "tea-001",
+      "filename": "discovery-tea-001.demo.html",
+      "http_status": 200
+    }
+  ]
+}
