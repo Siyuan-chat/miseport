@@ -150,7 +150,7 @@ MisePortは商品情報の参照に特化したツールです。購入はショ
 
 ## ドキュメント・開発参加
 
-[公開ステータス](docs/STATUS.md) · [テスト/受入範囲](docs/TESTING.md) · [API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse接続ガイド](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [製品方針](docs/PRODUCT_STRATEGY.ja.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [ブランドガイド](docs/BRAND.md)
+[公開ステータス](docs/STATUS.md) · [テスト/受入範囲](docs/TESTING.md) · [商品データ整合性の確認](docs/CATALOG_CONSISTENCY.md) · [API仕様](docs/API.md) · [データ形式](docs/CATALOG.md) · [Muse接続ガイド](docs/MUSE_CONNECT.ja.md) · [Agent GEO](docs/AGENT_GEO.ja.md) · [Cloudflareデモ](docs/CLOUDFLARE.md) · [製品方針](docs/PRODUCT_STRATEGY.ja.md) · [セキュリティ](SECURITY.md) · [貢献ガイド](CONTRIBUTING.md) · [ブランドガイド](docs/BRAND.md)
 
 バグ報告や機能提案は[GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)へお寄せください。
 
