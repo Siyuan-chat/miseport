@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from decimal import Decimal, InvalidOperation
 from html.parser import HTMLParser
+import http.client
 from pathlib import Path
 import json
 import re
@@ -322,7 +323,7 @@ def audit_live(catalog, *, approved=False, max_products=MAX_PAGES,
         if robot.status_code == 200 and not robot.truncated and \
                 len(robot.body) <= MAX_ROBOTS_BYTES:
             robot_text = robot.body.decode("utf-8", "replace")
-    except (OSError, ValueError):
+    except (OSError, ValueError, http.client.HTTPException):
         pass
     pages = {}
     for p in products:
@@ -330,7 +331,7 @@ def audit_live(catalog, *, approved=False, max_products=MAX_PAGES,
             evidence = fetch(p.source_url, 4.0, MAX_HTML_BYTES)
             if not isinstance(evidence, PageEvidence):
                 raise ValueError("invalid page response")
-        except (OSError, ValueError):
+        except (OSError, ValueError, http.client.HTTPException):
             evidence = PageEvidence(0, "", b"")
         pages[p.sku] = evidence
     return audit_web_pages(catalog, pages, robots_text=robot_text,
