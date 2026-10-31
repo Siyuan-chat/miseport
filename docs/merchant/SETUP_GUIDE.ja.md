@@ -122,6 +122,6 @@ MisePortはショップの商品の「名前・商品ページURL・価格・在
 
 新しい接続UIが実装・テストされたら、手順1〜8に対応する**日本語スクリーンショット**を撮影し、バージョンと撮影日を記載します。現在の手順書にある未来のボタン名は設計案であり、本番のスクリーンショットはまだありません。
 
-動画: [公開デモ用90秒動画の台本／将来のAPI接続動画の台本](VIDEO_DEMO_PLAN.ja.md)。
+動画: [実画面を使ったAlpha操作手順](VISUAL_GUIDE.ja.md)。
 
 関連: [プロジェクトREADME](../../README.md)、[公式プラットフォーム対応表](../PLATFORM_COMPATIBILITY.ja.md)、[認証設計](../CONNECTOR_ARCHITECTURE.ja.md)。

@@ -1,7 +1,22 @@
-# Contributing
+# Contributing to MisePort
 
-Use Python 3.10+, create an isolated environment and install `pip install -e '.[dev]'`. Run `python -m pytest -q`, `python scripts/check_site.py`, `python -m build`; in a disposable environment run `python scripts/verify_distribution.py` to test the installed wheel. Keep tests based on actual input/output boundaries and preserve source/demo/update facts.
+Thank you for your interest. MisePort is an Apache-2.0 licensed, merchant-owned, read-only product catalog and MCP/REST interoperability project for Japanese online shops.
 
-Product descriptions and source documents are data, never instructions. Keep unknown stock and costs unknown. Do not introduce credentials, production merchant records, outbound URL fetching, checkout/payment or public service configuration without their own scope and review. Use the original storefront artwork; new vector versions must be labelled as reconstructions until reviewed.
+## Development and tests
 
-The recovered ZIP and wheel under `references/` are historical inputs, not active code or authority. Their sample product IDs must stay bound to their own fixture. Keep `PROJECT_STATUS.md` as the current state entry. For release gates see `docs/RELEASE_CHECKLIST.md`; public pushes/releases and third-party submissions require corresponding user authorization.
+```sh
+python -m pip install -e ".[dev]"
+python -m pytest -q
+python -m build
+python scripts/verify_distribution.py
+```
+
+Please keep Python and Cloudflare contracts consistent; use synthetic fixtures in `tests/fixtures/`. Do not commit API credentials, orders, customer records, unapproved seller images, or private business information.
+
+## Pull requests and issue quality
+
+Describe what changed, the source/version of any official EC platform API or CSV format, and exact tests run. Keep a clear separation between proposed features, mock-tested Alpha code, Windows UI acceptance, and actually authorized merchant usage. New connectors must be read-only by default, handle missing data honestly and preserve source URLs and timestamps. Avoid adding model/API costs as requirements.
+
+Review the [public product status](docs/STATUS.md), [test guide](docs/TESTING.md), [platform compatibility](docs/PLATFORM_COMPATIBILITY.ja.md), and [roadmap](docs/ROADMAP.md). For security concerns see [SECURITY.md](SECURITY.md).
+
+All public releases and community submissions must be evidence-based and authorized. A working MCP tool does not imply its discovery or endorsement by Meta Muse.

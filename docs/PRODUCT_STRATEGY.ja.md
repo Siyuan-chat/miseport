@@ -1,7 +1,7 @@
 # MisePort 製品方針 — 商店所有・ローカルファースト（ADR-0001）
 
 **決定日:** 2026-10-29 JST  
-**状態:** 製品方向を採用。**11/10追記:** 11月10日は[商店が使えるReleaseと同意済みの実商店Demo](RELEASE_2026-11-10.ja.md)を目標とする。応募/公開許諾は[実商店Pilot計画](merchant/PILOT_2026-11-10.ja.md)で管理。**2026-10-29追記:** 手動CSV中心の順序は[ADR-0002（公式API自動取込を優先）](CONNECTOR_ARCHITECTURE.ja.md)で更新。以下の将来機能は実装・検証済みを意味しない。  
+**状態:** 製品方向を採用。**11/10追記:** 11月10日は[商店が使えるReleaseの目標](ROADMAP.md)を目標とする。応募/公開許諾は[公開進捗](STATUS.md)で管理。**2026-10-29追記:** 手動CSV中心の順序は[ADR-0002（公式API自動取込を優先）](CONNECTOR_ARCHITECTURE.ja.md)で更新。以下の将来機能は実装・検証済みを意味しない。  
 **対象:** 日本の小規模EC事業者と、それを支援する開発者  
 **短い定義:** *商店が自分の商品情報と公開先を所有し、MisePortはAIエージェント向けの検証・変換・公開を容易にするオープンソースツール。*
 
@@ -86,7 +86,7 @@ Merchant-owned CSV / JSON / future authorized platform API
 | **後続** | Shopify / カラーミー / makeshop / EC-CUBE等の公式APIアダプター、プラットフォームCSV入出力の実機互換検証、任意の定期同期、Webhook、GEO評価、複数チャネル出力 |
 | **対象外（当面）** | 大規模中央検索・比較サイト、価格比較ネットワーク、商家からの取引手数料、決済・返金、複雑な会員制度、大規模マルチテナント基盤 |
 
-各対応プラットフォームの操作には**日本語の画面付き手順書、FAQ、トラブル対応、認証失効方法、字幕付き動画デモ**を必ずセットで提供する。未実装のUIを操作済みと誤認させない。[商店主の手順書](merchant/SETUP_GUIDE.ja.md)、[動画台本](merchant/VIDEO_DEMO_PLAN.ja.md)を参照。
+各対応プラットフォームの操作には**日本語の画面付き手順書、FAQ、トラブル対応、認証失効方法、字幕付き動画デモ**を必ずセットで提供する。未実装のUIを操作済みと誤認させない。[商店主の手順書](merchant/SETUP_GUIDE.ja.md)、[画面付き手順](merchant/VISUAL_GUIDE.ja.md)を参照。
 
 商家向けの価値指標は検索順位の保証ではなく、**インポート～準備完了までの時間、手作業件数、重要属性の欠損率、Agent回答の正確さ、更新のしやすさ**とする。最初のUX目標は「技術者の説明なしで10分以内にCSVから成果物をダウンロードできる」だが、これは**未測定の目標値**である。
 
@@ -96,4 +96,4 @@ Merchant-owned CSV / JSON / future authorized platform API
 
 **2026-11-10の短期ゴール**は既存OSSの品質・文書・リリースとテストを仕上げること。非技術ユーザー向けの本格的な操作体験は次の開発段階として扱う。現状のCLIと公開架空デモを、一般商店が今すぐセルフサービスで使えると宣伝しない。
 
-関連: [README](../README.md), [Catalog contract](CATALOG.md), [Roadmap](ROADMAP.md), [Project status](../PROJECT_STATUS.md), [SEO/GEO](SEO_GEO.md)。
+関連: [README](../README.md), [Catalog contract](CATALOG.md), [Roadmap](ROADMAP.md), [Project status](STATUS.md), [Agent GEO](AGENT_GEO.ja.md)。

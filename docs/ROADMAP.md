@@ -1,33 +1,35 @@
-# MisePort Roadmap — 11/10 Merchant-Usable Release
+# MisePort 公開ロードマップ
 
-**Updated 2026-10-29 JST.** This page replaces the earlier developer-only 11/10 schedule. Planned milestones are not delivered capabilities. [Current evidence/status](../PROJECT_STATUS.md) · [Internal development plan (Chinese)](DEVELOPMENT_PLAN.zh-CN.md) · [Hard release contract](RELEASE_2026-11-10.ja.md).
+**更新:** 2026-10-29 JST  
+**製品の方向:** 日本の小規模ECショップが自分の商品情報を、読み取り専用のAIエージェント用Catalog/MCPへ安全につなぐオープンソース。中央商品データベースや決済ネットワークを必須としません。
 
-## P0: by 2026-11-10, a shop owner can actually use MisePort
+## 現在: 商店向けAlpha
 
-- A merchant without programming skills can launch a Japanese Windows GUI and connect **their own BASE shop using official read-only API credentials**, fetch public products, review variants/prices/sources, and manually resync.
-- The merchant can generate a shop-specific public-only catalog, JSON-LD and read-only MCP/REST hosting ZIP and deploy it at an **authorized merchant-controlled HTTPS URL** using documented steps.
-- **At least one actual operating Japanese ecommerce merchant** has separately consented to data extraction and to public use of their name/URL/product examples/video. Publish a truthful real-store Agent query demo and dated case; a synthetic shop or unapproved/publicly scraped storefront does not count.
-- Versioned distribution, validated Windows merchant workflow, secret-safe tests, Japanese screenshot manual and real-screen subtitled video are published.
-- Optional CSV fallback is useful but **not a substitute for the API-auto-ingestion requirement**. No payments, central product index or promise of Agent automatic discovery.
+- BASE v2 βの**商品読み取り専用**API ConnectorのAlpha実装と、BASE/Shopify公式商品CSVの読み込み原型（いずれも実店舗での適合試験前）。
+- 日本語のローカルGUI、URL候補・公開ページ確認、商品情報の監査と更新差分、JSON/JSON-LD、商店別の読み取り専用MCP/REST ZIP生成。
+- 商店自身がCloudflare Pagesへ手動で公開する手順、生成ZIPの整合性検証、公開後のMCP/RESTへの読み取り専用接続確認。
+- 架空商品の公開デモ、基本MCPツール、Python/Node/CloudflareテストおよびWindows Alpha EXEの自動ビルド。
+- 実際のTk GUIから取得した、**架空商品を使用する画面キャプチャ**と日本語ガイド。
 
-### Critical path
+[確認済みの範囲・未実施事項](STATUS.md) / [テスト方法](TESTING.md) / [画面ガイド](merchant/VISUAL_GUIDE.ja.md)。
 
-| Date JST | Execution gate | Tracking |
-| --- | --- | --- |
-| **10/29** | Freeze merchant-ready scope; publish consent-based recruitment plan; check BASE API and existing core | [Release](RELEASE_2026-11-10.ja.md), [Pilot](merchant/PILOT_2026-11-10.ja.md) |
-| **10/30–10/31** | Build BASE API mock and local GUI/security prototype; identify/contact 2–3 eligible merchants by authorized means; reach provisional participation | [#1](https://github.com/Siyuan-chat/miseport/issues/1), [#7](https://github.com/Siyuan-chat/miseport/issues/7), [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
-| **11/01** | Target one shop's separate extraction/publication permissions; successfully read real BASE API data | [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
-| **11/02–11/05** | Finish review/audit and merchant-specific deploy ZIP; obtain a distinct, merchant-approved HTTPS MCP/REST endpoint | [#2](https://github.com/Siyuan-chat/miseport/issues/2), [#8](https://github.com/Siyuan-chat/miseport/issues/8) |
-| **11/06–11/08** | Windows distribution and independent nontechnical test; capture real shop demo and Japanese captions with permission; Agent client tests | [#4](https://github.com/Siyuan-chat/miseport/issues/4), [#9](https://github.com/Siyuan-chat/miseport/issues/9) |
-| **11/09–11/10** | Merchant final approval, CI/security/rights and rollback review, GitHub Release and **one real-shop public case** | [#6](https://github.com/Siyuan-chat/miseport/issues/6) |
+## 2026年11月10日の目標（未リリース）
 
-**Blocking dependency:** a real operating seller must consent and have eligible shop API access; there is **no confirmed participant as of this plan**. If not obtained, state that the release criterion is unmet. Do not label an internal synthetic demo as an external merchant success. Do not contact merchants or use real accounts without authorized channels/permission.
+1. 実店舗の許諾を得たBASE API接続、公開商品の取得・検証を成立させる。
+2. 非技術者がWindowsで、商品取込→審査→ZIP生成→公開→Agent照会を自分で操作できることを実証する。
+3. 商店管理のHTTPSサイトへの実際の公開、更新、停止、MCP Client接続を検証する。
+4. **実在し営業中の日本のEC商店1店以上**の明示的な公開同意に基づき、実商品を使った公開デモと実画面動画を公開する。
+5. 内部作業資料と旧資産を正式Release Tag/Source Archive、Pythonパッケージ、商店配信物から除外する。
 
-## Post-launch (only after P0)
+*これは目標であり、承認待ちの商店の協力、Meta Museの正式Connector掲載、AIによる自然推薦や売上改善を保証するものではありません。*
 
-- Extend native APIs to approved Shopify/Color Me/makeshop/EC-CUBE integrations as eligible, with version-specific permissions.
-- Validate official platform CSV import **and** platform-compatible output separately; no writeback by default.
-- Add optional merchant-owned scheduled sync/Webhooks, open Adapter interface, richer evidence/quality checks, and repeatable Japanese Agent benchmark.
-- Remain free-first, single-shop-owned and protocol-independent; do not build a central marketplace.
+## その後の開発候補
 
-**History:** The Git repository retains the superseded v0.1-developer / v0.2-December roadmap in version history. [ADR-0001](PRODUCT_STRATEGY.ja.md) and [ADR-0002](CONNECTOR_ARCHITECTURE.ja.md) still define product ownership and authorization boundaries; this page controls the immediate release scope.
+- 商店が許諾した対応プラットフォーム（Shopify/カラーミー/makeshop/EC-CUBE等）の公式API Adapter、公式CSV形式別の往復検証。
+- 商店所有の任意ランナーによる定期同期・非公開商品への追随・復旧・差分通知。
+- 正しい商品ページの構造化データや正規商品Feed、Tool仕様改善、Museなど個人AI Agentの自然発見・回答精度に関する再現可能な計測。
+- 日本語の追加の画面写真、字幕付き動画、プラットフォーム別の使い方。
+
+[製品方針](PRODUCT_STRATEGY.ja.md) / [商品データ](CATALOG.md) / [MCP接続](MUSE_CONNECT.ja.md) / [GitHub Issues](https://github.com/Siyuan-chat/miseport/issues)。
+
+**注意:** 本ロードマップは公開用の製品情報です。商店の非公開の連絡先・同意や、内部スプリント計画は含みません。

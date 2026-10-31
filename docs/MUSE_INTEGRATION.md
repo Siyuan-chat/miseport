@@ -16,7 +16,7 @@ On **2026-10-29 (Asia/Tokyo)**, the account-local custom connector `custom.misep
 
 All seven recorded client calls exited 0 and returned `isError: false`. Root independently parsed the saved text content, checked it against `structuredContent`, and compared every result against the current Python catalog operations loaded from the legacy synthetic reference fixture: **7/7 exact matches**. Second-round client-process durations were 905, 626, 649 and 852 ms; these include initialization and notification overhead, not just server latency. First-round durations were not recorded and remain null.
 
-[Raw synthetic-only results](evidence/muse-demo-20261029.json) preserve commands, arguments, results and connector rediscovery identity. The evidence contains no account identifier, credentials or unrelated chat history. UI discovery and reuse traces, the local comparison script, and the completion screenshot are retained under `artifacts/muse-acceptance/` locally. The file-download event timed out; the JSON was saved through the file preview's Copy action and parsed successfully.
+Raw account-local test transcripts remain in an owner-controlled working archive and are not included in the public release source. This page summarizes the verified **synthetic-only** tool calls, their status and limits; it does not expose account-specific client workspace records. UI discovery and reuse traces, the local comparison script, and the completion screenshot are retained under `artifacts/muse-acceptance/` locally. The file-download event timed out; the JSON was saved through the file preview's Copy action and parsed successfully.
 
 ## Observed client issues and limits
 
