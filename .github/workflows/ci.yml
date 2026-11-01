@@ -142,6 +142,10 @@ jobs:
             --catalog tests/fixtures/demo-store.reference.json \
             --offline-manifest examples/discovery-web-evidence.demo.json \
             --output artifacts/discovery/web-audit.json
+          miseport-e2-eval \
+            --study tests/fixtures/e2-shopping-20.synthetic.json \
+            --trace tests/fixtures/e2-trace-empty.synthetic.json \
+            --output artifacts/discovery/e2-empty-report.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -153,6 +157,11 @@ jobs:
           assert readiness["channel_submission_performed"] is False
           assert web["checked"] == 1 and web["with_issues"] == 0
           assert web["agent_natural_discovery_verified"] is False
+          e2 = json.loads((root / "e2-empty-report.json").read_text())
+          assert e2["question_count"] == 20
+          assert e2["phases"]["baseline"]["observed_rate_reviewed"] is None
+          assert e2["fully_reviewed_paired_trials"] == 0
+          assert e2["causal_lift_established"] is False
           print("Offline synthetic discovery evidence verified; no site or feed access.")
           PY
       - name: Upload synthetic diagnostics only

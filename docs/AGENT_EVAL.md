@@ -57,3 +57,8 @@ These manually supplied labels are **not verified independently**. The scorer do
 - E4: discoverability of the MisePort OSS project itself.
 
 Do not combine the above into a single GEO ranking score. Host comparisons should specify catalog version/hash, time, model, settings and repeated trial counts. Actual recommendation lift and natural exposure are untested.
+
+
+## E2 — 別立ての自然発見計測
+
+[20問のE2実験ガイド](E2_DISCOVERY.md)では、**商店MCP未接続、店名未指定**の買い物質問を研究します。ベースライン/後続試行は人手の証拠レビュー・明示した設定・同一質問のみ集計。現在は架空の空の実験と採点プログラムのみ実装済みで、実際の自然発見は未計測です。
