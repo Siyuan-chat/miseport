@@ -5,6 +5,8 @@
 
 画面付き操作の入口: [実画面を用いた日本語の手順](VISUAL_GUIDE.ja.md)（架空の商品・正式受入前）。
 
+**写真付き操作手順（3枚の本物のTkinter GUI画面）：** [ダウンロードして閲覧するHTML版](GUI_VISUAL_ALPHA.html) / [Markdown版](VISUAL_GUIDE.ja.md)。写真は合成商品だけのAlpha画面で、Windows実店舗の実用検証ではありません。
+
 ## 何ができるか
 
 公式 BASE API β の商品情報を読み取り専用で取得し、商店自身のPC上で価格・在庫スナップショットを確認します。認可済みの商品URLを登録すると、標準カタログJSON、Cloudflare Pages向けの読み取り専用 MCP/REST ZIP を生成できます。これは店舗の注文・決済・商品更新や、Museの公式承認を意味しません。

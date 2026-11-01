@@ -1,6 +1,6 @@
 # MisePort 公開ステータス（Alpha）
 
-**最終確認:** 2026-10-29 JST  
+**最終確認:** 2026-11-01 JST  
 **正式商店版の目標:** 2026-11-10（**未リリース**）  
 **現状:** オープンソースの商店向け Alpha コードと、架空商品の公開デモを提供中。実商店による公開運用・Muse自然発見は未検証。
 
@@ -10,7 +10,8 @@
 - BASE API v2β の商品読み取り専用接続コード（商店所有PAT、明示的な読取権限、手動再取得）と、BASE/Shopifyの商品CSVのローカル取り込み Alpha。
 - 日本語のローカル GUI Alpha：ショップの選択、商品と公開URLの確認、カタログJSON保存、商店向けMCP/REST ZIP生成、Cloudflareへの手動公開案内、公開後の読み取り専用MCPチェック。
 - 商品とショップの識別、出典・更新時刻、未確認の値、失敗した再取得や非公開商品についての安全側の処理。
-- CIで実行する Python/Node/Cloudflare契約テストと、未署名Windows Alpha EXEのビルド。実物のTkinter GUIの画面キャプチャも、架空データで自動生成しています。
+- CIで実行する Python/Node/Cloudflare契約テスト、Windows Alpha EXEの実際の起動スモーク、合成商品によるTkinter実画面キャプチャ。実店舗の受入は未完了です。
+- Discovery D1–D6（商品チャネル向けフィールド診断、原商品ページのオフライン監査、Google Merchant JP CSV、OpenAI Stableの**未承認ローカルプレビュー**、日本語GUI、未接続AgentのE2採点手順）はコード・合成テストが実装済み。Google等への提出・収録・自然発見は未検証です。
 
 ## まだ完了していないもの
 
