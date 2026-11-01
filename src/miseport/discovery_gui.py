@@ -5,6 +5,8 @@ Tkinter is only imported when the GUI is opened; logic is headless-testable.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from .core import Catalog
 from .discovery import DiscoveryProfile, assess_discovery, _profile_from_file
 from .google_feed import inspect_google, google_csv, atomic_bytes
@@ -159,7 +161,7 @@ def open_discovery_window(parent, catalog: Catalog, *,
                 parent=dialog)
             return
         selected_profile = candidate
-        loaded_label.set("店主確認済みのDiscovery Profile: " + __import__("pathlib").Path(name).name)
+        loaded_label.set("店主確認済みのDiscovery Profile: " + Path(name).name)
         redraw()
 
     def export(which):
