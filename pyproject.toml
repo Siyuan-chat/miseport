@@ -27,6 +27,7 @@ miseport-discovery-readiness = "miseport.discovery:main"
 miseport-web-discovery-audit = "miseport.web_discovery:main"
 miseport-export-google = "miseport.google_feed:main"
 miseport-export-openai-preview = "miseport.openai_feed:main"
+miseport-e2-eval = "miseport.e2_discovery:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
