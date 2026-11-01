@@ -257,6 +257,8 @@ def main():
     export_btn.pack(side="left", padx=10)
     bundle_btn = ttk.Button(output, text="⑥ 商店用MCP/REST ZIPを生成", state="disabled")
     bundle_btn.pack(side="left", padx=10)
+    discovery_btn = ttk.Button(output, text="AI商品発見の準備状況", state="disabled")
+    discovery_btn.pack(side="left", padx=10)
     guide_btn = ttk.Button(output, text="⑦ Cloudflare公開手順")
     guide_btn.pack(side="left")
     site_row = ttk.Frame(mapping_page)
@@ -302,6 +304,7 @@ def main():
         link_probe_status.set("商品URLのネットワーク検査はまだ行っていません。")
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
+        discovery_btn.configure(state="disabled")
         consent.set(False)
         tree.delete(*tree.get_children())
         for item in items:
@@ -334,6 +337,7 @@ def main():
         consent.set(False)
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
+        discovery_btn.configure(state="disabled")
         btn.configure(state="disabled")
         csv_btn.configure(state="disabled")
         status.set("BASEから取得中…この画面を閉じるとPATは保存されません。")
@@ -470,6 +474,7 @@ def main():
         consent.set(False)
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
+        discovery_btn.configure(state="disabled")
         urls.delete("1.0", tk.END)
         tree.delete(*tree.get_children())
         for p in result.catalog.products:
@@ -508,6 +513,7 @@ def main():
         consent.set(False)
         export_btn.configure(state="disabled")
         bundle_btn.configure(state="disabled")
+        discovery_btn.configure(state="disabled")
         link_probe_status.set("候補URLは推測です。必要なら「公開商品URLを確認」でネットワーク照合できます。")
         review_status.set(str(len(candidates)) + "件のURL候補を生成しました。"
             " API商品IDに基づく候補です。公開前に確認してからデータ審査を押してください。")
@@ -566,6 +572,7 @@ def main():
             review_status.set(str(error))
             export_btn.configure(state="disabled")
             bundle_btn.configure(state="disabled")
+            discovery_btn.configure(state="disabled")
             current = None
             current_inputs = None
             return
@@ -581,6 +588,22 @@ def main():
         review_status.set(message)
         export_btn.configure(state="normal" if result.publishable else "disabled")
         bundle_btn.configure(state="normal" if result.publishable else "disabled")
+        discovery_btn.configure(state="normal" if result.publishable else "disabled")
+
+    def show_discovery():
+        if (current is None or not current.publishable or
+                current_inputs != review_inputs() or not imported_for_current_shop()):
+            messagebox.showwarning("商品データの確認",
+                "最新の店舗情報と商品URLを先に確認してください。")
+            return
+        from .discovery_gui import open_discovery_window
+        expected = current
+        expected_inputs = current_inputs
+        open_discovery_window(root, expected.catalog,
+            is_current=lambda: (current is expected and
+                current_inputs == expected_inputs and
+                current_inputs == review_inputs() and imported_for_current_shop()),
+            is_approved=lambda: consent.get())
 
     def save():
         if (current is None or not current.publishable or
@@ -742,6 +765,7 @@ def main():
     bundle_btn.configure(command=save_bundle)
     review_btn.configure(command=review)
     export_btn.configure(command=save)
+    discovery_btn.configure(command=show_discovery)
     if capture_dir is not None:
         # Documentation screenshots are created from the REAL Tk widgets
         # in an isolated virtual display. No API call or real shop data.
@@ -805,6 +829,7 @@ def main():
                     "json_export_disabled": str(export_btn.cget("state")) == "disabled",
                     "bundle_export_disabled": str(bundle_btn.cget("state")) == "disabled",
                     "live_probe_disabled": str(live_btn.cget("state")) == "disabled",
+                    "discovery_disabled_until_review": str(discovery_btn.cget("state")) == "disabled",
                 }
                 result = {
                     "status": "ok" if all(checks.values()) else "failed",
