@@ -26,6 +26,7 @@ miseport-compare-catalogs = "miseport.catalog_compare:main"
 miseport-discovery-readiness = "miseport.discovery:main"
 miseport-web-discovery-audit = "miseport.web_discovery:main"
 miseport-export-google = "miseport.google_feed:main"
+miseport-export-openai-preview = "miseport.openai_feed:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
