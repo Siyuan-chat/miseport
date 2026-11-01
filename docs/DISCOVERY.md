@@ -67,3 +67,19 @@ miseport-export-google --catalog /path/to/merchant-reviewed.json --profile /path
 ブランド例外、GTIN/MPN、状態、配送ポリシーや商品ジャンル別条件は公式仕様と商店の実態に応じた追加確認が必要です。**テスト用架空商品を本物として提出しないため、`is_demo=true` は直接出力できません。**
 
 参照: https://support.google.com/merchants/answer/7052112?hl=en
+
+## D4 — OpenAI Stable商品Feedのローカルプレビュー (2026-11-01)
+
+正式な提携・日本市場の利用許可が**まだない**ことを前提に、Stableの基本9フィールドに合った `JSONL.gz` を**オフラインのプレビューとしてのみ**作成します。
+
+```sh
+miseport-export-openai-preview --catalog /path/to/merchant-reviewed.json --profile /path/to/discovery-profile.json --output artifacts/discovery/openai.preview.jsonl.gz --report artifacts/discovery/openai-preview-report.json
+```
+
+- `item_id,title,description,url,brand,seller_name,image_url,availability,price` を正規化・検査します。価格の形式は例えば `1850 JPY`。確認済みブランドが必須で、在庫 `unknown` は仕様どおり明示します。
+- 欠損した商品が1件でもあればプレビュー自体を生成せず、以前の出力も保護します。成功した場合は再現可能なgzipと文字コードUTF-8を使います。
+- 出力名は必ず `.preview.jsonl.gz` で終わる必要があります。`output_status=local_preview_only`、`market_approved=false`、`partner_approved=false` を機械可読レポートに記録します。
+- OpenAIの**標準アップロード対象市場は現在US**です。日本のJPY商品を提出できるとは主張せず、OpenAIの明示的な市場・通貨の受入確認が必要です。MisePortにはSFTP接続・自動送信・決済APIはありません。
+- 商店の原ページが購入可能であること、画像や価格の真実性、広告要件、レビュー・送料・返品・GTINなどの追加ルールもこのローカルプレビューでは独立検証しません。
+
+公式仕様: https://developers.openai.com/commerce/specs/file-upload/products および https://developers.openai.com/commerce/specs/file-upload/overview
