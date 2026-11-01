@@ -9,7 +9,8 @@ from pathlib import Path
 
 from .core import Catalog
 from .discovery import DiscoveryProfile, assess_discovery, _profile_from_file
-from .google_feed import inspect_google, google_csv, atomic_bytes
+from .google_feed import inspect_google, google_csv
+from .feed_common import atomic_bytes
 from .openai_feed import inspect_openai, openai_preview_gzip
 
 
