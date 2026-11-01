@@ -1,12 +1,10 @@
 # Changelog
 
-## 0.1.0 — unreleased local development
+## 0.1.0 — unreleased development (updated 2026-11-01)
 
-- JSON/CSV validation, Japanese normalized search, filters and detail.
-- Legacy 1.0 merchant snapshots convert to a validated canonical envelope with merchant, quantity, evidence, demo status and snapshot provenance preserved.
-- Inventory snapshots, nonbinding quantity quotes, missing-fact audit and Product/Offer JSON-LD.
-- CLI and seven read-only stdio MCP tools, with strict quantities and unknown cost/stock handling.
-- Original user-supplied storefront brand, bilingual documentation and site; vector reconstruction remains a review candidate.
-- Windows local and installed-wheel verification; GitHub Actions matrix and source-only upload packaging prepared.
+- Deterministic Japanese catalog core, validated JSON/CSV import, read-only MCP (seven tools), REST, reference pricing and Product/Offer JSON-LD.
+- BASE v2 beta read-only adapter and BASE/Shopify CSV import, reviewed Windows Japanese Tk GUI Alpha and merchant-owned Cloudflare deployment bundle.
+- Discovery D1–D6: channel readiness and web audits, local Google Merchant JP CSV, OpenAI Stable local preview, merchant GUI integration and manual E2 natural-discovery evaluation protocol.
+- Offline synthetic contract tests, CI evidence snapshots, Windows packaged startup smoke and pre-release archive audit. Shared feed export safety utilities reduce duplicated cross-channel validation.
 
-No public release, remote service, live merchant inventory, checkout, payment or Muse approval is claimed. Historical artifacts also use 0.1.0; identify them by path/hash.
+**Still unverified:** any consented live shop's end-to-end onboarding, nontechnical Windows merchant acceptance, independent merchant Cloudflare deployment, platform feed acceptance, Meta/OpenAI organic discovery, and commercial impact. No final merchant release or official platform partnership is claimed.

@@ -1,5 +1,4 @@
 """Google Merchant JP CSV conversion is offline and fails closed."""
-from dataclasses import replace
 import csv
 import io
 
@@ -7,7 +6,8 @@ import pytest
 
 from miseport.core import Catalog, Product
 from miseport.discovery import DiscoveryProfile
-from miseport.google_feed import inspect_google, google_csv, atomic_bytes, FeedExportError
+from miseport.google_feed import inspect_google, google_csv
+from miseport.feed_common import atomic_bytes, FeedExportError
 
 
 def sample(*, stock="in_stock", demo=False, price=1850, tax=True):

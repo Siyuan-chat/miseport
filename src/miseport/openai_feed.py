@@ -14,7 +14,7 @@ from pathlib import Path
 
 from .core import Catalog
 from .discovery import DiscoveryProfile, _https, _profile_from_file
-from .google_feed import FeedExportError, atomic_bytes
+from .feed_common import FeedExportError, atomic_bytes, verified_enrichments
 from .importers import load_catalog
 
 OPENAI_STABLE_SPEC = "https://developers.openai.com/commerce/specs/file-upload/products"
@@ -27,15 +27,7 @@ REQUIRED_FIELDS = (
 
 def inspect_openai(catalog: Catalog, profile: DiscoveryProfile | None) -> dict:
     """Validate the nine stable discovery fields without guessing attributes."""
-    if not isinstance(catalog, Catalog) or not catalog.products:
-        raise FeedExportError("nonempty validated catalog required")
-    if not isinstance(profile, DiscoveryProfile):
-        raise FeedExportError("shop-reviewed discovery profile required")
-    if {p.merchant_id for p in catalog.products} != {profile.merchant_id}:
-        raise FeedExportError("merchant identity mismatch")
-    extensions = {p.sku: p for p in profile.products}
-    if set(extensions) - set(catalog.by_sku):
-        raise FeedExportError("profile contains unknown SKUs")
+    extensions = verified_enrichments(catalog, profile)
     rows, problems = [], []
     for product in catalog.products:
         enrichment = extensions.get(product.sku)

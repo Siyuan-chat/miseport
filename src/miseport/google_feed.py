@@ -11,13 +11,12 @@ import csv
 from hashlib import sha256
 from io import StringIO
 import json
-import os
 from pathlib import Path
-import tempfile
 
 from .core import Catalog, Stock
 from .discovery import DiscoveryProfile, _https, _profile_from_file
 from .importers import load_catalog
+from .feed_common import FeedExportError, atomic_bytes, verified_enrichments
 
 GOOGLE_SPEC_URL = "https://support.google.com/merchants/answer/7052112"
 GOOGLE_COLUMNS = (
@@ -26,24 +25,9 @@ GOOGLE_COLUMNS = (
 )
 
 
-class FeedExportError(ValueError):
-    """Safe validation problem containing SKU and field codes, not product descriptions."""
-
-
 def inspect_google(catalog: Catalog, profile: DiscoveryProfile | None) -> dict:
     """Check EVERY product before mapping a complete Japan JPY base CSV."""
-    if not isinstance(catalog, Catalog) or not catalog.products:
-        raise FeedExportError("nonempty validated catalog required")
-    if profile is None:
-        raise FeedExportError("shop-reviewed discovery profile is required")
-    if not isinstance(profile, DiscoveryProfile):
-        raise FeedExportError("invalid discovery profile")
-    merchant_ids = {p.merchant_id for p in catalog.products}
-    if merchant_ids != {profile.merchant_id}:
-        raise FeedExportError("merchant identity mismatch")
-    extra = {p.sku: p for p in profile.products}
-    if set(extra) - set(catalog.by_sku):
-        raise FeedExportError("profile contains unknown SKUs")
+    extra = verified_enrichments(catalog, profile)
     rows, issues = [], []
     for p in catalog.products:
         entry = extra.get(p.sku)
@@ -100,39 +84,16 @@ def inspect_google(catalog: Catalog, profile: DiscoveryProfile | None) -> dict:
     }
 
 
-def google_csv(report: dict, *, allow_synthetic_preview: bool = False) -> bytes:
-    """Create a complete snapshot, fail closed if any row is incomplete."""
+def google_csv(report: dict) -> bytes:
+    """Create a complete snapshot; no synthetic-data bypass exists."""
     if report["blocked_rows"]:
-        if not allow_synthetic_preview or any(
-                any(code != "demo_product_not_for_submission" for code in row["codes"])
-                for row in report["issues"]):
-            raise FeedExportError(
-                "Google feed blocked; inspect report SKU/field issue codes")
-        # Only demo flag can be relaxed; no missing facts or unknown stock.
-        raise FeedExportError("synthetic products are not exportable as merchant feeds")
+        raise FeedExportError("Google feed blocked; inspect report SKU/field issue codes")
     stream = StringIO(newline="")
     writer = csv.DictWriter(stream, fieldnames=list(GOOGLE_COLUMNS),
                             lineterminator="\n", extrasaction="raise")
     writer.writeheader()
     writer.writerows(report["rows"])
     return stream.getvalue().encode("utf-8")
-
-
-def atomic_bytes(output: str | Path, content: bytes) -> None:
-    dest = Path(output)
-    if not dest.parent.is_dir() or dest.is_symlink():
-        raise FeedExportError("output parent must exist, and output must not be a symlink")
-    temporary = None
-    try:
-        with tempfile.NamedTemporaryFile(
-                mode="wb", dir=dest.parent, prefix=".miseport-feed-",
-                suffix=".tmp", delete=False) as handle:
-            temporary = Path(handle.name)
-            handle.write(content)
-        os.replace(temporary, dest)
-    finally:
-        if temporary is not None and temporary.exists():
-            temporary.unlink()
 
 
 def main():
