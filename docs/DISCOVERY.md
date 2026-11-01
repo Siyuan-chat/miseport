@@ -83,3 +83,16 @@ miseport-export-openai-preview --catalog /path/to/merchant-reviewed.json --profi
 - 商店の原ページが購入可能であること、画像や価格の真実性、広告要件、レビュー・送料・返品・GTINなどの追加ルールもこのローカルプレビューでは独立検証しません。
 
 公式仕様: https://developers.openai.com/commerce/specs/file-upload/products および https://developers.openai.com/commerce/specs/file-upload/overview
+
+## D5 — 日语商家 GUI 的 AI 商品发现诊断（Alpha）
+
+商店商品导入、URL 检查和「④ データの確認」通过后，现有 GUI 中会出现 **「AI商品発見の準備状況」**。该窗口沿用**已审查且未发生店铺、URL 或来源变更的 Catalog**，列出 Google / OpenAI 的逐 SKU 字段缺口。
+
+1. 点击「店主確認済みブランドJSONを選択」，读取单独的 Discovery Profile（格式见 `examples/discovery-profile.example.json`）。品牌不会由商家名称自动推断；只接受同店铺的 SKU。
+2. 查看各 SKU 的缺失项。界面显示的「項目確認済」只是本地格式准备状况，**不是平台收录、商家资格或者 AI 推荐证据**。
+3. 需要保存时，在主界面勾选已审核公开范围。Google CSV 和 OpenAI Preview 按原先 D3/D4 的完整快照校验。若有任一不合格商品，则不能导出。即使已通过本地数据检查，也不会自动提交到 Google 或 OpenAI。
+4. 如果主界面源数据、店铺名称或审核状态发生变化，导出操作将被拒绝。更改后必须重新完成商品审核并打开新窗口。
+
+**关键限制：** `OpenAIプレビューを保存` 只会生成 `.preview.jsonl.gz` 本地文件；**日本市场尚未获得相应的 OpenAI Partner/Market 授权**。Google CSV 需要额外在 Merchant Center 官方渠道进行账号、页面、内容及商业政策验证；本工具不负责账号提交。Tkinter 商家真实操作、Windows 实机易用性仍待试点验收。
+
+这个功能不保存 BASE PAT，不调用外部网络，不修改原始商品数据，也不会将本地诊断上传到 MisePort 网站。
