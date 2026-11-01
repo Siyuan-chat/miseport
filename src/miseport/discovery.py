@@ -87,6 +87,12 @@ def _channel_row(product, brand):
         google.append("image_url_missing_or_invalid")
     if product.stock.value == "unknown":
         google.append("availability_unknown")
+    if product.price_jpy <= 0:
+        google.append("positive_price_required")
+    if product.tax_included is not True:
+        google.append("japan_tax_included_price_unconfirmed")
+    if not brand or len(brand) > 70:
+        google.append("verified_brand_missing_or_over_70")
     # A passing field mapping cannot prove site/checkout policy compliance.
     openai = []
     if not product.sku:

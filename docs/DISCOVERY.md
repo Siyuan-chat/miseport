@@ -53,3 +53,17 @@ miseport-web-discovery-audit --catalog /path/to/merchant-reviewed.json --live --
 - OpenAIパートナー手続: https://developers.openai.com/commerce/guides/get-started
 
 これらは変更される外部仕様です。実際にFeedを出す段階で再確認してください。**現在はローカル事前検査のみで、Feedの完全なエクスポートやプラットフォームAPI提出は未実装です。**
+
+## D3 — Google Merchant Center JP商品CSV（2026-11-01）
+
+`miseport-export-google` は日本向けJPY商品Feedの基本フィールドCSVをローカル作成します。**実際のShop登録、Googleの審査・販売者ポリシーや画像クローラビリティ、送料設定、掲載・AI表示は別条件**です。
+
+```sh
+miseport-export-google --catalog /path/to/merchant-reviewed.json --profile /path/to/discovery-profile.json --output artifacts/discovery/google-jp.csv --report artifacts/discovery/google-diagnostics.json
+```
+
+独立した `--profile` で商店が照合済みの `brand_verified=true` を確認してください。初期バージョンはID、商品名、説明、HTTPS商品URL、HTTPS画像、確定した在庫状態、税込・正のJPY価格、実ブランドを**すべての公開商品について**要求します。1件でも条件に合わない場合、既存CSVは上書きせず失敗します。価格が未知・税が未確認なら空欄を補いません。CSVは引用符・改行・日本語を正常にエスケープし、提出は行いません。
+
+ブランド例外、GTIN/MPN、状態、配送ポリシーや商品ジャンル別条件は公式仕様と商店の実態に応じた追加確認が必要です。**テスト用架空商品を本物として提出しないため、`is_demo=true` は直接出力できません。**
+
+参照: https://support.google.com/merchants/answer/7052112?hl=en
