@@ -87,6 +87,8 @@ def test_unreviewed_row_is_not_a_no_hit_or_a_completed_pair():
 def test_false_e2_conditions_are_rejected(field, value):
     one = trial()
     one[field] = value
+    if field == "observed_product_urls":
+        one["cited_product_urls"] = []  # Isolate foreign-URL validation from citation-subset validation.
     if field in ("shop_mcp_connected", "shop_named_in_prompt", "cited_product_urls"):
         with pytest.raises(ValidationError):
             trace([one])
